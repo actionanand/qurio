@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'qurio',
+  appId: 'com.actionanand.qurio.app',
+  appName: 'Qurio',
   webDir: 'www',
 };
 
