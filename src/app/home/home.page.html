@@ -1,20 +1,68 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+<section class="hero">
+  <div>
+    <span class="eyebrow"><app-icon name="grade" />{{ i.t('learn') }}</span>
+    <h1>{{ i.t('welcome') }}</h1>
+    <p>{{ i.t('subtitle') }}</p>
   </div>
-</ion-content>
+  <div class="hero-art" aria-hidden="true"><app-icon name="book" /></div>
+</section>
+@if (loading()) {
+<p role="status">{{ i.t('loading') }}</p>
+} @else if (error()) {
+<div class="panel" role="alert">
+  <p>{{ i.t('error') }}</p>
+  <button (click)="load()">{{ i.t('retry') }}</button>
+</div>
+} @else if (content.manifest(); as manifest) {
+<div class="section-heading">
+  <h2>{{ i.t('subjects') }}</h2>
+  <ion-select
+    class="grade-select"
+    interface="popover"
+    [label]="i.t('grade')"
+    labelPlacement="stacked"
+    [value]="preferences.grade()"
+    (ionChange)="grade($event.detail.value)">
+    <app-icon slot="start" name="grade" />
+    @for (grade of manifest.grades; track grade.id) {
+    <ion-select-option [value]="grade.id"
+      >{{ grade.label[preferences.language()] || grade.label.en }}</ion-select-option
+    >
+    }
+  </ion-select>
+</div>
+<div class="subject-grid">
+  @for (entry of manifest.subjects; track entry.id) {
+  <button
+    class="subject-card"
+    [class.selected]="subject() === entry.id"
+    [attr.aria-pressed]="subject() === entry.id"
+    (click)="subject.set(entry.id)">
+    <span class="subject-symbol"><app-icon [name]="subjectIcon(entry.id)" /></span>
+    <strong>{{ entry.label[preferences.language()] || entry.label.en }}</strong><app-icon name="chevron" />
+  </button>
+  }
+</div>
+@if (activeSubject(); as active) {
+<div class="section-heading">
+  <h2>{{ active.label[preferences.language()] || active.label.en }}</h2>
+  <span class="muted">{{ items().length }} · {{ i.t('learn') }}</span>
+</div>
+}
+<div class="content-list">
+  @for (item of items(); track item.id) {
+  <a class="content-card" [routerLink]="['/content', item.id]">
+    <span class="type-icon"><app-icon [name]="item.type" /></span>
+    <div class="card-copy">
+      <span class="eyebrow">{{ i.t(item.type) }}</span>
+      <h3>{{ title(item) }}</h3>
+    </div>
+    @if (progress.completed().includes(item.id)) {
+    <span class="chip"><app-icon name="correct" />{{ i.t('completed') }}</span> }
+    <app-icon class="arrow" name="chevron" />
+  </a>
+  } @empty {
+  <p class="panel">{{ i.t('empty') }}</p>
+  }
+</div>
+}

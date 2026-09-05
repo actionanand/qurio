@@ -1,0 +1,103 @@
+import { Service, inject } from '@angular/core';
+import { PreferencesService } from './preferences.service';
+const messages = {
+  learn: ['Learn', 'கற்க', 'सीखें'],
+  progress: ['Progress', 'முன்னேற்றம்', 'प्रगति'],
+  language: ['Language', 'மொழி', 'भाषा'],
+  appearance: ['Appearance', 'தோற்றம்', 'रूप'],
+  light: ['Light', 'வெளிச்சம்', 'हल्का'],
+  dark: ['Dark', 'இருள்', 'गहरा'],
+  system: ['System', 'சாதனம்', 'सिस्टम'],
+  welcome: [
+    'A little curiosity. A world of possibility.',
+    'சிறு ஆர்வம். பெரும் வாய்ப்புகள்.',
+    'थोड़ी जिज्ञासा। अनगिनत संभावनाएँ।',
+  ],
+  subtitle: [
+    'Explore a subject, learn something new, and put your knowledge into practice.',
+    'பாடத்தைத் தேர்ந்தெடுத்து, புதிதாகக் கற்று, பயிற்சி செய்யுங்கள்.',
+    'विषय चुनें, कुछ नया सीखें और अभ्यास करें।',
+  ],
+  grade: ['Class / grade', 'வகுப்பு', 'कक्षा'],
+  subjects: ['Your subjects', 'உங்கள் பாடங்கள்', 'आपके विषय'],
+  note: ['Study note', 'படிப்புக் குறிப்பு', 'अध्ययन नोट'],
+  syllabus: ['Syllabus', 'பாடத்திட்டம்', 'पाठ्यक्रम'],
+  quiz: ['Timed practice', 'நேரப் பயிற்சி', 'समयबद्ध अभ्यास'],
+  loading: ['Loading your learning space…', 'ஏற்றப்படுகிறது…', 'लोड हो रहा है…'],
+  error: [
+    'Content could not be loaded. Check your connection and try again.',
+    'உள்ளடக்கத்தை ஏற்ற முடியவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயலுங்கள்.',
+    'सामग्री लोड नहीं हुई। कनेक्शन जाँचें और फिर कोशिश करें।',
+  ],
+  retry: ['Try again', 'மீண்டும் முயல்க', 'फिर कोशिश करें'],
+  empty: ['New learning content is on its way.', 'புதிய உள்ளடக்கம் விரைவில் வரும்.', 'नई सामग्री जल्द आएगी।'],
+  back: ['Back to learning', 'கற்றலுக்குத் திரும்பு', 'सीखने पर लौटें'],
+  fallback: [
+    'This content is currently available in English.',
+    'இந்த உள்ளடக்கம் தற்போது ஆங்கிலத்தில் கிடைக்கிறது.',
+    'यह सामग्री फ़िलहाल अंग्रेज़ी में उपलब्ध है।',
+  ],
+  complete: ['Mark as completed', 'முடித்ததாகக் குறி', 'पूरा हुआ चिह्नित करें'],
+  completed: ['Completed', 'முடிந்தது', 'पूर्ण'],
+  start: ['Start practice', 'பயிற்சியைத் தொடங்கு', 'अभ्यास शुरू करें'],
+  questions: ['Questions', 'கேள்விகள்', 'प्रश्न'],
+  passMark: ['Pass mark', 'தேர்ச்சி மதிப்பெண்', 'उत्तीर्ण अंक'],
+  hint: ['Show hint', 'குறிப்பைக் காட்டு', 'संकेत दिखाएँ'],
+  check: ['Check answer', 'பதிலைச் சரிபார்', 'उत्तर जाँचें'],
+  next: ['Next question', 'அடுத்த கேள்வி', 'अगला प्रश्न'],
+  finish: ['See results', 'முடிவுகளைக் காண்க', 'परिणाम देखें'],
+  correct: ['Correct', 'சரி', 'सही'],
+  wrong: ['Incorrect', 'தவறு', 'गलत'],
+  answer: ['Correct answer', 'சரியான பதில்', 'सही उत्तर'],
+  selected: ['Your answer', 'உங்கள் பதில்', 'आपका उत्तर'],
+  explanation: ['Explanation', 'விளக்கம்', 'व्याख्या'],
+  results: ['Practice complete', 'பயிற்சி முடிந்தது', 'अभ्यास पूरा हुआ'],
+  passed: ['Passed — well done!', 'தேர்ச்சி — நன்று!', 'उत्तीर्ण — बहुत अच्छे!'],
+  keepGoing: [
+    'Keep learning. Every attempt is progress.',
+    'தொடர்ந்து கற்கவும். ஒவ்வொரு முயற்சியும் முன்னேற்றம்.',
+    'सीखते रहें। हर प्रयास प्रगति है।',
+  ],
+  time: ['Time remaining', 'மீதமுள்ள நேரம்', 'शेष समय'],
+  elapsed: ['Time taken', 'எடுத்த நேரம்', 'लगा समय'],
+  unanswered: ['Unanswered', 'பதிலளிக்காதவை', 'अनुत्तरित'],
+  timeout: [
+    'Time is up. Your checked answers have been saved.',
+    'நேரம் முடிந்தது. சரிபார்த்த பதில்கள் சேமிக்கப்பட்டன.',
+    'समय समाप्त। जाँचे गए उत्तर सहेजे गए।',
+  ],
+  attempts: ['Quiz attempts', 'வினாடி வினா முயற்சிகள்', 'प्रश्नोत्तरी प्रयास'],
+  average: ['Average score', 'சராசரி மதிப்பெண்', 'औसत अंक'],
+  notesDone: ['Notes completed', 'முடித்த குறிப்புகள்', 'पूर्ण नोट्स'],
+  recent: ['Your practice history', 'உங்கள் பயிற்சி வரலாறு', 'आपका अभ्यास इतिहास'],
+  noProgress: [
+    'Your next chapter starts here. Complete a note or try a quiz.',
+    'ஒரு குறிப்பைப் படித்து முடிக்கவும் அல்லது பயிற்சி செய்யவும்.',
+    'एक नोट पूरा करें या प्रश्नोत्तरी आज़माएँ।',
+  ],
+  local: [
+    'Progress is saved on this device.',
+    'முன்னேற்றம் இந்தச் சாதனத்தில் சேமிக்கப்படும்.',
+    'प्रगति इस डिवाइस पर सहेजी जाती है।',
+  ],
+  storage: [
+    'Device storage is unavailable. Progress will last only for this session.',
+    'சாதனச் சேமிப்பகம் கிடைக்கவில்லை. இந்த அமர்வில் மட்டுமே முன்னேற்றம் இருக்கும்.',
+    'डिवाइस संग्रह उपलब्ध नहीं। प्रगति केवल इस सत्र में रहेगी।',
+  ],
+  practiceInfo: [
+    'Check each answer to lock it and see feedback. Hints do not affect your score. The timer runs for the whole quiz.',
+    'பதிலைச் சரிபார்த்த பின் மாற்ற முடியாது. குறிப்புகள் மதிப்பெண்ணைப் பாதிக்காது. முழுப் பயிற்சிக்கும் ஒரே நேர வரம்பு.',
+    'उत्तर जाँचने पर वह लॉक होगा और प्रतिक्रिया दिखेगी। संकेत से अंक नहीं घटते। समय सीमा पूरी प्रश्नोत्तरी के लिए है।',
+  ],
+  review: ['Answer review', 'பதில் மீளாய்வு', 'उत्तर समीक्षा'],
+  skip: ['Skip to main content', 'முக்கிய உள்ளடக்கத்திற்குச் செல்', 'मुख्य सामग्री पर जाएँ'],
+} as const;
+export type MessageKey = keyof typeof messages;
+@Service()
+export class I18nService {
+  readonly preferences = inject(PreferencesService);
+  t(key: MessageKey): string {
+    return messages[key][{ en: 0, ta: 1, hi: 2 }[this.preferences.language()]];
+  }
+}
