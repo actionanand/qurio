@@ -853,3 +853,164 @@ blockquote {
     scroll-behavior: auto !important;
   }
 }
+
+.exam-hero {
+  padding: 34px 0 8px;
+}
+.exam-hero h1 {
+  margin: 10px 0 8px;
+}
+.exam-hero p,
+.plan-header p {
+  color: var(--muted);
+  margin: 0;
+}
+.exam-list {
+  display: grid;
+  gap: 18px;
+}
+.exam-group h2 {
+  margin: 10px 0 6px;
+}
+.compact-list .content-card {
+  padding: 18px;
+}
+.practice-list {
+  max-width: 850px;
+  margin: 20px auto 24px;
+}
+.plan-header {
+  margin-top: 0;
+  background: linear-gradient(135deg, var(--surface), var(--soft));
+}
+.plan-header h1 {
+  margin: 10px 0 8px;
+}
+.plan-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+.plan-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 14px;
+  margin-bottom: 14px;
+}
+.plan-tabs a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  background: var(--surface);
+  font-weight: 650;
+}
+.plan-tabs a.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--soft);
+}
+.day-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.day-nav button {
+  border-radius: 12px;
+  padding-inline: 16px;
+}
+.task-section {
+  margin-top: 26px;
+}
+.task-card,
+.phase-card,
+.day-card {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  margin: 12px 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ion-text-color);
+  text-align: left;
+}
+.task-card label,
+.timetable-row label {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+}
+.task-card input[type='checkbox'],
+.timetable-row input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0;
+  accent-color: var(--accent);
+  justify-self: center;
+}
+.task-card p {
+  margin: 8px 0 0 32px;
+  color: var(--muted);
+}
+.task-card .button {
+  margin: 14px 0 0 32px;
+}
+.week-grid,
+.phase-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.day-card {
+  min-height: 132px;
+}
+.day-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+.day-card.selected,
+.phase-card.current {
+  border-color: var(--accent);
+  background: var(--soft);
+}
+.timetable-row {
+  display: grid;
+  gap: 8px;
+}
+@media (max-width: 700px) {
+  .brand span {
+    font-size: 24px;
+    letter-spacing: 0;
+  }
+  nav {
+    order: 3;
+    flex: 1 0 100%;
+    overflow-x: auto;
+  }
+  nav a {
+    flex: 0 0 auto;
+  }
+  .plan-header,
+  .day-panel {
+    padding: 22px 18px;
+  }
+  .day-nav button {
+    flex: 1 1 100%;
+  }
+  .task-card .button,
+  .task-card p {
+    margin-left: 0;
+  }
+}

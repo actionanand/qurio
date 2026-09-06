@@ -21,6 +21,7 @@ export class HomePage {
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly titles = signal<Record<string, string>>({});
+  readonly subjects = computed(() => this.content.getSubjectsForGrade(this.preferences.grade()));
   readonly items = computed(() => this.content.itemsFor(this.preferences.grade(), this.subject()));
   readonly activeSubject = computed(() => this.content.manifest()?.subjects.find(s => s.id === this.subject()));
   constructor() {
@@ -53,7 +54,7 @@ export class HomePage {
       const manifest = await this.content.loadManifest();
       if (!manifest.grades.some(g => g.id === this.preferences.grade()) && manifest.grades[0])
         this.preferences.grade.set(manifest.grades[0].id);
-      this.subject.set(manifest.subjects[0]?.id ?? '');
+      this.subject.set(this.content.getSubjectsForGrade(this.preferences.grade())[0]?.id ?? '');
     } catch {
       this.error.set(true);
     } finally {

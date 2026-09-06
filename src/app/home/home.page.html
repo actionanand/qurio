@@ -32,7 +32,7 @@
   </ion-select>
 </div>
 <div class="subject-grid">
-  @for (entry of manifest.subjects; track entry.id) {
+  @for (entry of subjects(); track entry.id) {
   <button
     class="subject-card"
     [class.selected]="subject() === entry.id"

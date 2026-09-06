@@ -74,6 +74,7 @@ export class QuizSession {
     const result: Attempt = {
       id: crypto.randomUUID(),
       quizId: this.quiz.id,
+      title: this.quiz.setLabel ? this.quiz.title + ' - ' + this.quiz.setLabel : this.quiz.title,
       total,
       correct,
       wrong: answered - correct,

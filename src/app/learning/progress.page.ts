@@ -30,7 +30,7 @@ import { ProgressService } from '../core/progress.service';
       @for (attempt of progress.attempts(); track attempt.id) {
         <a class="content-card" [routerLink]="['/content', attempt.quizId]"
           ><div>
-            <h3>{{ titles()[attempt.quizId] || i.t('quiz') }}</h3>
+            <h3>{{ titles()[attempt.quizId] || attempt.title || i.t('quiz') }}</h3>
             <p class="muted">
               {{ attempt.completedAt | date: 'medium' }} · {{ attempt.languageUsed }} · {{ attempt.elapsedSeconds }}s
             </p>

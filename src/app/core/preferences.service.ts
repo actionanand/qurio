@@ -13,6 +13,7 @@ export class PreferencesService {
   readonly language = signal<Language>('en');
   readonly appearance = signal<Appearance>('system');
   readonly grade = signal(5);
+  readonly selectedExamPlanId = signal<string | null>(null);
   readonly storageUnavailable = signal(false);
   constructor() {
     const saved = readLocal('qurio.preferences');
@@ -22,6 +23,8 @@ export class PreferencesService {
       if ('appearance' in saved && ['light', 'dark', 'system'].includes(String(saved.appearance)))
         this.appearance.set(saved.appearance as Appearance);
       if ('grade' in saved && typeof saved.grade === 'number') this.grade.set(saved.grade);
+      if ('selectedExamPlanId' in saved && typeof saved.selectedExamPlanId === 'string')
+        this.selectedExamPlanId.set(saved.selectedExamPlanId);
     }
     effect(onCleanup => {
       const appearance = this.appearance();
@@ -38,7 +41,12 @@ export class PreferencesService {
       try {
         localStorage.setItem(
           'qurio.preferences',
-          JSON.stringify({ language: this.language(), appearance, grade: this.grade() }),
+          JSON.stringify({
+            language: this.language(),
+            appearance,
+            grade: this.grade(),
+            selectedExamPlanId: this.selectedExamPlanId(),
+          }),
         );
       } catch {
         this.storageUnavailable.set(true);
