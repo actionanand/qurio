@@ -1,2 +1,0 @@
-import {o,c as ct,a0 as a,T as Ta}from'./chunk-Bu3_U-m2.js';import {m as m$1}from'./chunk-D_Ufu2vR.js';import'./main-E3TL6GSB.js';var g={parse:o(async e=>{let t=await m$1("info",e);ct.debug(t);},"parse")},m={version:"11.17.2"},v=o(()=>m.version,"getVersion"),d={getVersion:v},f=o((e,t,p)=>{ct.debug(`rendering info diagram
-`+e);let o=a(t);Ta(o,100,400,true),o.append("g").append("text").attr("x",100).attr("y",40).attr("class","version").attr("font-size",32).style("text-anchor","middle").text(`v${p}`);},"draw"),c={draw:f},w={parser:g,db:d,renderer:c};export{w as diagram};
