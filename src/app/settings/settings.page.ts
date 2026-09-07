@@ -5,9 +5,11 @@ import { I18nService } from '../core/i18n.service';
 import { AdminService } from '../services/admin.service';
 import { AuthService } from '../services/auth.service';
 import { IconComponent } from '../shared/icon.component';
+import { DeviceSettingsComponent } from '../shared/device-settings.component';
+import { SnackbarService } from '../core/snackbar.service';
 
 @Component({
-  imports: [ReactiveFormsModule, IonButton, IonInput, IonSpinner, IconComponent],
+  imports: [ReactiveFormsModule, IonButton, IonInput, IonSpinner, IconComponent, DeviceSettingsComponent],
   template: `
     <section class="settings-page">
       <div class="section-heading">
@@ -64,11 +66,13 @@ import { IconComponent } from '../shared/icon.component';
           </ion-button>
         </section>
       </div>
+      <app-device-settings />
     </section>
   `,
 })
 export class SettingsPage {
   private readonly admin = inject(AdminService);
+  private readonly snackbar = inject(SnackbarService);
   readonly auth = inject(AuthService);
   readonly i = inject(I18nService);
   readonly profileBusy = signal(false);
@@ -102,9 +106,11 @@ export class SettingsPage {
       await this.admin.updateMyProfile(this.profileForm.getRawValue().displayName.trim());
       await this.auth.refreshProfile();
       this.profileMessage.set(this.i.t('profileUpdated'));
+      this.snackbar.show(this.i.t('profileUpdated'));
     } catch {
       this.profileFailed.set(true);
       this.profileMessage.set(this.i.t('error'));
+      this.snackbar.show(this.i.t('error'), 'error');
     } finally {
       this.profileBusy.set(false);
     }
@@ -120,9 +126,11 @@ export class SettingsPage {
       const result = await this.auth.resetPassword(email);
       if (result.error) throw result.error;
       this.resetMessage.set(this.i.t('resetEmailSent'));
+      this.snackbar.show(this.i.t('resetEmailSent'));
     } catch {
       this.resetFailed.set(true);
       this.resetMessage.set(this.i.t('unableToSendReset'));
+      this.snackbar.show(this.i.t('unableToSendReset'), 'error');
     } finally {
       this.resetBusy.set(false);
     }

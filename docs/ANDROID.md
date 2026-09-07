@@ -4,16 +4,16 @@ Qurio uses Capacitor 8 and GitHub Actions to package the Angular/Ionic client as
 
 ## Build files
 
-| File                                  | Purpose                                                                             |
-| ------------------------------------- | ----------------------------------------------------------------------------------- |
-| `capacitor.config.ts`                 | Qurio application ID, app name, web output, Android background, and splash behavior |
-| `android-version.json`                | Monotonic Android `versionCode` and public `versionName`                            |
-| `scripts/bump-android-version.js`     | Increments the version code and optionally the semantic version                     |
-| `scripts/patch-android.mjs`           | Applies the branded splash, system-bar themes, and R8 release optimization          |
-| `scripts/generate-keystore.mjs`       | Creates the long-lived Qurio PKCS12 release keystore                                |
-| `scripts/detect-keystore-format.mjs`  | Displays the format of a local keystore                                             |
-| `.github/workflows/android-build.yml` | Builds, signs, verifies, stores, and uploads the APK and AAB                        |
-| `src/assets/qurio.png`                | Canonical brand, launcher, splash, browser, and Play Store artwork                  |
+| File                                  | Purpose                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------ |
+| `capacitor.config.ts`                 | Qurio application ID, app name, web output, Android background, and splash behavior  |
+| `android-version.json`                | Monotonic Android `versionCode` and public `versionName`                             |
+| `scripts/bump-android-version.js`     | Increments the version code and optionally the semantic version                      |
+| `scripts/patch-android.mjs`           | Applies splash, deep links, reminders, biometric bridge, themes, and R8 optimization |
+| `scripts/generate-keystore.mjs`       | Creates the long-lived Qurio PKCS12 release keystore                                 |
+| `scripts/detect-keystore-format.mjs`  | Displays the format of a local keystore                                              |
+| `.github/workflows/android-build.yml` | Builds, signs, verifies, stores, and uploads the APK and AAB                         |
+| `src/assets/qurio.png`                | Canonical brand, launcher, splash, browser, and Play Store artwork                   |
 
 ## Required packages
 
@@ -50,6 +50,22 @@ The `android:sync` command builds the web application, runs Capacitor sync, and 
 ## App artwork
 
 `src/assets/qurio.png` is the single source for Qurio branding. CI scales it inside each launcher canvas to preserve safe space for Android icon masks. It also creates the native splash image and `releases/playstore-icon.png`. Replace that source file when the brand artwork changes; do not manually maintain generated Android image files.
+
+## Practice reminders and notification permission
+
+The Android app asks once for notification permission. Users can then enable or disable a weekly practice reminder from Settings; Admin and Owner accounts have the same device panel in Admin. The selected time and weekdays are stored on the device. Native alarms are rebuilt after reboot, app replacement, time changes, and timezone changes.
+
+The Android patch generates `QurioReminderReceiver`, the notification channel, required manifest permissions, and the monochrome notification icon. Run `npm run android:sync` after changing this behavior.
+
+## PIN, biometric unlock, and app links
+
+The optional PIN lock stores a salted PBKDF2 verifier in browser IndexedDB, scoped to the signed-in Qurio user. A fresh browser launch locks the web client. The Android app also locks after it enters the background.
+
+Android biometric unlock encrypts the PIN with an authenticated AES key in Android Keystore. Qurio never stores the raw PIN in web storage. A PIN remains the fallback if biometric authentication is unavailable or cancelled.
+
+Android browsers receive a small Open Qurio prompt. Its package name, Play Store URL, and `qurio://` deep-link base are defined in both environment files. `scripts/patch-android.mjs` registers the `qurio` scheme in the generated Android manifest. Chrome uses an `intent://` URL so an installed app opens directly and otherwise falls back to:
+
+`https://play.google.com/store/apps/details?id=com.actionanand.qurio.app`
 
 ## Versioning
 
