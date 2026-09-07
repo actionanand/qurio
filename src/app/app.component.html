@@ -25,9 +25,6 @@
             ><app-icon name="settings" /><span>{{ i.t('settings') }}</span></a
           >
         }
-        <button class="nav-signout" type="button" (click)="signOut()">
-          <app-icon name="logout" /><span>{{ i.t('signOut') }}</span>
-        </button>
       </nav>
     }
     <div class="preferences">
@@ -56,11 +53,6 @@
         <ion-select-option value="dark">{{ i.t('dark') }}</ion-select-option>
       </ion-select>
     </div>
-    @if (auth.approved()) {
-      <button class="desktop-signout" type="button" (click)="signOut()">
-        <app-icon name="logout" /><span>{{ i.t('signOut') }}</span>
-      </button>
-    }
   </header>
   <main id="main" tabindex="-1">
     @if (preferences.storageUnavailable() || progress.storageUnavailable()) {
@@ -68,4 +60,7 @@
     }
     <router-outlet />
   </main>
+  <app-install-app-banner />
+  <app-snackbar />
+  <app-lock />
 </ion-app>

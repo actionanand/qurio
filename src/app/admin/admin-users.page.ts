@@ -6,12 +6,23 @@ import { AdminService } from '../services/admin.service';
 import { AuthService } from '../services/auth.service';
 import type { UserProfile } from '../services/auth.models';
 import { IconComponent } from '../shared/icon.component';
+import { DeviceSettingsComponent } from '../shared/device-settings.component';
+import { SnackbarService } from '../core/snackbar.service';
 
 type UserFilter = 'pending' | 'unverified' | 'approved' | 'denied' | 'suspended' | 'all';
 type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | 'demote' | 'delete' | 'resend';
 
 @Component({
-  imports: [RouterLink, IonButton, IonSelect, IonSelectOption, IonSpinner, IonToggle, IconComponent],
+  imports: [
+    RouterLink,
+    IonButton,
+    IonSelect,
+    IonSelectOption,
+    IonSpinner,
+    IonToggle,
+    IconComponent,
+    DeviceSettingsComponent,
+  ],
   template: `
     <section class="admin-page">
       <div class="section-heading">
@@ -233,12 +244,14 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
           }
         </div>
       }
+      <app-device-settings />
     </section>
   `,
 })
 export class AdminUsersPage {
   private readonly admin = inject(AdminService);
   private readonly alerts = inject(AlertController);
+  private readonly snackbar = inject(SnackbarService);
   readonly auth = inject(AuthService);
   readonly i = inject(I18nService);
   readonly profiles = signal<UserProfile[]>([]);
@@ -311,6 +324,7 @@ export class AdminUsersPage {
       const reset = await this.auth.resetPassword(profile.email);
       if (reset.error) throw reset.error;
       this.statusMessage.set(this.i.t('resetEmailSent'));
+      this.snackbar.show(this.i.t('resetEmailSent'));
     } catch {
       this.error.set(this.i.t('unableToSendReset'));
     } finally {
@@ -324,6 +338,7 @@ export class AdminUsersPage {
     try {
       await this.admin.setAutoApproval(enabled);
       this.autoApproval.set(enabled);
+      this.snackbar.show(this.i.t('automaticApprovalUpdated'));
       await this.load();
     } catch {
       this.error.set(this.i.t('unableToChangeAutoApproval'));
@@ -393,6 +408,7 @@ export class AdminUsersPage {
       else if (action === 'demote') await this.admin.demote(profile.id, reason);
       else if (action === 'delete') await this.admin.deleteUser(profile.id, reason);
       else await this.admin.resendVerification(profile.id);
+      this.snackbar.show(this.i.t('accountActionCompleted'));
       await this.load();
     } catch (error) {
       this.error.set(this.safeActionError(error));
