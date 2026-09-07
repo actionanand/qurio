@@ -14,6 +14,7 @@ export class QuizSession {
   readonly selected = signal<string | null>(null);
   readonly answers = signal<Record<string, string>>({});
   readonly hintVisible = signal(false);
+  readonly hinted = signal<Record<string, boolean>>({});
   readonly remaining = signal(0);
   readonly started = signal(false);
   readonly result = signal<Attempt | null>(null);
@@ -52,6 +53,10 @@ export class QuizSession {
     if (!this.result() && !this.locked() && selected)
       this.answers.update(answers => ({ ...answers, [this.question().id]: selected }));
   }
+  toggleHint() {
+    this.hintVisible.update(visible => !visible);
+    if (this.hintVisible()) this.hinted.update(hints => ({ ...hints, [this.question().id]: true }));
+  }
   next() {
     if (!this.locked() || this.result()) return;
     this.tick();
@@ -85,6 +90,22 @@ export class QuizSession {
       completedAt: new Date().toISOString(),
       languageUsed: this.quiz.language,
       autoSubmitted,
+      startedAt: new Date(this.startedAt).toISOString(),
+      seriesId: this.quiz.seriesId,
+      quizVersion: this.quiz.version,
+      passingPercentage: this.quiz.passingPercentage,
+      answers: this.questions.map(question => {
+        const selected = this.answers()[question.id] ?? null;
+        return {
+          questionId: question.id,
+          selectedOptionId: selected,
+          correctOptionId: question.correctOption,
+          isCorrect: selected === question.correctOption,
+          hintUsed: !!this.hinted()[question.id],
+          timeSpentSeconds: null,
+          answeredAt: selected ? new Date().toISOString() : null,
+        };
+      }),
     };
     this.result.set(result);
     this.save(result);

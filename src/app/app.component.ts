@@ -9,6 +9,7 @@ import { PreferencesService } from './core/preferences.service';
 import type { Appearance } from './core/preferences.service';
 import type { Language } from './core/models';
 import { ProgressService } from './core/progress.service';
+import { AuthService } from './services/auth.service';
 @Component({
   selector: 'app-root',
   imports: [
@@ -24,19 +25,19 @@ import { ProgressService } from './core/progress.service';
   templateUrl: './app.component.html',
 })
 export class AppComponent {
+  private readonly router = inject(Router);
   readonly i = inject(I18nService);
   readonly preferences = inject(PreferencesService);
   readonly progress = inject(ProgressService);
+  readonly auth = inject(AuthService);
   constructor() {
-    inject(Router)
-      .events.pipe(takeUntilDestroyed(inject(DestroyRef)))
-      .subscribe(event => {
-        if (event instanceof NavigationEnd)
-          setTimeout(() => {
-            document.getElementById('main')?.focus();
-            document.getElementById('main')?.scrollTo(0, 0);
-          });
-      });
+    this.router.events.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe(event => {
+      if (event instanceof NavigationEnd)
+        setTimeout(() => {
+          document.getElementById('main')?.focus();
+          document.getElementById('main')?.scrollTo(0, 0);
+        });
+    });
   }
   language(value: unknown) {
     if (typeof value !== 'string') return;
@@ -45,5 +46,9 @@ export class AppComponent {
   appearance(value: unknown) {
     if (typeof value !== 'string') return;
     if (['light', 'dark', 'system'].includes(value)) this.preferences.appearance.set(value as Appearance);
+  }
+  async signOut() {
+    await this.auth.signOut();
+    await this.router.navigateByUrl('/auth/login');
   }
 }

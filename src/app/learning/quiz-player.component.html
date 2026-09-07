@@ -152,7 +152,7 @@
           <ion-button
             class="hint-button"
             fill="solid"
-            (click)="s.hintVisible.set(!s.hintVisible())"
+            (click)="s.toggleHint()"
             [attr.aria-expanded]="s.hintVisible()"
             aria-controls="question-hint"
             ><app-icon name="bulb" />{{ i.t('hint') }}</ion-button
