@@ -6,6 +6,7 @@
   </div>
   <div class="hero-art" aria-hidden="true"><app-icon name="book" /></div>
 </section>
+
 @if (loading()) {
 <p role="status">{{ i.t('loading') }}</p>
 } @else if (error()) {
@@ -22,47 +23,136 @@
     [label]="i.t('grade')"
     labelPlacement="stacked"
     [value]="preferences.grade()"
-    (ionChange)="grade($event.detail.value)">
+    (ionChange)="selectGrade($event.detail.value)">
     <app-icon slot="start" name="grade" />
     @for (grade of manifest.grades; track grade.id) {
-    <ion-select-option [value]="grade.id"
-      >{{ grade.label[preferences.language()] || grade.label.en }}</ion-select-option
-    >
+    <ion-select-option [value]="grade.id">
+      {{ grade.label[preferences.language()] || grade.label.en }}
+    </ion-select-option>
     }
   </ion-select>
 </div>
+
 <div class="subject-grid">
   @for (entry of subjects(); track entry.id) {
   <button
     class="subject-card"
     [class.selected]="subject() === entry.id"
     [attr.aria-pressed]="subject() === entry.id"
-    (click)="subject.set(entry.id)">
+    (click)="selectSubject(entry.id)">
     <span class="subject-symbol"><app-icon [name]="subjectIcon(entry.id)" /></span>
-    <strong>{{ entry.label[preferences.language()] || entry.label.en }}</strong><app-icon name="chevron" />
+    <strong>{{ entry.label[preferences.language()] || entry.label.en }}</strong>
+    <app-icon name="chevron" />
   </button>
   }
 </div>
-@if (activeSubject(); as active) {
-<div class="section-heading">
-  <h2>{{ active.label[preferences.language()] || active.label.en }}</h2>
-  <span class="muted">{{ items().length }} · {{ i.t('learn') }}</span>
-</div>
-}
-<div class="content-list">
-  @for (item of items(); track item.id) {
-  <a class="content-card" [routerLink]="['/content', item.id]">
-    <span class="type-icon"><app-icon [name]="item.type" /></span>
-    <div class="card-copy">
-      <span class="eyebrow">{{ i.t(item.type) }}</span>
-      <h3>{{ title(item) }}</h3>
+
+@if (activeSubject()) {
+<section class="learning-browser" aria-labelledby="learning-browser-title">
+  <div class="browser-heading">
+    <div>
+      <span class="eyebrow">{{ i.t('learn') }}</span>
+      <h2 id="learning-browser-title">{{ content.getSubjectLabel(subject(), preferences.language()) }}</h2>
     </div>
-    @if (progress.completed().includes(item.id)) {
-    <span class="chip"><app-icon name="correct" />{{ i.t('completed') }}</span> }
-    <app-icon class="arrow" name="chevron" />
-  </a>
-  } @empty {
-  <p class="panel">{{ i.t('empty') }}</p>
+    <div class="browser-counts muted">
+      <span>{{ studyMaterials().length }} {{ i.t('studyMaterialCount') }}</span>
+      <span>{{ quizOptions().length }} {{ i.t('quizCount') }}</span>
+    </div>
+  </div>
+
+  @if (syllabus(); as syllabusItem) {
+  <article class="selection-card syllabus-card">
+    <span class="type-icon"><app-icon name="syllabus" /></span>
+    <div class="card-copy">
+      <span class="eyebrow">{{ i.t('syllabus') }}</span>
+      <h3>{{ displayInfo(syllabusItem).title }}</h3>
+    </div>
+    <a class="button secondary" [routerLink]="['/content', syllabusItem.id]">
+      {{ i.t('viewSyllabus') }}<app-icon name="forward" />
+    </a>
+  </article>
   }
-</div>
-}
+
+  <div class="selection-grid">
+    <section class="selection-column" aria-labelledby="study-material-heading">
+      <div class="selection-title">
+        <span class="step-number">1</span>
+        <div>
+          <h3 id="study-material-heading">{{ i.t('studyMaterial') }}</h3>
+          <p>{{ i.t('selectStudyMaterial') }}</p>
+        </div>
+      </div>
+      @if (studyMaterials().length) {
+      <ion-select
+        class="content-select"
+        interface="popover"
+        [label]="i.t('studyMaterial')"
+        labelPlacement="stacked"
+        [value]="selectedStudyMaterialId()"
+        (ionChange)="selectStudyMaterial($event.detail.value)">
+        <ion-select-option [value]="allStudyMaterials">{{ i.t('allStudyMaterials') }}</ion-select-option>
+        @for (item of studyMaterials(); track item.id) {
+        <ion-select-option [value]="item.id">{{ displayInfo(item).title }}</ion-select-option>
+        }
+      </ion-select>
+      } @else {
+      <p class="empty-message">{{ i.t('noStudyMaterials') }}</p>
+      } @if (selectedStudyMaterial(); as item) {
+      <article class="selection-card compact-card">
+        <div class="card-copy">
+          <h4>{{ displayInfo(item).title }}</h4>
+          <p class="muted">
+            @if (item.difficulty) { <span>{{ item.difficulty }}</span> } @if (item.estimatedMinutes) {
+            <span>{{ item.estimatedMinutes }} {{ i.t('min') }}</span> }
+          </p>
+        </div>
+        @if (progress.completed().includes(item.id)) {
+        <span class="chip"><app-icon name="correct" />{{ i.t('completed') }}</span>
+        }
+        <a class="button" [routerLink]="['/content', item.id]">
+          {{ i.t('openStudyMaterial') }}<app-icon name="forward" />
+        </a>
+      </article>
+      }
+    </section>
+
+    <section class="selection-column" aria-labelledby="quiz-selection-heading">
+      <div class="selection-title">
+        <span class="step-number">2</span>
+        <div>
+          <h3 id="quiz-selection-heading">{{ i.t('quizSelection') }}</h3>
+          <p>{{ i.t('selectQuiz') }}</p>
+        </div>
+      </div>
+      @if (quizOptions().length) {
+      <ion-select
+        class="content-select"
+        interface="popover"
+        [label]="i.t('quizSelection')"
+        labelPlacement="stacked"
+        [placeholder]="i.t('selectQuiz')"
+        [value]="selectedQuizId()"
+        (ionChange)="selectQuiz($event.detail.value)">
+        @for (item of quizOptions(); track item.id) {
+        <ion-select-option [value]="item.id">{{ quizLabel(item) }}</ion-select-option>
+        }
+      </ion-select>
+      } @else {
+      <p class="empty-message">{{ i.t('noQuizzes') }}</p>
+      } @if (selectedQuiz(); as item) {
+      <article class="selection-card compact-card">
+        <div class="card-copy">
+          <h4>{{ quizLabel(item) }}</h4>
+          <p class="muted">
+            @if (item.difficulty) { <span>{{ item.difficulty }}</span> } @if (item.questionCount) {
+            <span>{{ item.questionCount }} {{ i.t('questions') }}</span> } @if (item.timeLimitSeconds) {
+            <span>{{ item.timeLimitSeconds / 60 }} {{ i.t('min') }}</span> }
+          </p>
+        </div>
+        <a class="button" [routerLink]="['/content', item.id]"> {{ i.t('startQuiz') }}<app-icon name="forward" /> </a>
+      </article>
+      }
+    </section>
+  </div>
+</section>
+} }

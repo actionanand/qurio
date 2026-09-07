@@ -48,27 +48,76 @@ export class ContentService {
     return this.manifest()?.grades ?? [];
   }
 
-  getSubjectsForGrade(grade: number): SubjectDefinition[] {
+  getSubjectsForGrade(grade: number, curriculum?: string | null): SubjectDefinition[] {
     const manifest = this.manifest();
     if (!manifest) return [];
+    const selectedCurriculum = this.resolveCurriculum(curriculum);
     const subjectIds = new Set(
       manifest.items
-        .filter(item => item.grade === grade && ['syllabus', 'note', 'quiz'].includes(item.type) && item.subject)
+        .filter(
+          item =>
+            item.grade === grade &&
+            this.matchesCurriculum(item, selectedCurriculum) &&
+            ['syllabus', 'note', 'quiz'].includes(item.type) &&
+            item.subject,
+        )
         .map(item => item.subject as string),
     );
     return manifest.subjects.filter(subject => subjectIds.has(subject.id));
   }
 
-  getSyllabusForSubject(grade: number, subject: string): ManifestItem[] {
-    return this.itemsFor(grade, subject).filter(item => item.type === 'syllabus');
+  getSyllabusForSubject(grade: number, subject: string, curriculum?: string | null): ManifestItem[] {
+    return this.itemsFor(grade, subject, curriculum).filter(item => item.type === 'syllabus');
   }
 
-  getNotesForSubject(grade: number, subject: string): ManifestItem[] {
-    return this.itemsFor(grade, subject).filter(item => item.type === 'note');
+  getStudyMaterialsForSubject(
+    grade: number,
+    subject: string,
+    curriculum?: string | null,
+    language?: Language,
+  ): ManifestItem[] {
+    return this.itemsFor(grade, subject, curriculum)
+      .filter(item => item.type === 'note')
+      .sort((a, b) => this.compareStudyMaterials(a, b, language));
   }
 
-  getQuizzesForSubject(grade: number, subject: string): ManifestItem[] {
-    return this.sortQuizSets(this.itemsFor(grade, subject).filter(item => item.type === 'quiz'));
+  getNotesForSubject(grade: number, subject: string, curriculum?: string | null): ManifestItem[] {
+    return this.getStudyMaterialsForSubject(grade, subject, curriculum);
+  }
+
+  getQuizzesForSubject(
+    grade: number,
+    subject: string,
+    curriculum?: string | null,
+    language?: Language,
+  ): ManifestItem[] {
+    const notes = this.getStudyMaterialsForSubject(grade, subject, curriculum, language);
+    const noteOrder = new Map(notes.map((note, index) => [note.id, index]));
+    return this.itemsFor(grade, subject, curriculum)
+      .filter(item => item.type === 'quiz')
+      .sort((a, b) => this.compareSubjectQuizzes(a, b, noteOrder, language));
+  }
+
+  getQuizzesForStudyMaterial(noteId: string, language?: Language): ManifestItem[] {
+    const note = this.getItemById(noteId);
+    if (!note || note.type !== 'note' || note.grade === undefined || !note.subject) return [];
+    return this.getQuizzesForSubject(note.grade, note.subject, note.curriculum, language)
+      .filter(quiz => this.isQuizRelatedToStudyMaterial(quiz, note))
+      .sort((a, b) => this.compareQuizSets(a, b, language));
+  }
+
+  getQuizzesForSelection(
+    grade: number,
+    subject: string,
+    selectedStudyMaterialId: string,
+    curriculum?: string | null,
+    language?: Language,
+  ): ManifestItem[] {
+    if (selectedStudyMaterialId === '__all__') return this.getQuizzesForSubject(grade, subject, curriculum, language);
+    const note = this.getItemById(selectedStudyMaterialId);
+    if (!note || note.grade !== grade || note.subject !== subject) return [];
+    if (!this.matchesCurriculum(note, this.resolveCurriculum(curriculum))) return [];
+    return this.getQuizzesForStudyMaterial(selectedStudyMaterialId, language);
   }
 
   getQuizzesForTopic(grade: number, subject: string, chapter: string, topic: string): ManifestItem[] {
@@ -130,10 +179,13 @@ export class ContentService {
     return this.manifest()?.items.find(item => item.id === id);
   }
 
-  itemsFor(grade: number, subject: string): ManifestItem[] {
-    return (this.manifest()?.items.filter(item => item.grade === grade && item.subject === subject) ?? []).sort(
-      compareItems,
-    );
+  itemsFor(grade: number, subject: string, curriculum?: string | null): ManifestItem[] {
+    const selectedCurriculum = this.resolveCurriculum(curriculum);
+    const scopedItems =
+      this.manifest()?.items.filter(
+        item => item.grade === grade && item.subject === subject && this.matchesCurriculum(item, selectedCurriculum),
+      ) ?? [];
+    return [...new Map(scopedItems.map(item => [item.id, item])).values()].sort(compareItems);
   }
 
   getExams(): ExamDefinition[] {
@@ -228,6 +280,84 @@ export class ContentService {
 
   private sortQuizSets(items: ManifestItem[]): ManifestItem[] {
     return [...items].sort((a, b) => (a.setNumber ?? 1) - (b.setNumber ?? 1) || a.id.localeCompare(b.id));
+  }
+
+  private resolveCurriculum(curriculum?: string | null): string {
+    return curriculum ?? this.manifest()?.curricula.find(entry => entry.isDefault)?.id ?? 'general';
+  }
+
+  private matchesCurriculum(item: ManifestItem, curriculum: string): boolean {
+    return (item.curriculum ?? 'general') === curriculum;
+  }
+
+  private isQuizRelatedToStudyMaterial(quiz: ManifestItem, note: ManifestItem): boolean {
+    if (quiz.sourceNoteIds?.includes(note.id)) return true;
+    return (
+      (quiz.curriculum ?? 'general') === (note.curriculum ?? 'general') &&
+      quiz.grade === note.grade &&
+      quiz.subject === note.subject &&
+      !!quiz.chapter &&
+      quiz.chapter === note.chapter &&
+      !!quiz.topic &&
+      quiz.topic === note.topic
+    );
+  }
+
+  private compareStudyMaterials(a: ManifestItem, b: ManifestItem, language?: Language): number {
+    return (
+      (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER) ||
+      (a.chapter ?? '').localeCompare(b.chapter ?? '') ||
+      (a.topic ?? '').localeCompare(b.topic ?? '') ||
+      this.displayTitle(a, language).localeCompare(this.displayTitle(b, language)) ||
+      a.id.localeCompare(b.id)
+    );
+  }
+
+  private compareQuizSets(a: ManifestItem, b: ManifestItem, language?: Language): number {
+    return (
+      (a.seriesId ?? '').localeCompare(b.seriesId ?? '') ||
+      (a.setNumber ?? Number.MAX_SAFE_INTEGER) - (b.setNumber ?? Number.MAX_SAFE_INTEGER) ||
+      this.displayTitle(a, language).localeCompare(this.displayTitle(b, language)) ||
+      a.id.localeCompare(b.id)
+    );
+  }
+
+  private compareSubjectQuizzes(
+    a: ManifestItem,
+    b: ManifestItem,
+    noteOrder: Map<string, number>,
+    language?: Language,
+  ): number {
+    const relatedOrder = (item: ManifestItem) => {
+      const explicit = item.sourceNoteIds?.map(id => noteOrder.get(id)).find(value => value !== undefined);
+      if (explicit !== undefined) return explicit;
+      const fallback = [...noteOrder.keys()].find(id => {
+        const note = this.getItemById(id);
+        return !!note && this.isQuizRelatedToStudyMaterial(item, note);
+      });
+      return fallback === undefined ? Number.MAX_SAFE_INTEGER : (noteOrder.get(fallback) ?? Number.MAX_SAFE_INTEGER);
+    };
+    return (
+      relatedOrder(a) - relatedOrder(b) ||
+      (a.chapter ?? '').localeCompare(b.chapter ?? '') ||
+      (a.topic ?? '').localeCompare(b.topic ?? '') ||
+      this.compareQuizSets(a, b, language)
+    );
+  }
+
+  private displayTitle(item: ManifestItem, language?: Language): string {
+    const manifest = this.manifest();
+    if (!manifest) return readableContentFallback(item) ?? item.id;
+    return (
+      resolveLocalizedText(
+        item.title,
+        language ?? manifest.defaultLanguage,
+        manifest.fallbackLanguage,
+        manifest.defaultLanguage,
+      ) ??
+      readableContentFallback(item) ??
+      item.id
+    );
   }
 }
 
