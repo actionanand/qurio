@@ -168,6 +168,21 @@ export interface Attempt {
   completedAt: string;
   languageUsed: Language;
   autoSubmitted: boolean;
+  startedAt?: string;
+  seriesId?: string;
+  quizVersion?: number;
+  contentVersion?: string;
+  passingPercentage?: number;
+  answers?: AttemptAnswer[];
+}
+export interface AttemptAnswer {
+  questionId: string;
+  selectedOptionId: string | null;
+  correctOptionId: string;
+  isCorrect: boolean;
+  hintUsed: boolean;
+  timeSpentSeconds: number | null;
+  answeredAt: string | null;
 }
 export interface ExamPlan {
   schemaVersion: 1;

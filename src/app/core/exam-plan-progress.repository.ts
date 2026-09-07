@@ -1,5 +1,6 @@
-import { Service, signal } from '@angular/core';
+import { Service, effect, inject, signal } from '@angular/core';
 import { readLocal } from './preferences.service';
+import { LearnerStateRepository } from '../services/learner-state.repository';
 
 export interface ExamPlanProgress {
   completedTaskKeys: string[];
@@ -9,6 +10,7 @@ const key = 'qurio.examPlanProgress.v1';
 
 @Service()
 export class ExamPlanProgressRepository {
+  private readonly remote = inject(LearnerStateRepository);
   private readonly state = signal<Record<string, ExamPlanProgress>>({});
   readonly storageUnavailable = signal(false);
 
@@ -32,6 +34,23 @@ export class ExamPlanProgressRepository {
       }
       this.state.set(next);
     }
+    let loadedUser: string | null = null;
+    effect(() => {
+      const userId = this.remote.approvedUserId();
+      if (!userId || userId === loadedUser) return;
+      loadedUser = userId;
+      void this.remote.loadExamTaskKeys().then(rows => {
+        this.state.update(state => {
+          const next = { ...state };
+          for (const row of rows) {
+            const current = next[row.planId]?.completedTaskKeys ?? [];
+            next[row.planId] = { completedTaskKeys: [...new Set([...current, row.taskKey])] };
+          }
+          return next;
+        });
+        this.save();
+      });
+    });
   }
 
   loadPlanProgress(planId: string): ExamPlanProgress {
@@ -42,7 +61,7 @@ export class ExamPlanProgressRepository {
     return this.loadPlanProgress(planId).completedTaskKeys.includes(taskKey);
   }
 
-  setTaskCompleted(planId: string, _date: string, taskKey: string, completed: boolean) {
+  setTaskCompleted(planId: string, date: string, taskKey: string, completed: boolean) {
     this.state.update(state => {
       const current = state[planId]?.completedTaskKeys ?? [];
       const completedTaskKeys = completed
@@ -51,6 +70,8 @@ export class ExamPlanProgressRepository {
       return { ...state, [planId]: { completedTaskKeys } };
     });
     this.save();
+    const taskType = taskKey.split(':').at(-2) ?? 'plan';
+    void this.remote.saveExamTask(planId, date, taskKey, taskType, completed);
   }
 
   clearPlanProgress(planId: string) {

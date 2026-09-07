@@ -1,5 +1,7 @@
 # Qurio
 
+Authentication, administrator approval, database migrations, Edge Functions, Owner bootstrap, and end-to-end test instructions are documented in [docs/supabase-auth.md](docs/supabase-auth.md). Practical Dashboard and SQL examples are in [docs/supabase-query-guide.md](docs/supabase-query-guide.md).
+
 This project was generated using Ionic CLI version 7.2.1 for Angular version 22.0.1 with Ionic Angular version 9.0.0.
 
 ## Development server

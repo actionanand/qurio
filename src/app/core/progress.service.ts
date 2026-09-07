@@ -1,8 +1,12 @@
-import { Service, computed, signal } from '@angular/core';
+import { Service, computed, effect, inject, signal } from '@angular/core';
 import type { Attempt } from './models';
 import { readLocal } from './preferences.service';
+import { LearnerStateRepository } from '../services/learner-state.repository';
+import { PreferencesService } from './preferences.service';
 @Service()
 export class ProgressService {
+  private readonly remote = inject(LearnerStateRepository);
+  private readonly preferences = inject(PreferencesService);
   readonly completed = signal<string[]>([]);
   readonly attempts = signal<Attempt[]>([]);
   readonly storageUnavailable = signal(false);
@@ -29,14 +33,30 @@ export class ProgressService {
           ),
         );
     }
+    let loadedUser: string | null = null;
+    effect(() => {
+      const userId = this.remote.approvedUserId();
+      if (!userId || userId === loadedUser) return;
+      loadedUser = userId;
+      void Promise.all([this.remote.loadCompletedContent(), this.remote.loadAttempts()]).then(([ids, attempts]) => {
+        this.completed.update(local => [...new Set([...local, ...ids])]);
+        this.attempts.update(local => {
+          const merged = new Map([...attempts, ...local].map(attempt => [attempt.id, attempt]));
+          return [...merged.values()].sort((a, b) => b.completedAt.localeCompare(a.completedAt));
+        });
+        this.save();
+      });
+    });
   }
   complete(id: string) {
     this.completed.update(ids => (ids.includes(id) ? ids : [...ids, id]));
     this.save();
+    void this.remote.saveStudyProgress(id, this.preferences.language(), true);
   }
   record(attempt: Attempt) {
     this.attempts.update(attempts => (attempts.some(a => a.id === attempt.id) ? attempts : [attempt, ...attempts]));
     this.save();
+    void this.remote.submitAttempt(attempt);
   }
   private save() {
     try {

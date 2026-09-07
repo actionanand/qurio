@@ -14,8 +14,8 @@
     "precommit:dummy": "echo 'This is a dummy print message!'",
     "precommit": "run-s format:fix lint",
     "format:fix": "pretty-quick --staged",
-    "format:check": "prettier --config ./.prettierrc --list-different \"src/{app,environments,assets}/**/*{.ts,.js,.json,.css,.scss}\"",
-    "format:all": "prettier --config ./.prettierrc --write \"src/{app,environments,assets}/**/*{.ts,.js,.json,.css,.scss}\"",
+    "format:check": "prettier --config ./.prettierrc.yml --list-different \"src/{app,environments,assets}/**/*{.ts,.js,.json,.css,.scss}\"",
+    "format:all": "prettier --config ./.prettierrc.yml --write \"src/{app,environments,assets}/**/*{.ts,.js,.json,.css,.scss}\"",
     "lint": "ng lint",
     "prepare": "husky"
   },
@@ -34,6 +34,7 @@
     "@capacitor/status-bar": "8.0.3",
     "@ionic/angular": "^9.0.0",
     "@jsverse/transloco": "^8.4.0",
+    "@supabase/supabase-js": "^2.115.0",
     "chart.js": "^4.5.1",
     "ionicons": "^8.1.0",
     "js-yaml": "^5.4.1",

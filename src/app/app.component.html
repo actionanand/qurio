@@ -5,17 +5,24 @@
       <img ngSrc="assets/qurio.png" width="52" height="52" alt="" priority />
       <span>Qurio</span>
     </a>
-    <nav aria-label="Qurio">
-      <a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page"
-        ><app-icon name="book" />{{ i.t('learn') }}</a
-      >
-      <a routerLink="/exam-prep" routerLinkActive="active" ariaCurrentWhenActive="page"
-        ><app-icon name="exam" />{{ i.t('examPrep') }}</a
-      >
-      <a routerLink="/progress" routerLinkActive="active" ariaCurrentWhenActive="page"
-        ><app-icon name="progress" />{{ i.t('progress') }}</a
-      >
-    </nav>
+    @if (auth.approved()) {
+      <nav aria-label="Qurio">
+        <a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page"
+          ><app-icon name="book" />{{ i.t('learn') }}</a
+        >
+        <a routerLink="/exam-prep" routerLinkActive="active" ariaCurrentWhenActive="page"
+          ><app-icon name="exam" />{{ i.t('examPrep') }}</a
+        >
+        <a routerLink="/progress" routerLinkActive="active" ariaCurrentWhenActive="page"
+          ><app-icon name="progress" />{{ i.t('progress') }}</a
+        >
+        @if (auth.isStaff()) {
+          <a routerLink="/admin/users" routerLinkActive="active" ariaCurrentWhenActive="page"
+            ><app-icon name="people" />Admin</a
+          >
+        }
+      </nav>
+    }
     <div class="preferences">
       <ion-select
         interface="popover"
@@ -29,6 +36,11 @@
         <ion-select-option value="ta">தமிழ்</ion-select-option>
         <ion-select-option value="hi">हिन्दी</ion-select-option>
       </ion-select>
+      @if (auth.authenticated()) {
+        <button class="header-signout" type="button" (click)="signOut()" aria-label="Sign out">
+          <app-icon name="logout" />
+        </button>
+      }
       <ion-select
         interface="popover"
         [label]="i.t('appearance')"

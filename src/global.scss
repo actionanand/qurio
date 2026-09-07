@@ -360,6 +360,276 @@ h3 {
   background: var(--soft);
   color: var(--accent);
 }
+.notice.error,
+.form-message.error {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.header-signout {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--muted);
+}
+.auth-page {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 210px);
+  padding: 36px 0;
+}
+.auth-card {
+  width: min(100%, 470px);
+  padding: 40px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: 0 22px 60px #102c1e10;
+  text-align: center;
+}
+.auth-card-wide {
+  width: min(100%, 620px);
+}
+.auth-card h1 {
+  margin: 10px 0;
+  font-size: clamp(27px, 4vw, 36px);
+}
+.auth-intro,
+.auth-status-card > p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+.auth-mark {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 18px;
+  border-radius: 18px;
+  background: var(--soft);
+  color: var(--accent);
+  font-size: 28px;
+}
+.auth-card form {
+  display: grid;
+  gap: 17px;
+  margin: 26px 0 16px;
+  text-align: left;
+}
+.auth-card ion-input {
+  --border-color: var(--line);
+  --highlight-color-focused: var(--accent);
+}
+.auth-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.auth-card ion-button {
+  min-height: 46px;
+}
+.auth-card ion-spinner {
+  width: 20px;
+  height: 20px;
+}
+.auth-link {
+  display: inline-block;
+  min-height: 44px;
+  padding: 12px;
+  color: var(--accent);
+  font-weight: 650;
+}
+.auth-switch {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+.auth-switch a {
+  color: var(--accent);
+  font-weight: 700;
+}
+.form-message {
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: var(--soft);
+  color: var(--accent);
+  font-size: 14px;
+  text-align: left;
+}
+.approval-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 24px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--soft);
+  color: var(--muted);
+  text-align: left;
+  line-height: 1.5;
+}
+.approval-note app-icon {
+  color: var(--accent);
+  margin-top: 2px;
+}
+.verification-state {
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--soft);
+}
+.admin-page {
+  padding-bottom: 50px;
+}
+.admin-toolbar,
+.audit-filters {
+  display: flex;
+  align-items: end;
+  gap: 14px;
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+.admin-toolbar ion-select,
+.audit-filters ion-select,
+.audit-filters ion-input {
+  min-width: 190px;
+}
+.admin-count {
+  display: grid;
+  margin-left: auto;
+  text-align: right;
+}
+.admin-count strong {
+  color: var(--accent);
+  font-size: 20px;
+}
+.admin-count span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 180px;
+  color: var(--muted);
+}
+.account-list,
+.audit-list {
+  display: grid;
+  gap: 14px;
+}
+.account-card,
+.audit-card {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+.account-main {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+.account-main h2,
+.audit-card h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+.account-main p,
+.audit-card p {
+  margin: 5px 0;
+  color: var(--muted);
+}
+.account-avatar {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  background: var(--soft);
+  color: var(--accent);
+  font-weight: 750;
+}
+.account-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+.status-badge {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.status-badge.approved {
+  color: var(--accent);
+}
+.status-badge.denied,
+.status-badge.suspended {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+.status-badge.role {
+  color: var(--accent);
+}
+.account-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  margin: 18px 0;
+  padding: 14px 0;
+  border-block: 1px solid var(--line);
+}
+.account-details div {
+  display: grid;
+  gap: 3px;
+}
+.account-details dt {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.account-details dd {
+  margin: 0;
+  font-size: 13px;
+}
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.audit-filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+}
+.audit-card > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+.audit-card time {
+  color: var(--muted);
+  font-size: 12px;
+}
 .panel {
   padding: 36px;
   margin: 20px 0;
@@ -845,6 +1115,31 @@ blockquote {
   }
   .history-card .attempt-score {
     margin-left: 54px;
+  }
+  .auth-page {
+    padding: 12px 0;
+  }
+  .auth-card {
+    padding: 28px 20px;
+    border-radius: 18px;
+  }
+  .auth-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .admin-count {
+    margin-left: 0;
+    text-align: left;
+  }
+  .audit-filters {
+    grid-template-columns: 1fr;
+  }
+  .audit-filters ion-select,
+  .audit-filters ion-input {
+    min-width: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {
