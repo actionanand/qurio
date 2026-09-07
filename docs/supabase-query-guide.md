@@ -32,6 +32,7 @@ If a learner table is missing, apply `003_qurio_learner_state.sql` before using 
 | `auth.users`                     | Supabase identities, verification, and sign-in state  | Parent account record                  |
 | `public.profiles`                | Qurio name, role, approval status, and status reason  | `id → auth.users.id`                   |
 | `public.account_audit_log`       | Permanent account and administrator action snapshots  | Intentionally survives user deletion   |
+| `public.app_settings`            | Owner-controlled application policies                 | Singleton automatic-approval setting   |
 | `public.user_settings`           | Language, theme, curriculum, grade, and selected plan | One row per user                       |
 | `public.study_progress`          | Reading/open/completion state by content ID           | One row per user and content ID        |
 | `public.quiz_attempts`           | One completed quiz result                             | Parent of attempt answers              |
@@ -341,12 +342,13 @@ order by tasks.plan_date desc, tasks.task_key;
 
 ## Row counts
 
-After all three migrations exist, this query gives a quick database summary:
+After all migrations exist, this query gives a quick database summary:
 
 ```sql
 select 'auth.users' as object_name, count(*) as rows from auth.users
 union all select 'profiles', count(*) from public.profiles
 union all select 'account_audit_log', count(*) from public.account_audit_log
+union all select 'app_settings', count(*) from public.app_settings
 union all select 'user_settings', count(*) from public.user_settings
 union all select 'study_progress', count(*) from public.study_progress
 union all select 'quiz_attempts', count(*) from public.quiz_attempts

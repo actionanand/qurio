@@ -1,4 +1,4 @@
-<ion-app>
+<ion-app [class.has-bottom-nav]="auth.approved()">
   <a class="skip-link" href="#main">{{ i.t('skip') }}</a>
   <header class="app-header">
     <a class="brand" routerLink="/home" aria-label="Qurio">
@@ -6,21 +6,28 @@
       <span>Qurio</span>
     </a>
     @if (auth.approved()) {
-      <nav aria-label="Qurio">
+      <nav class="primary-nav" aria-label="Qurio">
         <a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page"
-          ><app-icon name="book" />{{ i.t('learn') }}</a
+          ><app-icon name="book" /><span>{{ i.t('learn') }}</span></a
         >
         <a routerLink="/exam-prep" routerLinkActive="active" ariaCurrentWhenActive="page"
-          ><app-icon name="exam" />{{ i.t('examPrep') }}</a
+          ><app-icon name="exam" /><span>{{ i.t('examPrep') }}</span></a
         >
         <a routerLink="/progress" routerLinkActive="active" ariaCurrentWhenActive="page"
-          ><app-icon name="progress" />{{ i.t('progress') }}</a
+          ><app-icon name="progress" /><span>{{ i.t('progress') }}</span></a
         >
         @if (auth.isStaff()) {
           <a routerLink="/admin/users" routerLinkActive="active" ariaCurrentWhenActive="page"
-            ><app-icon name="people" />Admin</a
+            ><app-icon name="people" /><span>{{ i.t('admin') }}</span></a
+          >
+        } @else {
+          <a routerLink="/settings" routerLinkActive="active" ariaCurrentWhenActive="page"
+            ><app-icon name="settings" /><span>{{ i.t('settings') }}</span></a
           >
         }
+        <button class="nav-signout" type="button" (click)="signOut()">
+          <app-icon name="logout" /><span>{{ i.t('signOut') }}</span>
+        </button>
       </nav>
     }
     <div class="preferences">
@@ -36,11 +43,6 @@
         <ion-select-option value="ta">தமிழ்</ion-select-option>
         <ion-select-option value="hi">हिन्दी</ion-select-option>
       </ion-select>
-      @if (auth.authenticated()) {
-        <button class="header-signout" type="button" (click)="signOut()" aria-label="Sign out">
-          <app-icon name="logout" />
-        </button>
-      }
       <ion-select
         interface="popover"
         [label]="i.t('appearance')"
@@ -54,6 +56,11 @@
         <ion-select-option value="dark">{{ i.t('dark') }}</ion-select-option>
       </ion-select>
     </div>
+    @if (auth.approved()) {
+      <button class="desktop-signout" type="button" (click)="signOut()">
+        <app-icon name="logout" /><span>{{ i.t('signOut') }}</span>
+      </button>
+    }
   </header>
   <main id="main" tabindex="-1">
     @if (preferences.storageUnavailable() || progress.storageUnavailable()) {

@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonButton, IonSpinner } from '@ionic/angular';
+import { I18nService } from '../core/i18n.service';
 import { AuthService } from '../services/auth.service';
 import type { AccountStatus } from '../services/auth.models';
 import { IconComponent } from '../shared/icon.component';
@@ -13,48 +14,60 @@ import { IconComponent } from '../shared/icon.component';
         <div class="auth-mark">
           <app-icon [name]="status === 'pending' ? 'time' : status === 'denied' ? 'close' : 'warning'" />
         </div>
-        <p class="eyebrow">Account status</p>
+        <p class="eyebrow">{{ i.t('accountStatus') }}</p>
         <h1>{{ title }}</h1>
         <p>{{ description }}</p>
         @if (auth.profile()?.status_reason) {
           <div class="approval-note">
-            <span><strong>Reason:</strong> {{ auth.profile()?.status_reason }}</span>
+            <span
+              ><strong>{{ i.t('reason') }}:</strong> {{ auth.profile()?.status_reason }}</span
+            >
           </div>
         }
         @if (status === 'pending') {
           <p class="verification-state">
-            Email: <strong>{{ auth.emailVerified() ? 'Verified' : 'Not yet verified' }}</strong>
+            {{ i.t('email') }}:
+            <strong>{{ auth.emailVerified() ? i.t('emailVerified') : i.t('notYetVerified') }}</strong>
           </p>
           <ion-button [disabled]="busy()" (click)="refresh()">
             @if (busy()) {
               <ion-spinner name="crescent" />
             } @else {
-              Refresh status
+              {{ i.t('refreshStatus') }}
             }
           </ion-button>
         }
-        <ion-button fill="clear" color="medium" [disabled]="busy()" (click)="signOut()">Sign out</ion-button>
+        <ion-button fill="clear" color="medium" [disabled]="busy()" (click)="signOut()">{{
+          i.t('signOut')
+        }}</ion-button>
       </article>
     </section>
   `,
 })
 export class AccountStatusPage {
   readonly auth = inject(AuthService);
+  readonly i = inject(I18nService);
   private readonly router = inject(Router);
   readonly busy = signal(false);
   readonly status = inject(ActivatedRoute).snapshot.data['status'] as AccountStatus;
-  readonly title =
-    this.status === 'pending'
-      ? 'Waiting for approval'
-      : this.status === 'denied'
-        ? 'Account not approved'
-        : 'Account access suspended';
-  readonly description =
-    this.status === 'pending'
-      ? 'Your account is registered. You can enter Qurio after email verification and administrator approval.'
-      : this.status === 'denied'
-        ? 'This Qurio account was not approved.'
-        : 'Access to this Qurio account has been suspended.';
+  get title() {
+    return this.i.t(
+      this.status === 'pending'
+        ? 'waitingForApproval'
+        : this.status === 'denied'
+          ? 'accountNotApproved'
+          : 'accountSuspended',
+    );
+  }
+  get description() {
+    return this.i.t(
+      this.status === 'pending'
+        ? 'pendingAccountIntro'
+        : this.status === 'denied'
+          ? 'deniedAccountIntro'
+          : 'suspendedAccountIntro',
+    );
+  }
   async refresh() {
     this.busy.set(true);
     const profile = await this.auth.refreshProfile();

@@ -8,12 +8,33 @@ import { SupabaseService } from './supabase.service';
 
 describe('AuthService', () => {
   const signUp = vi.fn(async () => ({ data: { user: null, session: null }, error: null }));
+  const resetPasswordForEmail = vi.fn(async () => ({ data: {}, error: null }));
+  const exchangeCodeForSession = vi.fn(async () => ({
+    data: { session: { user: { id: 'recovered-user' } } as Session },
+    error: null,
+  }));
+  const getSession = vi.fn(async (): Promise<{ data: { session: Session | null }; error: null }> => ({
+    data: { session: null },
+    error: null,
+  }));
   const client = {
     auth: {
       onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
-      getSession: vi.fn(async () => ({ data: { session: null }, error: null })),
+      getSession,
       signUp,
+      resetPasswordForEmail,
+      exchangeCodeForSession,
     },
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          maybeSingle: vi.fn(async () => ({
+            data: { ...profile('approved', '2026-09-07T00:00:00Z'), id: 'recovered-user' },
+            error: null,
+          })),
+        })),
+      })),
+    })),
   };
 
   beforeEach(() => {
@@ -43,6 +64,28 @@ describe('AuthService', () => {
         emailRedirectTo: `${environment.appUrl}/auth/callback`,
       },
     });
+  });
+
+  it('marks password reset links as recovery routes', async () => {
+    const auth = TestBed.inject(AuthService);
+    await auth.resetPassword('learner@example.test');
+    expect(resetPasswordForEmail).toHaveBeenCalledWith('learner@example.test', {
+      redirectTo: `${environment.appUrl}/auth/update-password?recovery=1`,
+    });
+  });
+
+  it('exchanges a recovery code even when another session already exists', async () => {
+    const auth = TestBed.inject(AuthService);
+    await auth.waitUntilInitialized();
+    window.history.replaceState({}, '', '/auth/update-password?recovery=1&code=recovery-code');
+    getSession.mockResolvedValueOnce({
+      data: { session: { user: { id: 'previous-user' } } as Session },
+      error: null,
+    });
+    await auth.handleCallback({ code: 'recovery-code' });
+    expect(exchangeCodeForSession).toHaveBeenCalledWith('recovery-code');
+    expect(auth.user()?.id).toBe('recovered-user');
+    window.history.replaceState({}, '', '/');
   });
 });
 

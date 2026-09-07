@@ -67,6 +67,11 @@ export const routes: Routes = [
     loadComponent: () => import('./learning/progress.page').then(m => m.ProgressPage),
   },
   {
+    path: 'settings',
+    canActivate: [approvedUserGuard],
+    loadComponent: () => import('./settings/settings.page').then(m => m.SettingsPage),
+  },
+  {
     path: 'admin/users',
     canActivate: [staffGuard],
     loadComponent: () => import('./admin/admin-users.page').then(m => m.AdminUsersPage),

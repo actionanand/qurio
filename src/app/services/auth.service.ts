@@ -86,7 +86,7 @@ export class AuthService {
 
   resetPassword(email: string) {
     return this.supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${environment.appUrl}/auth/update-password`,
+      redirectTo: `${environment.appUrl}/auth/update-password?recovery=1`,
     });
   }
 
@@ -104,7 +104,7 @@ export class AuthService {
       const verified = await this.supabase.auth.verifyOtp({ token_hash: params.tokenHash, type: params.type });
       if (verified.error) throw verified.error;
       data = verified.data;
-    } else if (!data.session && params.code) {
+    } else if (params.code && (!data.session || currentUrlContainsCode(params.code))) {
       const exchanged = await this.supabase.auth.exchangeCodeForSession(params.code);
       if (exchanged.error) throw exchanged.error;
       data = exchanged.data;
@@ -154,4 +154,8 @@ export class AuthService {
 
 function isEmailOtpType(value: string | null | undefined): value is EmailOtpType {
   return ['signup', 'invite', 'magiclink', 'recovery', 'email_change', 'email'].includes(value ?? '');
+}
+
+function currentUrlContainsCode(code: string): boolean {
+  return typeof window !== 'undefined' && new URL(window.location.href).searchParams.get('code') === code;
 }

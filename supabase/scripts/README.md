@@ -13,7 +13,7 @@ These scripts are read-only references intended for the Supabase Dashboard **SQL
 ## Recommended order
 
 1. Run `00_database_inventory.sql` to see existing database objects.
-2. Apply migrations `001`, `002`, and `003` in order if they are not already applied.
+2. Apply migrations `001`, `002`, `003`, and `004` in order if they are not already applied.
 3. Run `06_post_migration_check.sql` and confirm that no expected objects are missing.
 4. Register and verify the intended Owner account.
 5. Replace `<OWNER_EMAIL>` in `supabase/manual/bootstrap-owner.sql` and run it once.

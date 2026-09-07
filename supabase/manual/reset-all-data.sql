@@ -10,6 +10,16 @@ delete from auth.users;
 -- Audit UUIDs intentionally have no Auth foreign keys, so clear them explicitly.
 truncate table public.account_audit_log restart identity;
 
+-- Restore the default manual-approval policy when migration 004 exists.
+do $$
+begin
+  if to_regclass('public.app_settings') is not null then
+    update public.app_settings
+    set auto_approve_verified_users=false,updated_by=null,updated_at=now()
+    where id=true;
+  end if;
+end $$;
+
 commit;
 
 -- Both values must be zero after the transaction.

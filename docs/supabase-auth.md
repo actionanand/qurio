@@ -21,6 +21,7 @@ The migrations are ordered and non-destructive:
 1. `001_qurio_auth_foundation.sql` mirrors the foundation already applied live.
 2. `002_qurio_admin_control.sql` adds secure account-management RPCs.
 3. `003_qurio_learner_state.sql` adds approved-user settings, progress, attempts, answers, plan tasks, and wrong-question statistics.
+4. `004_qurio_auto_approval.sql` adds the Owner-controlled automatic-approval policy and its audit trail.
 
 Review the SQL, then apply it with the Supabase CLI linked to the correct project:
 
@@ -77,6 +78,12 @@ If login returns `email_not_confirmed`, run `supabase/scripts/08_email_verificat
 
 The login page routes `email_not_confirmed` users to the verification page, where they can request a fresh link.
 
+## Password recovery
+
+Users can request a reset from `/auth/forgot-password` or their Settings page. Staff can send the same recovery email for a known account from the Admin Control Center. The client always shows a generic success message so the public recovery form does not reveal whether an email is registered.
+
+Recovery redirects use `/auth/update-password?recovery=1`. The update page stays disabled until Supabase has consumed or explicitly exchanged the recovery credential and established the corresponding authenticated session. A code that remains in the URL is exchanged even when the browser already has another session, preventing that unrelated session from being used for the reset. After a successful password update, Qurio signs out and returns to the login page.
+
 ## Reset all accounts and user data
 
 For a deliberate clean start, run `supabase/manual/reset-all-data.sql` in the Supabase SQL Editor. It deletes every `auth.users` row, which cascades to profiles and learner-state rows, and then clears the deliberately independent audit log. It preserves the database schema, migrations, functions, triggers, grants, and RLS policies. Verify that the final query returns zero Auth users and zero audit events before registering and bootstrapping a new Owner.
@@ -96,6 +103,7 @@ For production, change `QURIO_APP_URL` to the real Qurio production origin. Supa
 ## Account behavior
 
 - Owner: manages users and Admins, sees the audit log, and cannot delete/demote itself in the normal UI.
+- Owner can enable automatic approval. Enabling it approves existing verified pending users and automatically approves future users when email verification completes. Disabling it restores manual approval without revoking existing approvals.
 - Admin: manages normal users, including unverified signups, but cannot alter Owner/Admin accounts.
 - User: reads its own profile and, once approved, its own learner state.
 - `pending`, `denied`, and `suspended` sessions are routed to their status page and rejected by learner RLS.

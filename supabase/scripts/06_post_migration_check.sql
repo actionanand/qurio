@@ -1,9 +1,10 @@
--- Read-only check for the objects expected after migrations 001-003.
+-- Read-only check for the objects expected after migrations 001-004.
 
 with expected(object_name, object_kind) as (
   values
     ('profiles', 'table'),
     ('account_audit_log', 'table'),
+    ('app_settings', 'table'),
     ('user_settings', 'table'),
     ('study_progress', 'table'),
     ('quiz_attempts', 'table'),
@@ -31,6 +32,7 @@ with expected(function_name) as (
     ('admin_reactivate_user'),
     ('owner_promote_admin'),
     ('owner_demote_admin'),
+    ('owner_set_auto_approval'),
     ('update_my_profile'),
     ('submit_quiz_attempt')
 ), actual as (

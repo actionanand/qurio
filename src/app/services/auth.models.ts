@@ -33,3 +33,9 @@ export interface AuditEvent {
   reason: string | null;
   created_at: string;
 }
+
+export interface AppSettings {
+  auto_approve_verified_users: boolean;
+  updated_by: string | null;
+  updated_at: string;
+}

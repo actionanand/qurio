@@ -1,5 +1,5 @@
 import { Service, inject } from '@angular/core';
-import type { AuditEvent, UserProfile } from './auth.models';
+import type { AppSettings, AuditEvent, UserProfile } from './auth.models';
 import { SupabaseService } from './supabase.service';
 
 @Service()
@@ -20,6 +20,21 @@ export class AdminService {
       .limit(500);
     if (error) throw error;
     return (data ?? []) as AuditEvent[];
+  }
+
+  async getAppSettings(): Promise<AppSettings> {
+    const { data, error } = await this.supabase
+      .from('app_settings')
+      .select('auto_approve_verified_users,updated_by,updated_at')
+      .eq('id', true)
+      .single();
+    if (error) throw error;
+    return data as AppSettings;
+  }
+
+  async setAutoApproval(enabled: boolean) {
+    const { error } = await this.supabase.rpc('owner_set_auto_approval', { enabled });
+    if (error) throw error;
   }
 
   async approve(id: string) {
@@ -60,7 +75,7 @@ export class AdminService {
     if (data && typeof data === 'object' && 'error' in data) throw new Error(String(data.error));
   }
 
-  private async rpc(name: string, params: Record<string, string>) {
+  private async rpc(name: string, params: Record<string, unknown>) {
     const { error } = await this.supabase.rpc(name, params);
     if (error) throw error;
   }
