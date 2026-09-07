@@ -1,0 +1,173 @@
+@if (session(); as s) {
+  <section class="panel quiz-panel" [attr.lang]="quiz().language">
+    <header class="quiz-heading">
+      <span class="eyebrow"><app-icon name="quiz" />{{ i.t('quiz') }}</span>
+      <h1>{{ quiz().title }}</h1>
+    </header>
+    @if (!s.started()) {
+      <p class="quiz-description">{{ quiz().description }}</p>
+      <div class="stats">
+        <div>
+          <app-icon name="book" /><strong>{{ s.questions.length }}</strong
+          >{{ i.t('questions') }}
+        </div>
+        <div>
+          <app-icon name="quiz" /><strong>{{ format(quiz().timeLimitSeconds) }}</strong
+          >{{ i.t('time') }}
+        </div>
+        <div>
+          <app-icon name="trophy" /><strong>{{ quiz().passingPercentage }}%</strong>{{ i.t('passMark') }}
+        </div>
+      </div>
+      <p class="practice-info">{{ i.t('practiceInfo') }}</p>
+      <div class="quiz-actions">
+        <ion-button (click)="start(s)"><app-icon name="play" />{{ i.t('start') }}</ion-button>
+      </div>
+    } @else if (s.result(); as result) {
+      <div class="result-heading" role="status">
+        <app-icon [name]="result.passed ? 'trophy' : 'book'" />
+        <h2 id="results-heading" tabindex="-1">{{ i.t('results') }}</h2>
+        <p class="score">{{ result.scorePercentage | number: '1.0-0' }}%</p>
+        <h3>{{ i.t(result.passed ? 'passed' : 'keepGoing') }}</h3>
+        @if (result.autoSubmitted) {
+          <p class="notice">{{ i.t('timeout') }}</p>
+        }
+      </div>
+      <div class="stats">
+        <div class="correct-stat">
+          <strong>{{ result.correct }}/{{ result.total }}</strong
+          >{{ i.t('correct') }}
+        </div>
+        <div class="wrong-stat">
+          <strong>{{ result.wrong }}</strong
+          >{{ i.t('wrong') }}
+        </div>
+        <div>
+          <strong>{{ result.unanswered }}</strong
+          >{{ i.t('unanswered') }}
+        </div>
+        <div>
+          <strong>{{ format(result.elapsedSeconds) }}</strong
+          >{{ i.t('elapsed') }}
+        </div>
+      </div>
+      <h2>{{ i.t('review') }}</h2>
+      @for (question of s.questions; track question.id) {
+        <details
+          class="answer-review"
+          [class.review-wrong]="s.answers()[question.id] && s.answers()[question.id] !== question.correctOption">
+          <summary>
+            <app-icon [name]="s.answers()[question.id] === question.correctOption ? 'correct' : 'wrong'" />{{
+              question.question
+            }}
+          </summary>
+          @if (!s.answers()[question.id]) {
+            <p>{{ i.t('unanswered') }}</p>
+          }
+          @for (option of question.options; track option.id) {
+            @if (s.answers()[question.id] === option.id) {
+              <p>
+                <strong>{{ i.t('selected') }}:</strong> {{ option.text }}
+              </p>
+              <p>{{ option.feedback }}</p>
+            }
+            @if (question.correctOption === option.id) {
+              <p class="correct-answer">
+                <strong>{{ i.t('answer') }}:</strong> {{ option.text }}
+              </p>
+            }
+          }
+          <p>{{ question.explanation }}</p>
+        </details>
+      }
+    } @else {
+      <div class="quiz-status">
+        <span
+          >{{ i.t('questions') }} <strong>{{ s.index() + 1 }} / {{ s.questions.length }}</strong></span
+        >
+        <span class="timer" [class.warning]="s.remaining() <= 30" role="timer" [attr.aria-label]="i.t('time')"
+          ><app-icon name="quiz" />{{ format(s.remaining()) }}</span
+        >
+      </div>
+      <progress [value]="s.index()" [max]="s.questions.length" [attr.aria-label]="i.t('progress')"></progress>
+      <h2 id="question-heading" tabindex="-1">{{ s.question().question }}</h2>
+      <fieldset [disabled]="s.locked()">
+        <legend class="sr-only">{{ s.question().question }}</legend>
+        @for (option of s.question().options; track option.id) {
+          <label
+            class="option"
+            [class.chosen]="s.selected() === option.id"
+            [class.answer-correct]="s.locked() && option.id === s.question().correctOption"
+            [class.answer-wrong]="s.locked() && s.selected() === option.id && option.id !== s.question().correctOption">
+            <input
+              type="radio"
+              name="answer"
+              [value]="option.id"
+              [checked]="s.selected() === option.id"
+              (change)="s.select(option.id)" />
+            <span>{{ option.text }}</span>
+            @if (s.locked() && option.id === s.question().correctOption) {
+              <app-icon class="answer-state" name="correct" /><span class="sr-only">{{ i.t('correct') }}</span>
+            }
+            @if (s.locked() && s.selected() === option.id && option.id !== s.question().correctOption) {
+              <app-icon class="answer-state" name="wrong" /><span class="sr-only">{{ i.t('wrong') }}</span>
+            }
+          </label>
+        }
+      </fieldset>
+      @if (s.hintVisible()) {
+        <aside id="question-hint" class="hint-panel">
+          <app-icon name="bulb" />
+          <p>{{ s.question().hint }}</p>
+        </aside>
+      }
+      @if (s.locked()) {
+        <div class="feedback" [class.incorrect]="s.selected() !== s.question().correctOption" role="status">
+          <h3>
+            <app-icon [name]="s.selected() === s.question().correctOption ? 'correct' : 'wrong'" />{{
+              i.t(s.selected() === s.question().correctOption ? 'correct' : 'wrong')
+            }}
+          </h3>
+          @for (option of s.question().options; track option.id) {
+            @if (option.id === s.selected()) {
+              <p>
+                <strong>{{ i.t('selected') }}:</strong> {{ option.text }}
+              </p>
+              <p>{{ option.feedback }}</p>
+            }
+            @if (option.id === s.question().correctOption && s.selected() !== option.id) {
+              <p class="correct-answer">
+                <strong>{{ i.t('answer') }}:</strong> {{ option.text }}
+              </p>
+            }
+          }
+          <div class="explanation">
+            <strong>{{ i.t('explanation') }}</strong>
+            <p>{{ s.question().explanation }}</p>
+          </div>
+        </div>
+      }
+      <footer class="quiz-actions">
+        @if (s.question().hint) {
+          <ion-button
+            class="hint-button"
+            fill="solid"
+            (click)="s.hintVisible.set(!s.hintVisible())"
+            [attr.aria-expanded]="s.hintVisible()"
+            aria-controls="question-hint"
+            ><app-icon name="bulb" />{{ i.t('hint') }}</ion-button
+          >
+        }
+        @if (s.locked()) {
+          <ion-button class="primary-action" (click)="next(s)"
+            >{{ i.t(s.index() === s.questions.length - 1 ? 'finish' : 'next') }}<app-icon name="forward"
+          /></ion-button>
+        } @else {
+          <ion-button class="primary-action" (click)="s.check()" [disabled]="!s.selected()"
+            ><app-icon name="correct" />{{ i.t('check') }}</ion-button
+          >
+        }
+      </footer>
+    }
+  </section>
+}

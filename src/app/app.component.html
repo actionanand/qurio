@@ -1,3 +1,52 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <a class="skip-link" href="#main">{{ i.t('skip') }}</a>
+  <header class="app-header">
+    <a class="brand" routerLink="/home" aria-label="Qurio">
+      <img ngSrc="assets/qurio.png" width="52" height="52" alt="" priority />
+      <span>Qurio</span>
+    </a>
+    <nav aria-label="Qurio">
+      <a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page"
+        ><app-icon name="book" />{{ i.t('learn') }}</a
+      >
+      <a routerLink="/exam-prep" routerLinkActive="active" ariaCurrentWhenActive="page"
+        ><app-icon name="exam" />{{ i.t('examPrep') }}</a
+      >
+      <a routerLink="/progress" routerLinkActive="active" ariaCurrentWhenActive="page"
+        ><app-icon name="progress" />{{ i.t('progress') }}</a
+      >
+    </nav>
+    <div class="preferences">
+      <ion-select
+        interface="popover"
+        [label]="i.t('language')"
+        labelPlacement="stacked"
+        [value]="preferences.language()"
+        (ionChange)="language($event.detail.value)"
+        [interfaceOptions]="{ cssClass: 'qurio-select-popover' }">
+        <app-icon slot="start" name="language" />
+        <ion-select-option value="en">English</ion-select-option>
+        <ion-select-option value="ta">தமிழ்</ion-select-option>
+        <ion-select-option value="hi">हिन्दी</ion-select-option>
+      </ion-select>
+      <ion-select
+        interface="popover"
+        [label]="i.t('appearance')"
+        labelPlacement="stacked"
+        [value]="preferences.appearance()"
+        (ionChange)="appearance($event.detail.value)"
+        [interfaceOptions]="{ cssClass: 'qurio-select-popover' }">
+        <app-icon slot="start" name="appearance" />
+        <ion-select-option value="system">{{ i.t('system') }}</ion-select-option>
+        <ion-select-option value="light">{{ i.t('light') }}</ion-select-option>
+        <ion-select-option value="dark">{{ i.t('dark') }}</ion-select-option>
+      </ion-select>
+    </div>
+  </header>
+  <main id="main" tabindex="-1">
+    @if (preferences.storageUnavailable() || progress.storageUnavailable()) {
+      <p class="notice" role="status">{{ i.t('storage') }}</p>
+    }
+    <router-outlet />
+  </main>
 </ion-app>

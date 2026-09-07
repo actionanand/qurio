@@ -1,4 +1,4 @@
-# qurio
+# Qurio
 
 This project was generated using Ionic CLI version 7.2.1 for Angular version 22.0.1 with Ionic Angular version 9.0.0.
 
@@ -10,7 +10,7 @@ To start a local development server, run:
 npm run develop
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:3037/`. The application will automatically reload whenever you modify any of the source files.
+Once the server is running, open your browser and navigate to `http://localhost:3039/`. The application will automatically reload whenever you modify any of the source files.
 
 ## Cloning Guide
 
