@@ -96,13 +96,13 @@ export class ContentPage {
       this.relatedQuizzes.set([]);
       void this.content
         .resolve(id, language)
-        .then(async result => {
+        .then(result => {
           if (cancelled) return;
           this.fallback.set(result.fallbackUsed);
           if ('attributes' in result.content) {
             this.document.set(result.content);
             if (result.content.attributes.type === 'note')
-              await this.loadRelated(result.content.attributes.quizIds ?? [], language, cancelled);
+              this.loadRelated(result.content.attributes.id, result.content.attributes.quizIds ?? [], language);
           } else this.quiz.set(result.content);
         })
         .catch(() => {
@@ -117,32 +117,30 @@ export class ContentPage {
     });
   }
 
-  private async loadRelated(
-    ids: string[],
+  private loadRelated(
+    noteId: string,
+    legacyQuizIds: string[],
     language: ReturnType<I18nService['preferences']['language']>,
-    cancelled: boolean,
   ) {
-    const items = ids
-      .map(id => this.content.getItemById(id))
-      .filter((item): item is ManifestItem => !!item && item.type === 'quiz')
-      .sort((a, b) => (a.setNumber ?? 1) - (b.setNumber ?? 1) || a.id.localeCompare(b.id));
-    const resolved = await Promise.all(
-      items.map(async item => {
-        try {
-          const result = await this.content.resolve(item.id, language);
-          if ('attributes' in result.content) return null;
-          return {
-            item,
-            title: result.content.title,
-            label:
-              result.content.setLabel ??
-              `${this.i.t('practiceSets')} ${item.setNumber ?? result.content.setNumber ?? 1}`,
-          };
-        } catch {
-          return null;
-        }
+    const related = this.content.getQuizzesForStudyMaterial(noteId, language);
+    const items = [
+      ...related,
+      ...legacyQuizIds
+        .map(id => this.content.getItemById(id))
+        .filter(
+          (item): item is ManifestItem =>
+            !!item && item.type === 'quiz' && !related.some(entry => entry.id === item.id),
+        ),
+    ].sort((a, b) => (a.setNumber ?? 1) - (b.setNumber ?? 1) || a.id.localeCompare(b.id));
+    this.relatedQuizzes.set(
+      items.map(item => {
+        const info = this.content.getContentDisplayInfo(item.id, language);
+        return {
+          item,
+          title: info.title,
+          label: info.setLabel ?? `${this.i.t('practiceSets')} ${item.setNumber ?? 1}`,
+        };
       }),
     );
-    if (!cancelled) this.relatedQuizzes.set(resolved.filter((item): item is RelatedQuiz => !!item));
   }
 }
