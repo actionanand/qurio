@@ -140,6 +140,8 @@ await ensureThemes(nightStylesPath, true);
 let proguard = existsSync(proguardPath) ? await readFile(proguardPath, 'utf8') : '';
 if (!proguard.includes('@android.webkit.JavascriptInterface <methods>'))
   proguard += `\n# Qurio native bridge methods called by the WebView.\n-keepclassmembers class * {\n    @android.webkit.JavascriptInterface <methods>;\n}\n`;
+if (!proguard.includes('Qurio keeps Capacitor plugin metadata'))
+  proguard += `\n# Qurio keeps Capacitor plugin metadata used through runtime reflection.\n# Without these attributes, release R8 builds can remove Local Notifications\n# permission annotations and crash while checking notification permission.\n-keepattributes RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations,AnnotationDefault\n-keep @com.getcapacitor.annotation.CapacitorPlugin class * { *; }\n-keepclassmembers class * {\n    @com.getcapacitor.annotation.PluginMethod <methods>;\n    @com.getcapacitor.annotation.PermissionCallback <methods>;\n    @com.getcapacitor.annotation.ActivityCallback <methods>;\n}\n`;
 await writeFile(proguardPath, proguard, 'utf8');
 
 await mkdir(javaDirectory, { recursive: true });
