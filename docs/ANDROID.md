@@ -61,11 +61,11 @@ The `android:sync` command builds the web application, runs Capacitor sync, and 
 
 ## Practice reminders and notification permission
 
-After an approved learner's first native Android launch, Qurio shows its own explanation once and requests the system notification permission only when the learner chooses **Allow notifications**. Selecting **Not now** does not cause repeated prompts; Settings remains available for retrying later.
+On the first native Android launch, Qurio shows its own explanation once and requests the system notification permission only when the user chooses **Allow notifications**. Selecting **Not now** does not cause repeated prompts; Settings remains available for retrying later.
 
 Users enable a weekly reminder and select a local time and weekdays in Settings. Qurio uses the application convention `1=Monday` through `7=Sunday`; `ReminderService` translates those values to the notification plugin's weekday enum. Preferences sync through `public.user_settings`, while permission and scheduled notifications stay on that Android device. The plugin schedules one recurring notification per selected day with deterministic IDs 7401–7407, cancelling that range before every reschedule.
 
-The official Local Notifications plugin owns notification permission, persistence, and reboot handling. The Android patch supplies the monochrome `ic_stat_qurio` asset and does not generate a competing alarm receiver. Run `npm run android:sync` after changing notification configuration.
+The Android bridge checks and requests notification permission after Qurio's explanatory popup, avoiding a release-only Capacitor permission-reflection crash. The official Local Notifications plugin continues to own scheduling, persistence, delivery, and reboot handling. The Android patch supplies the monochrome `ic_stat_qurio` asset and does not generate a competing alarm receiver. Run `npm run android:sync` after changing notification configuration.
 
 ## PIN, biometric unlock, and app links
 
@@ -98,7 +98,7 @@ Android builds run only from the `main-android` branch:
 - Manual workflow dispatch works only when the selected ref is `main-android`.
 - CI runs `npm ci` and lint, then builds the production Angular client.
 - CI recreates and patches `android/`, applies minimum SDK 24 and target SDK 36, and builds an APK and AAB.
-- Release files use names such as `releases/Qurio-1-0-0.apk` and `releases/Qurio-1-0-0.aab`.
+- Release files include both version name and version code, such as `releases/Qurio-1-0-0-3.apk` and `releases/Qurio-1-0-0-3.aab`.
 - Missing or invalid signing secrets produce `-unsigned.apk` and `-unsigned.aab` fallbacks.
 - R8/resource shrinking is enabled and `Qurio-<version>-mapping.txt` is retained for Play Console deobfuscation.
 - `playstore-icon.png`, APK, AAB, and mapping files are committed under `releases/` and uploaded as a 30-day Actions artifact.

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { AlertController, IonButton, IonInput, IonSpinner, IonToggle } from '@ionic/angular';
 import { I18nService, type MessageKey } from '../core/i18n.service';
+import { NotificationPromptService } from '../core/notification-prompt.service';
 import { ReminderService } from '../core/reminder.service';
 import { SecurityService } from '../core/security.service';
 import { SnackbarService } from '../core/snackbar.service';
@@ -198,6 +199,7 @@ export class DeviceSettingsComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly preferences = inject(PreferencesService);
+  private readonly notificationPrompt = inject(NotificationPromptService);
   readonly busy = signal(false);
   readonly signingOut = signal(false);
   readonly weekdays: { value: number; short: MessageKey; name: MessageKey }[] = [
@@ -232,7 +234,7 @@ export class DeviceSettingsComponent {
       } else if (!this.reminders.native) {
         this.snackbar.show(this.i.t('androidReminderOnly'), 'info');
       } else {
-        const granted = this.reminders.permissionGranted() || (await this.reminders.requestPermission());
+        const granted = this.reminders.permissionGranted() || (await this.notificationPrompt.requestWithExplanation());
         const next = { ...this.reminders.settings(), enabled: true };
         const saved = granted && (await this.reminders.update(next));
         if (saved) this.preferences.setReminder(next);
