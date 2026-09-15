@@ -184,6 +184,39 @@ export interface AttemptAnswer {
   timeSpentSeconds: number | null;
   answeredAt: string | null;
 }
+export interface Bookmark {
+  contentId: string;
+  resourceType: 'note' | 'quiz';
+  createdAt: string;
+}
+export interface LearningSummary {
+  lessonsStarted: number;
+  lessonsCompleted: number;
+  quizAttempts: number;
+  uniqueQuizzesAttempted: number;
+  questionsAnswered: number;
+  correctAnswers: number;
+  wrongAnswers: number;
+  unansweredAnswers: number;
+  averageScore: number;
+  bestScore: number;
+}
+export type LeaderboardScope = 'all' | 'grade' | 'subject' | 'topic';
+export interface LeaderboardQuery {
+  scope: LeaderboardScope;
+  grade?: number;
+  subject?: string;
+  topic?: string;
+}
+export interface LeaderboardRow {
+  rank: number;
+  displayName: string;
+  points: number;
+  averageScore: number;
+  quizzesCompleted: number;
+  correctAnswers: number;
+  isCurrentUser: boolean;
+}
 export interface ExamPlan {
   schemaVersion: 1;
   id: string;

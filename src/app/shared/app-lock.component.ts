@@ -2,8 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonButton, IonInput, IonSpinner } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { I18nService } from '../core/i18n.service';
 import { SecurityService } from '../core/security.service';
+import { AuthService } from '../services/auth.service';
 import { IconComponent } from './icon.component';
 
 @Component({
@@ -41,6 +43,9 @@ import { IconComponent } from './icon.component';
                 <app-icon name="fingerprint" />{{ i.t('unlockWithBiometric') }}
               </ion-button>
             }
+            <ion-button expand="block" fill="clear" type="button" [disabled]="busy()" (click)="signOut()">
+              <app-icon name="logout" />{{ i.t('signOutOrSwitch') }}
+            </ion-button>
           </form>
         </section>
       </div>
@@ -96,6 +101,8 @@ import { IconComponent } from './icon.component';
 export class AppLockComponent {
   readonly security = inject(SecurityService);
   readonly i = inject(I18nService);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
   readonly busy = signal(false);
   readonly error = signal('');
   readonly pin = new FormControl('', {
@@ -119,6 +126,14 @@ export class AppLockComponent {
     this.busy.set(true);
     this.error.set('');
     if (!(await this.security.authenticateBiometric())) this.error.set(this.i.t('biometricFailed'));
+    this.busy.set(false);
+  }
+
+  async signOut(): Promise<void> {
+    if (this.busy()) return;
+    this.busy.set(true);
+    await this.auth.signOut();
+    await this.router.navigateByUrl('/auth/login');
     this.busy.set(false);
   }
 }

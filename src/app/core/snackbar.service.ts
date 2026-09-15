@@ -1,11 +1,20 @@
 import { Service, signal } from '@angular/core';
 
-export type SnackbarTone = 'error' | 'info' | 'success';
+export type SnackbarTone = 'error' | 'info' | 'success' | 'warning';
 
-interface SnackbarMessage {
+export interface SnackbarOptions {
+  tone?: SnackbarTone;
+  duration?: number;
+  actionText?: string;
+  action?: () => void;
+}
+
+export interface SnackbarMessage {
   id: number;
   message: string;
   tone: SnackbarTone;
+  actionText?: string;
+  action?: () => void;
 }
 
 @Service()
@@ -15,10 +24,23 @@ export class SnackbarService {
   private nextId = 0;
   readonly message = this.state.asReadonly();
 
-  show(message: string, tone: SnackbarTone = 'success', duration = 4200): void {
+  show(message: string, options?: SnackbarTone | SnackbarOptions, legacyDuration = 4200): void {
+    const normalized = typeof options === 'string' ? { tone: options, duration: legacyDuration } : (options ?? {});
     this.dismiss();
-    this.state.set({ id: ++this.nextId, message, tone });
-    this.timer = setTimeout(() => this.dismiss(), duration);
+    this.state.set({
+      id: ++this.nextId,
+      message,
+      tone: normalized.tone ?? 'success',
+      actionText: normalized.actionText,
+      action: normalized.action,
+    });
+    this.timer = setTimeout(() => this.dismiss(), normalized.duration ?? 4200);
+  }
+
+  runAction(): void {
+    const action = this.state()?.action;
+    this.dismiss();
+    action?.();
   }
 
   dismiss(): void {

@@ -27,18 +27,19 @@ If a learner table is missing, apply `003_qurio_learner_state.sql` before using 
 
 ## Qurio tables and views
 
-| Object                           | Purpose                                               | Important relationship                 |
-| -------------------------------- | ----------------------------------------------------- | -------------------------------------- |
-| `auth.users`                     | Supabase identities, verification, and sign-in state  | Parent account record                  |
-| `public.profiles`                | Qurio name, role, approval status, and status reason  | `id → auth.users.id`                   |
-| `public.account_audit_log`       | Permanent account and administrator action snapshots  | Intentionally survives user deletion   |
-| `public.app_settings`            | Owner-controlled application policies                 | Singleton automatic-approval setting   |
-| `public.user_settings`           | Language, theme, curriculum, grade, and selected plan | One row per user                       |
-| `public.study_progress`          | Reading/open/completion state by content ID           | One row per user and content ID        |
-| `public.quiz_attempts`           | One completed quiz result                             | Parent of attempt answers              |
-| `public.quiz_attempt_answers`    | Selected/correct option IDs and hint usage            | Child of `quiz_attempts`               |
-| `public.exam_plan_task_progress` | Completion of plan-only tasks                         | One row per user, plan, date, and task |
-| `public.wrong_question_stats`    | Derived wrong-answer totals                           | Security-invoker view over answer rows |
+| Object                           | Purpose                                                | Important relationship                 |
+| -------------------------------- | ------------------------------------------------------ | -------------------------------------- |
+| `auth.users`                     | Supabase identities, verification, and sign-in state   | Parent account record                  |
+| `public.profiles`                | Qurio name, role, approval status, and status reason   | `id → auth.users.id`                   |
+| `public.account_audit_log`       | Permanent account and administrator action snapshots   | Intentionally survives user deletion   |
+| `public.app_settings`            | Owner-controlled application policies                  | Singleton automatic-approval setting   |
+| `public.user_settings`           | Language, theme, learning selections, reminder choices | One row per user                       |
+| `public.study_progress`          | Reading/open/completion state by content ID            | One row per user and content ID        |
+| `public.quiz_attempts`           | One completed quiz result                              | Parent of attempt answers              |
+| `public.quiz_attempt_answers`    | Selected/correct option IDs and hint usage             | Child of `quiz_attempts`               |
+| `public.exam_plan_task_progress` | Completion of plan-only tasks                          | One row per user, plan, date, and task |
+| `public.wrong_question_stats`    | Derived wrong-answer totals                            | Security-invoker view over answer rows |
+| `public.bookmarks`               | Saved note and quiz stable IDs                         | One row per user and content ID        |
 
 Markdown, quiz questions, explanations, and answer text are not stored in Supabase. Supabase contains stable learning-content IDs and private user state only.
 
@@ -251,6 +252,9 @@ select
   settings.selected_curriculum,
   settings.selected_grade,
   settings.selected_exam_plan_id,
+  settings.practice_reminder_enabled,
+  settings.practice_reminder_time,
+  settings.practice_reminder_days,
   settings.updated_at
 from public.user_settings as settings
 join public.profiles as profiles on profiles.id = settings.user_id
@@ -324,6 +328,32 @@ join public.profiles as profiles on profiles.id = stats.user_id
 order by stats.wrong_count desc, stats.last_wrong_at desc;
 ```
 
+Current learner summary (run as an authenticated approved user through the client or an impersonated test session):
+
+```sql
+select * from public.get_my_learning_summary();
+```
+
+Leaderboard examples:
+
+```sql
+select * from public.get_leaderboard('all', null, null, null, 100);
+select * from public.get_leaderboard('grade', 5, null, null, 100);
+select * from public.get_leaderboard('subject', 5, 'mathematics', null, 100);
+select * from public.get_leaderboard('topic', 5, 'mathematics', 'probability', 100);
+select * from public.get_my_leaderboard_rank('all', null, null, null);
+```
+
+The leaderboard sums each approved learner's best percentage for each unique quiz. Retaking the same quiz cannot add another set of points. Category filters use the manifest metadata captured on new attempts; older attempts with null snapshots remain eligible for Overall only. RPC results contain display name and learning statistics, never email or user UUID.
+
+Bookmarks for the current approved user:
+
+```sql
+select content_id, resource_type, created_at
+from public.bookmarks
+order by created_at desc;
+```
+
 Exam-plan task progress:
 
 ```sql
@@ -354,6 +384,7 @@ union all select 'study_progress', count(*) from public.study_progress
 union all select 'quiz_attempts', count(*) from public.quiz_attempts
 union all select 'quiz_attempt_answers', count(*) from public.quiz_attempt_answers
 union all select 'exam_plan_task_progress', count(*) from public.exam_plan_task_progress
+union all select 'bookmarks', count(*) from public.bookmarks
 order by object_name;
 ```
 
@@ -451,5 +482,11 @@ Never update `profiles.role` or `profiles.status` from browser code. Use the Adm
 - Keep manual destructive scripts under `supabase/manual` and review them before execution.
 
 For a deliberate full reset, use `supabase/manual/reset-all-data.sql`. It permanently deletes every Auth account, learner row, profile, and audit event while preserving the schema.
+
+## Migration 005 deployment
+
+Migration `supabase/migrations/005_qurio_learning_experience.sql` adds reminder columns, bookmarks with approved-user RLS, quiz category snapshots, consistency checks, and the summary/leaderboard RPCs. Apply it manually in the intended Supabase project's SQL Editor after migrations 001–004. Then run scripts 09, 10, and 11 from `supabase/scripts` with appropriate test accounts. The client must be deployed only after migration 005 because its Settings and Progress queries expect these objects.
+
+Search and bookmark display details continue to come from `manifest.json`; Supabase stores only stable content IDs. Mistake rows use the existing `wrong_question_stats` view. No Markdown, question text, PIN, notification permission, or biometric material is stored in Supabase.
 
 Official references: [Database overview](https://supabase.com/docs/guides/database/overview), [Tables and data](https://supabase.com/docs/guides/database/tables), [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security), and [Securing the Data API](https://supabase.com/docs/guides/api/securing-your-api).

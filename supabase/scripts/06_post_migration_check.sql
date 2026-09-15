@@ -1,4 +1,4 @@
--- Read-only check for the objects expected after migrations 001-004.
+-- Read-only check for the objects expected after migrations 001-005.
 
 with expected(object_name, object_kind) as (
   values
@@ -10,6 +10,7 @@ with expected(object_name, object_kind) as (
     ('quiz_attempts', 'table'),
     ('quiz_attempt_answers', 'table'),
     ('exam_plan_task_progress', 'table'),
+    ('bookmarks', 'table'),
     ('wrong_question_stats', 'view')
 ), actual as (
   select table_name as object_name, case when table_type = 'VIEW' then 'view' else 'table' end as object_kind
@@ -34,7 +35,10 @@ with expected(function_name) as (
     ('owner_demote_admin'),
     ('owner_set_auto_approval'),
     ('update_my_profile'),
-    ('submit_quiz_attempt')
+    ('submit_quiz_attempt'),
+    ('get_my_learning_summary'),
+    ('get_leaderboard'),
+    ('get_my_leaderboard_rank')
 ), actual as (
   select routine_name as function_name
   from information_schema.routines
@@ -49,3 +53,10 @@ select
   (select count(*) from auth.users) as auth_users,
   (select count(*) from public.profiles) as profiles,
   (select count(*) from public.account_audit_log) as audit_events;
+
+select table_name,column_name,data_type
+from information_schema.columns
+where table_schema='public'
+  and ((table_name='user_settings' and column_name in ('practice_reminder_enabled','practice_reminder_time','practice_reminder_days'))
+    or (table_name='quiz_attempts' and column_name in ('curriculum_id','grade','subject_id','chapter_id','topic_id')))
+order by table_name,column_name;

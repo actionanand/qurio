@@ -14,4 +14,14 @@ describe('SnackbarService', () => {
     vi.advanceTimersByTime(500);
     expect(service.message()).toBeNull();
   });
+  it('supports warning tone, actions, and explicit dismissal', () => {
+    vi.useFakeTimers();
+    const action = vi.fn();
+    const service = new SnackbarService();
+    service.show('Check this', { tone: 'warning', actionText: 'Retry', action });
+    expect(service.message()).toMatchObject({ tone: 'warning', actionText: 'Retry' });
+    service.runAction();
+    expect(action).toHaveBeenCalledOnce();
+    expect(service.message()).toBeNull();
+  });
 });

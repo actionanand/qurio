@@ -1,5 +1,7 @@
 import { Service, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
+import { LocalNotifications, Weekday, type LocalNotificationSchema } from '@capacitor/local-notifications';
+import { environment } from '../../environments/environment';
 
 export interface PracticeReminderSettings {
   enabled: boolean;
@@ -7,80 +9,93 @@ export interface PracticeReminderSettings {
   days: number[];
 }
 
-const storageKey = 'qurio.practiceReminder.v1';
-const defaults: PracticeReminderSettings = { enabled: false, time: '18:00', days: [2, 3, 4, 5, 6] };
+const firstNotificationId = 7401;
 
 @Service()
 export class ReminderService {
   readonly native = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android';
-  readonly settings = signal(this.read());
+  readonly permission = signal<'granted' | 'denied' | 'prompt' | 'prompt-with-rationale' | 'unavailable'>(
+    'unavailable',
+  );
+  readonly settings = signal<PracticeReminderSettings>({
+    enabled: false,
+    time: environment.practiceReminder.defaultTime,
+    days: [...environment.practiceReminder.defaultDays],
+  });
+
+  async initialize(settings?: PracticeReminderSettings): Promise<void> {
+    if (settings) this.settings.set(normalizeSettings(settings));
+    if (!this.native || !environment.practiceReminder.enabled) return;
+    await LocalNotifications.createChannel({
+      id: environment.practiceReminder.channelId,
+      name: environment.practiceReminder.channelName,
+      description: 'Reminders to practise with Qurio',
+      importance: 3,
+      visibility: 0,
+    });
+    this.permission.set((await LocalNotifications.checkPermissions()).display);
+  }
 
   permissionGranted(): boolean {
-    return this.native && (window.QurioNative?.notificationPermissionGranted?.() ?? false);
+    return this.permission() === 'granted';
   }
 
   async requestPermission(): Promise<boolean> {
-    if (!this.native || !window.QurioNative?.requestNotificationPermission) return false;
-    if (this.permissionGranted()) return true;
-    const result = this.nativeResult('notification-permission');
-    window.QurioNative.requestNotificationPermission();
-    return (await result).data === 'granted';
+    if (!this.native) return false;
+    const result = await LocalNotifications.requestPermissions();
+    this.permission.set(result.display);
+    return result.display === 'granted';
   }
 
   async update(next: PracticeReminderSettings): Promise<boolean> {
-    const normalized = { ...next, days: [...new Set(next.days)].sort((a, b) => a - b) };
+    const normalized = normalizeSettings(next);
     if (normalized.enabled && (!normalized.days.length || !this.permissionGranted())) return false;
-    if (normalized.enabled) {
-      if (!window.QurioNative?.scheduleReminder) return false;
-      const [hour, minute] = normalized.time.split(':').map(Number);
-      const result = this.nativeResult('reminder-schedule');
-      window.QurioNative.scheduleReminder(hour, minute, normalized.days.join(','));
-      if (!(await result).success) return false;
-    } else {
-      window.QurioNative?.cancelReminder?.();
+    if (this.native) {
+      await this.cancel();
+      if (normalized.enabled) {
+        const [hour, minute] = normalized.time.split(':').map(Number);
+        const notifications: LocalNotificationSchema[] = normalized.days.map(day => ({
+          id: notificationId(day),
+          title: 'Qurio practice time',
+          body: 'Ready for a quick learning session?',
+          channelId: environment.practiceReminder.channelId,
+          extra: { route: '/home', kind: 'practice-reminder' },
+          schedule: {
+            on: { weekday: appDayToPluginWeekday(day), hour, minute },
+            repeats: true,
+            allowWhileIdle: true,
+            isExactNotification: false,
+          },
+        }));
+        await LocalNotifications.schedule({ notifications });
+      }
     }
     this.settings.set(normalized);
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(normalized));
-    } catch {
-      return true;
-    }
     return true;
   }
 
-  private read(): PracticeReminderSettings {
-    try {
-      const value: unknown = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
-      if (!value || typeof value !== 'object') return defaults;
-      const candidate = value as Partial<PracticeReminderSettings>;
-      return {
-        enabled: candidate.enabled === true,
-        time:
-          typeof candidate.time === 'string' && /^\d{2}:\d{2}$/.test(candidate.time) ? candidate.time : defaults.time,
-        days:
-          Array.isArray(candidate.days) && candidate.days.every(day => Number.isInteger(day) && day >= 1 && day <= 7)
-            ? candidate.days
-            : defaults.days,
-      };
-    } catch {
-      return defaults;
-    }
-  }
-
-  private nativeResult(action: string, timeoutMs = 60_000): Promise<QurioNativeResult> {
-    return new Promise(resolve => {
-      const fallback: QurioNativeResult = { action, success: false, data: '', message: 'Request timed out' };
-      const timer = setTimeout(() => finish(fallback), timeoutMs);
-      const listener = (event: Event) => {
-        const detail = (event as CustomEvent<QurioNativeResult>).detail;
-        if (detail.action === action) finish(detail);
-      };
-      const finish = (result: QurioNativeResult) => {
-        clearTimeout(timer);
-        window.removeEventListener('qurio-native-result', listener);
-        resolve(result);
-      };
-      window.addEventListener('qurio-native-result', listener);
+  async cancel(): Promise<void> {
+    if (!this.native) return;
+    await LocalNotifications.cancel({
+      notifications: environment.practiceReminder.defaultDays.map(day => ({ id: notificationId(day) })),
     });
   }
+}
+
+export function appDayToPluginWeekday(day: number): Weekday {
+  return (day === 7 ? Weekday.Sunday : day + 1) as Weekday;
+}
+
+export function notificationId(day: number): number {
+  return firstNotificationId + day - 1;
+}
+
+function normalizeSettings(settings: PracticeReminderSettings): PracticeReminderSettings {
+  return {
+    enabled: settings.enabled,
+    time: /^([01]\d|2[0-3]):[0-5]\d$/.test(settings.time) ? settings.time : environment.practiceReminder.defaultTime,
+    days: [...new Set(settings.days.filter(day => Number.isInteger(day) && day >= 1 && day <= 7))].sort(
+      (a, b) => a - b,
+    ),
+  };
 }

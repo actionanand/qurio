@@ -67,6 +67,11 @@ export const routes: Routes = [
     loadComponent: () => import('./learning/progress.page').then(m => m.ProgressPage),
   },
   {
+    path: 'search',
+    canActivate: [approvedUserGuard],
+    loadComponent: () => import('./learning/search.page').then(m => m.SearchPage),
+  },
+  {
     path: 'settings',
     canActivate: [approvedUserGuard],
     loadComponent: () => import('./settings/settings.page').then(m => m.SettingsPage),
