@@ -2,6 +2,10 @@ import { Routes } from '@angular/router';
 import { accountStatusGuard, approvedUserGuard, authPageGuard, ownerGuard, staffGuard } from './services/auth.guards';
 export const routes: Routes = [
   {
+    path: 'auth/challenge',
+    loadComponent: () => import('./auth/challenge.page').then(m => m.ChallengePage),
+  },
+  {
     path: 'auth/login',
     canActivate: [authPageGuard],
     loadComponent: () => import('./auth/login.page').then(m => m.LoginPage),

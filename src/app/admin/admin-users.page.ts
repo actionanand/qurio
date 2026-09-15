@@ -8,6 +8,8 @@ import type { UserProfile } from '../services/auth.models';
 import { IconComponent } from '../shared/icon.component';
 import { DeviceSettingsComponent } from '../shared/device-settings.component';
 import { SnackbarService } from '../core/snackbar.service';
+import { AuthCaptchaComponent } from '../auth/auth-captcha.component';
+import { CaptchaService } from '../auth/captcha.service';
 
 type UserFilter = 'pending' | 'unverified' | 'approved' | 'denied' | 'suspended' | 'all';
 type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | 'demote' | 'delete' | 'resend';
@@ -22,6 +24,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
     IonToggle,
     IconComponent,
     DeviceSettingsComponent,
+    AuthCaptchaComponent,
   ],
   template: `
     <section class="admin-page">
@@ -244,6 +247,35 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
           }
         </div>
       }
+      @if (resetTarget(); as target) {
+        <div class="captcha-dialog-backdrop">
+          <section
+            class="captcha-dialog panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="password-reset-dialog-title">
+            <h2 id="password-reset-dialog-title">{{ i.t('sendPasswordReset') }}</h2>
+            <p>
+              {{ i.t('passwordResetConfirm') }} <strong>{{ target.email }}</strong>
+            </p>
+            <app-auth-captcha [resetNonce]="captchaReset()" (tokenChange)="captchaToken.set($event)" />
+            <div class="captcha-dialog-actions">
+              <ion-button fill="clear" [disabled]="acting() === target.id" (click)="cancelPasswordReset()">
+                {{ i.t('cancel') }}
+              </ion-button>
+              <ion-button
+                [disabled]="acting() === target.id || !captcha.canSubmit(captchaToken())"
+                (click)="completePasswordReset()">
+                @if (acting() === target.id) {
+                  <ion-spinner name="crescent" />
+                } @else {
+                  {{ i.t('continue') }}
+                }
+              </ion-button>
+            </div>
+          </section>
+        </div>
+      }
       <app-device-settings />
     </section>
   `,
@@ -253,6 +285,7 @@ export class AdminUsersPage {
   private readonly alerts = inject(AlertController);
   private readonly snackbar = inject(SnackbarService);
   readonly auth = inject(AuthService);
+  readonly captcha = inject(CaptchaService);
   readonly i = inject(I18nService);
   readonly profiles = signal<UserProfile[]>([]);
   readonly filter = signal<UserFilter>('pending');
@@ -262,6 +295,9 @@ export class AdminUsersPage {
   readonly settingsBusy = signal(false);
   readonly error = signal('');
   readonly statusMessage = signal('');
+  readonly captchaToken = signal('');
+  readonly captchaReset = signal(0);
+  readonly resetTarget = signal<UserProfile | null>(null);
   readonly filters: { value: UserFilter; label: MessageKey }[] = [
     { value: 'pending', label: 'pending' },
     { value: 'unverified', label: 'unverified' },
@@ -317,18 +353,35 @@ export class AdminUsersPage {
     await alert.present();
     const result = await alert.onDidDismiss();
     if (result.role !== 'confirm') return;
+    this.captchaToken.set('');
+    this.captchaReset.update(value => value + 1);
+    this.resetTarget.set(profile);
+  }
+
+  cancelPasswordReset(): void {
+    if (this.acting()) return;
+    this.resetTarget.set(null);
+    this.captchaToken.set('');
+  }
+
+  async completePasswordReset(): Promise<void> {
+    const profile = this.resetTarget();
+    if (!profile || this.acting() || !this.captcha.canSubmit(this.captchaToken())) return;
     this.acting.set(profile.id);
     this.error.set('');
     this.statusMessage.set('');
     try {
-      const reset = await this.auth.resetPassword(profile.email);
+      const reset = await this.auth.resetPassword(profile.email, this.captchaToken());
       if (reset.error) throw reset.error;
       this.statusMessage.set(this.i.t('resetEmailSent'));
       this.snackbar.show(this.i.t('resetEmailSent'));
+      this.resetTarget.set(null);
     } catch {
       this.error.set(this.i.t('unableToSendReset'));
     } finally {
       this.acting.set(null);
+      this.captchaToken.set('');
+      this.captchaReset.update(value => value + 1);
     }
   }
   async changeAutoApproval(enabled: boolean) {

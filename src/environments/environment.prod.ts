@@ -1,8 +1,13 @@
 export const environment = {
   production: true,
   appUrl: 'https://actionanand.github.io/qurio',
+  turnstile: {
+    enabled: true,
+    siteKey: '0x4AAAAAAE2cRVNpqHskAoyF',
+  },
   androidApp: {
     promotionEnabled: true,
+    webViewOrigin: 'https://localhost',
     packageName: 'com.actionanand.qurio.app',
     playStoreUrl: 'https://play.google.com/store/apps/details?id=com.actionanand.qurio.app',
     deepLinkBaseUrl: 'qurio://',

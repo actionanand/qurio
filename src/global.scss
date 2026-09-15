@@ -442,6 +442,104 @@ h3 {
   width: 20px;
   height: 20px;
 }
+.auth-captcha {
+  display: grid;
+  width: 100%;
+  gap: 8px;
+  overflow: hidden;
+}
+.auth-captcha-widget {
+  width: 100%;
+  min-height: 65px;
+}
+.auth-captcha-frame {
+  width: 100%;
+  height: 112px;
+  border: 0;
+  background: transparent;
+}
+.auth-captcha p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: center;
+}
+.auth-captcha p[role='alert'] {
+  color: var(--danger);
+}
+.auth-captcha a {
+  color: var(--accent);
+  font-weight: 700;
+}
+.auth-captcha-retry {
+  justify-self: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.auth-captcha-retry:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  outline-offset: 2px;
+}
+.challenge-page-host {
+  display: block;
+  min-height: 100vh;
+  background: var(--surface);
+}
+.challenge-page {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 100vh;
+  padding: 16px;
+}
+.challenge-page app-auth-captcha {
+  display: block;
+  width: min(100%, 320px);
+}
+.captcha-dialog-backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(10 35 25 / 52%);
+}
+.captcha-dialog {
+  width: min(100%, 420px);
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 24px 70px rgb(8 31 22 / 28%);
+}
+.captcha-dialog h2,
+.captcha-dialog p {
+  margin-top: 0;
+}
+.captcha-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 .auth-link {
   display: inline-block;
   min-height: 44px;

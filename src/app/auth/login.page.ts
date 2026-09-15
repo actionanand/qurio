@@ -4,10 +4,12 @@ import { Router, RouterLink } from '@angular/router';
 import { IonButton, IonInput, IonSpinner } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { IconComponent } from '../shared/icon.component';
+import { AuthCaptchaComponent } from './auth-captcha.component';
 import { safeAuthMessage } from './auth-page.shared';
+import { CaptchaService } from './captcha.service';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink, IonButton, IonInput, IonSpinner, IconComponent],
+  imports: [ReactiveFormsModule, RouterLink, IonButton, IonInput, IonSpinner, IconComponent, AuthCaptchaComponent],
   template: `
     <section class="auth-page">
       <article class="auth-card">
@@ -30,10 +32,14 @@ import { safeAuthMessage } from './auth-page.shared';
             autocomplete="current-password"
             formControlName="password"
             fill="outline" />
+          <app-auth-captcha [resetNonce]="captchaReset()" (tokenChange)="captchaToken.set($event)" />
           @if (message()) {
             <p class="form-message error" role="alert">{{ message() }}</p>
           }
-          <ion-button type="submit" expand="block" [disabled]="form.invalid || busy()">
+          <ion-button
+            type="submit"
+            expand="block"
+            [disabled]="form.invalid || busy() || !captcha.authAllowed() || !captcha.canSubmit(captchaToken())">
             @if (busy()) {
               <ion-spinner name="crescent" />
             } @else {
@@ -50,29 +56,40 @@ import { safeAuthMessage } from './auth-page.shared';
 export class LoginPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  readonly captcha = inject(CaptchaService);
   readonly busy = signal(false);
   readonly message = signal('');
+  readonly captchaToken = signal('');
+  readonly captchaReset = signal(0);
   readonly form = new FormGroup({
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
     password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
 
   async submit() {
-    if (this.form.invalid || this.busy()) return;
+    if (this.form.invalid || this.busy() || !this.captcha.authAllowed() || !this.captcha.canSubmit(this.captchaToken()))
+      return;
     this.busy.set(true);
     this.message.set('');
     const { email, password } = this.form.getRawValue();
-    const result = await this.auth.signIn(email.trim(), password);
-    this.busy.set(false);
-    if (result.error) {
-      if (result.error.code === 'email_not_confirmed') {
-        sessionStorage.setItem('qurio.verificationEmail', email.trim().toLowerCase());
-        await this.router.navigateByUrl('/auth/verify-email');
+    try {
+      const result = await this.auth.signIn(email.trim(), password, this.captchaToken());
+      if (result.error) {
+        if (result.error.code === 'email_not_confirmed') {
+          sessionStorage.setItem('qurio.verificationEmail', email.trim().toLowerCase());
+          await this.router.navigateByUrl('/auth/verify-email');
+          return;
+        }
+        this.message.set(safeAuthMessage(result.error, 'Unable to sign in. Please try again.'));
         return;
       }
-      this.message.set(safeAuthMessage(result.error, 'Unable to sign in. Please try again.'));
-      return;
+      await this.router.navigateByUrl(this.auth.routeForProfile());
+    } catch {
+      this.message.set('Unable to sign in. Please try again.');
+    } finally {
+      this.busy.set(false);
+      this.captchaToken.set('');
+      this.captchaReset.update(value => value + 1);
     }
-    await this.router.navigateByUrl(this.auth.routeForProfile());
   }
 }

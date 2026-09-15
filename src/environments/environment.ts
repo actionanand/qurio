@@ -5,8 +5,13 @@
 export const environment = {
   production: false,
   appUrl: 'http://localhost:3039',
+  turnstile: {
+    enabled: false,
+    siteKey: '0x4AAAAAAE2cRVNpqHskAoyF',
+  },
   androidApp: {
     promotionEnabled: false,
+    webViewOrigin: 'https://localhost',
     packageName: 'com.actionanand.qurio.app',
     playStoreUrl: 'https://play.google.com/store/apps/details?id=com.actionanand.qurio.app',
     deepLinkBaseUrl: 'qurio://',

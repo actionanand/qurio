@@ -58,6 +58,44 @@ const messages = {
     'सामग्री लोड नहीं हुई। कनेक्शन जाँचें और फिर कोशिश करें।',
   ],
   retry: ['Try again', 'மீண்டும் முயல்க', 'फिर कोशिश करें'],
+  captchaLoading: ['Checking security…', 'பாதுகாப்பு சரிபார்க்கப்படுகிறது…', 'सुरक्षा जाँच जारी है…'],
+  captchaVerify: ['Verify you are human', 'நீங்கள் மனிதர் என்பதை உறுதிப்படுத்தவும்', 'सत्यापित करें कि आप मानव हैं'],
+  captchaExpired: [
+    'Security check expired. Try verification again.',
+    'பாதுகாப்புச் சரிபார்ப்பு காலாவதியானது. மீண்டும் முயலவும்.',
+    'सुरक्षा जाँच की अवधि समाप्त हो गई। फिर सत्यापित करें।',
+  ],
+  captchaFailed: [
+    'Security check failed. Try verification again.',
+    'பாதுகாப்புச் சரிபார்ப்பு தோல்வியடைந்தது. மீண்டும் முயலவும்.',
+    'सुरक्षा जाँच विफल हुई। फिर सत्यापित करें।',
+  ],
+  captchaUnavailable: [
+    'Authentication protection is unavailable.',
+    'உள்நுழைவு பாதுகாப்பு கிடைக்கவில்லை.',
+    'प्रमाणीकरण सुरक्षा उपलब्ध नहीं है।',
+  ],
+  captchaDisabled: [
+    'Authentication CAPTCHA is disabled for this environment.',
+    'இந்தச் சூழலில் உள்நுழைவு CAPTCHA முடக்கப்பட்டுள்ளது.',
+    'इस परिवेश में प्रमाणीकरण CAPTCHA बंद है।',
+  ],
+  officialAppOnly: [
+    'Authentication is available only from the official Qurio app.',
+    'அதிகாரப்பூர்வ Qurio செயலியில் மட்டுமே உள்நுழைய முடியும்.',
+    'प्रमाणीकरण केवल आधिकारिक Qurio ऐप से उपलब्ध है।',
+  ],
+  openQurio: ['Open Qurio', 'Qurio-வைத் திறக்கவும்', 'Qurio खोलें'],
+  challengeInvalid: [
+    'Open this security check from the Qurio Android app.',
+    'இந்தப் பாதுகாப்புச் சரிபார்ப்பை Qurio Android செயலியில் இருந்து திறக்கவும்.',
+    'यह सुरक्षा जाँच Qurio Android ऐप से खोलें।',
+  ],
+  verificationComplete: [
+    'Verification complete. Return to Qurio.',
+    'சரிபார்ப்பு முடிந்தது. Qurio-க்கு திரும்பவும்.',
+    'सत्यापन पूरा हुआ। Qurio पर लौटें।',
+  ],
   empty: ['New learning content is on its way.', 'புதிய உள்ளடக்கம் விரைவில் வரும்.', 'नई सामग्री जल्द आएगी।'],
   back: ['Back to learning', 'கற்றலுக்குத் திரும்பு', 'सीखने पर लौटें'],
   fallback: [

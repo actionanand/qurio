@@ -2,6 +2,14 @@
 
 Qurio uses Capacitor 8 and GitHub Actions to package the Angular/Ionic client as Android APK and AAB files. The generated `android/` directory is intentionally ignored because local builds and CI recreate it from the web client and the idempotent Android patch.
 
+## Hosted authentication challenge
+
+Android authentication loads `${environment.appUrl}/auth/challenge`; the production Turnstile widget therefore runs under the official hosted Qurio hostname, rather than the Capacitor WebView origin. `environment.androidApp.webViewOrigin` defines the expected Android parent origin for the message handshake only. It is not a Cloudflare Turnstile hostname allowlist entry.
+
+The parent generates one random request ID, includes it in the hosted request, and sends an initialization message to the exact origin derived from `environment.appUrl`. The hosted page accepts initialization only from the configured WebView origin. It returns only the request ID and short-lived CAPTCHA token. The parent validates the hosted origin, iframe window, message type, request ID, and non-empty token; it removes its listener and two-minute timeout after completion, reset, timeout, or destruction. Email, passwords, Supabase session tokens, and the Turnstile secret never cross this channel.
+
+Turnstile does not prove that the native client is a Play Store-signed Qurio APK. APK identity attestation would need a separate technology such as Play Integrity and is outside this integration.
+
 ## Build files
 
 | File                                  | Purpose                                                                             |
