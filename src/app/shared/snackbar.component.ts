@@ -12,11 +12,18 @@ import { IconComponent } from './icon.component';
         class="qurio-snackbar"
         [class.error]="item.tone === 'error'"
         [class.info]="item.tone === 'info'"
-        role="status"
-        aria-live="polite"
+        [class.warning]="item.tone === 'warning'"
+        [attr.role]="item.tone === 'error' ? 'alert' : 'status'"
+        [attr.aria-live]="item.tone === 'error' ? 'assertive' : 'polite'"
         aria-atomic="true">
-        <app-icon [name]="item.tone === 'error' ? 'warning' : item.tone === 'info' ? 'info' : 'correct'" />
+        <app-icon
+          [name]="
+            item.tone === 'error' || item.tone === 'warning' ? 'warning' : item.tone === 'info' ? 'info' : 'correct'
+          " />
         <p>{{ item.message }}</p>
+        @if (item.actionText) {
+          <button type="button" class="action" (click)="snackbar.runAction()">{{ item.actionText }}</button>
+        }
         <button type="button" [attr.aria-label]="i.t('dismiss')" (click)="snackbar.dismiss()">
           <app-icon name="close" />
         </button>
@@ -57,6 +64,16 @@ import { IconComponent } from './icon.component';
     .qurio-snackbar.info {
       border-color: #6f9fc4;
       border-left-color: #3479a8;
+    }
+    .qurio-snackbar.warning {
+      border-color: #d29a36;
+      border-left-color: #a96800;
+    }
+    .action {
+      width: auto;
+      padding-inline: 12px;
+      color: var(--accent);
+      font-weight: 700;
     }
     p {
       margin: 0;

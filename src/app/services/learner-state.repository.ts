@@ -1,6 +1,7 @@
 import { Service, inject } from '@angular/core';
 import type { Appearance } from '../core/preferences.service';
-import type { Attempt, Language } from '../core/models';
+import type { Attempt, Bookmark, Language, LeaderboardQuery, LeaderboardRow, LearningSummary } from '../core/models';
+import { ContentService } from '../core/content.service';
 import { AuthService } from './auth.service';
 import { SupabaseService } from './supabase.service';
 
@@ -10,6 +11,9 @@ export interface CloudSettings {
   selected_curriculum: string | null;
   selected_grade: number | null;
   selected_exam_plan_id: string | null;
+  practice_reminder_enabled: boolean;
+  practice_reminder_time: string | null;
+  practice_reminder_days: number[] | null;
 }
 
 export interface WrongQuestionStat {
@@ -24,6 +28,7 @@ export interface WrongQuestionStat {
 export class LearnerStateRepository {
   private readonly auth = inject(AuthService);
   private readonly supabase = inject(SupabaseService).client;
+  private readonly content = inject(ContentService);
   approvedUserId() {
     return this.auth.approved() ? (this.auth.user()?.id ?? null) : null;
   }
@@ -32,7 +37,9 @@ export class LearnerStateRepository {
     if (!this.auth.approved()) return null;
     const { data } = await this.supabase
       .from('user_settings')
-      .select('preferred_language,theme,selected_curriculum,selected_grade,selected_exam_plan_id')
+      .select(
+        'preferred_language,theme,selected_curriculum,selected_grade,selected_exam_plan_id,practice_reminder_enabled,practice_reminder_time,practice_reminder_days',
+      )
       .maybeSingle();
     return data as CloudSettings | null;
   }
@@ -111,6 +118,7 @@ export class LearnerStateRepository {
 
   async submitAttempt(attempt: Attempt) {
     if (!this.auth.approved() || !attempt.answers) return;
+    const item = this.content.getItemById(attempt.quizId);
     const { error } = await this.supabase.rpc('submit_quiz_attempt', {
       payload: {
         attempt_id: attempt.id,
@@ -130,6 +138,11 @@ export class LearnerStateRepository {
         score_percent: attempt.scorePercentage,
         passing_percentage: attempt.passingPercentage,
         passed: attempt.passed,
+        curriculum_id: item?.curriculum ?? null,
+        grade: item?.grade ?? null,
+        subject_id: item?.subject ?? null,
+        chapter_id: item?.chapter ?? null,
+        topic_id: item?.topic ?? null,
         answers: attempt.answers.map(answer => ({
           question_id: answer.questionId,
           selected_option_id: answer.selectedOptionId,
@@ -170,4 +183,85 @@ export class LearnerStateRepository {
       .select('quiz_id,question_id,attempts,wrong_count,last_wrong_at');
     return (data ?? []) as WrongQuestionStat[];
   }
+
+  async loadBookmarks(): Promise<Bookmark[]> {
+    if (!this.auth.approved()) return [];
+    const { data, error } = await this.supabase
+      .from('bookmarks')
+      .select('content_id,resource_type,created_at')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return (data ?? []).map(row => ({
+      contentId: String(row.content_id),
+      resourceType: row.resource_type as Bookmark['resourceType'],
+      createdAt: String(row.created_at),
+    }));
+  }
+
+  async addBookmark(contentId: string, resourceType: Bookmark['resourceType']): Promise<void> {
+    const userId = this.approvedUserId();
+    if (!userId) throw new Error('Approved account required');
+    const { error } = await this.supabase
+      .from('bookmarks')
+      .insert({ user_id: userId, content_id: contentId, resource_type: resourceType });
+    if (error) throw error;
+  }
+
+  async removeBookmark(contentId: string): Promise<void> {
+    if (!this.approvedUserId()) throw new Error('Approved account required');
+    const { error } = await this.supabase.from('bookmarks').delete().eq('content_id', contentId);
+    if (error) throw error;
+  }
+
+  async loadLearningSummary(): Promise<LearningSummary> {
+    const { data, error } = await this.supabase.rpc('get_my_learning_summary');
+    if (error) throw error;
+    const row = Array.isArray(data) ? data[0] : data;
+    return mapLearningSummary(row);
+  }
+
+  async loadLeaderboard(query: LeaderboardQuery, ownRank = false): Promise<LeaderboardRow[]> {
+    const parameters = {
+      p_scope: query.scope,
+      p_grade: query.grade ?? null,
+      p_subject: query.subject ?? null,
+      p_topic: query.topic ?? null,
+      ...(ownRank ? {} : { p_limit: 100 }),
+    };
+    const { data, error } = await this.supabase.rpc(
+      ownRank ? 'get_my_leaderboard_rank' : 'get_leaderboard',
+      parameters,
+    );
+    if (error) throw error;
+    return mapLeaderboardRows(data);
+  }
+}
+
+export function mapLeaderboardRows(value: unknown): LeaderboardRow[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((row: Record<string, unknown>) => ({
+    rank: Number(row['rank']),
+    displayName: String(row['display_name']),
+    points: Number(row['points']),
+    averageScore: Number(row['average_score']),
+    quizzesCompleted: Number(row['quizzes_completed']),
+    correctAnswers: Number(row['correct_answers']),
+    isCurrentUser: Boolean(row['is_current_user']),
+  }));
+}
+
+export function mapLearningSummary(value: unknown): LearningSummary {
+  const row = (value && typeof value === 'object' ? value : {}) as Record<string, unknown>;
+  return {
+    lessonsStarted: Number(row['lessons_started'] ?? 0),
+    lessonsCompleted: Number(row['lessons_completed'] ?? 0),
+    quizAttempts: Number(row['quiz_attempts'] ?? 0),
+    uniqueQuizzesAttempted: Number(row['unique_quizzes_attempted'] ?? 0),
+    questionsAnswered: Number(row['questions_answered'] ?? 0),
+    correctAnswers: Number(row['correct_answers'] ?? 0),
+    wrongAnswers: Number(row['wrong_answers'] ?? 0),
+    unansweredAnswers: Number(row['unanswered_answers'] ?? 0),
+    averageScore: Number(row['average_score'] ?? 0),
+    bestScore: Number(row['best_score'] ?? 0),
+  };
 }

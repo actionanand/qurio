@@ -13,14 +13,18 @@ These scripts are read-only references intended for the Supabase Dashboard **SQL
 ## Recommended order
 
 1. Run `00_database_inventory.sql` to see existing database objects.
-2. Apply migrations `001`, `002`, `003`, and `004` in order if they are not already applied.
+2. Apply migrations `001` through `005` in order if they are not already applied.
 3. Run `06_post_migration_check.sql` and confirm that no expected objects are missing.
 4. Register and verify the intended Owner account.
 5. Replace `<OWNER_EMAIL>` in `supabase/manual/bootstrap-owner.sql` and run it once.
 6. Use the account, learner-state, audit, and security scripts for diagnostics.
 
-All numbered files in this folder use `select` queries and do not modify data. Scripts under `supabase/manual/` can modify or permanently remove data; open and review the complete file before choosing **Run**.
+Numbered files are inspection queries. Script `11` also contains an explicitly marked bookmark write check inside a transaction that always rolls back. Scripts under `supabase/manual/` can modify or permanently remove data; open and review the complete file before choosing **Run**.
 
 Queries containing placeholders such as `<USER_EMAIL>`, `<QUIZ_ID>`, or `<ATTEMPT_UUID>` require replacement before execution.
+
+Scripts `09`, `10`, and `11` verify learning summaries, best-attempt leaderboards, category filters, and bookmark RLS after migration `005`.
+
+`supabase/tests/005_leaderboard_formula.sql` is a non-mutating contract test for best-attempt scoring, retry resistance, category filtering, and sanitized leaderboard output metadata.
 
 For a confirmation email that arrives but does not verify the user, run `08_email_verification_diagnosis.sql` and follow the local verification section in `docs/supabase-auth.md`.

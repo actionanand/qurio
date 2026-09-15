@@ -3,10 +3,6 @@ interface QurioNativeBridge {
   isBiometricAvailable?(): boolean;
   enableBiometric?(secret: string): void;
   authenticateBiometric?(): void;
-  notificationPermissionGranted?(): boolean;
-  requestNotificationPermission?(): void;
-  scheduleReminder?(hour: number, minute: number, daysCsv: string): void;
-  cancelReminder?(): void;
 }
 
 interface QurioNativeResult {

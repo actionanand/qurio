@@ -6,24 +6,14 @@
       <span>Qurio</span>
     </a>
     @if (auth.approved()) {
+      <a class="header-search" routerLink="/search" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <app-icon name="search" /><span>{{ i.t('search') }}</span>
+      </a>
       <nav class="primary-nav" aria-label="Qurio">
-        <a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page"
-          ><app-icon name="book" /><span>{{ i.t('learn') }}</span></a
-        >
-        <a routerLink="/exam-prep" routerLinkActive="active" ariaCurrentWhenActive="page"
-          ><app-icon name="exam" /><span>{{ i.t('examPrep') }}</span></a
-        >
-        <a routerLink="/progress" routerLinkActive="active" ariaCurrentWhenActive="page"
-          ><app-icon name="progress" /><span>{{ i.t('progress') }}</span></a
-        >
-        @if (auth.isStaff()) {
-          <a routerLink="/admin/users" routerLinkActive="active" ariaCurrentWhenActive="page"
-            ><app-icon name="people" /><span>{{ i.t('admin') }}</span></a
-          >
-        } @else {
-          <a routerLink="/settings" routerLinkActive="active" ariaCurrentWhenActive="page"
-            ><app-icon name="settings" /><span>{{ i.t('settings') }}</span></a
-          >
+        @for (item of navigation(); track item.route) {
+          <a [routerLink]="item.route" routerLinkActive="active" ariaCurrentWhenActive="page">
+            <app-icon [name]="item.icon" /><span>{{ i.t(item.label) }}</span>
+          </a>
         }
       </nav>
     }

@@ -7,6 +7,7 @@ interface LockRecord {
   salt: string;
   verifier: string;
   biometric: boolean;
+  biometricVerifier?: string;
 }
 
 @Service()
@@ -79,21 +80,34 @@ export class SecurityService {
   async enableBiometric(pin: string): Promise<boolean> {
     if (!this.record || !this.biometricAvailable() || !(await this.verify(pin)) || !window.QurioNative?.enableBiometric)
       return false;
+    const secret = crypto.getRandomValues(new Uint8Array(32));
+    const encodedSecret = this.base64(secret);
     const pending = this.nativeResult('biometric-enabled');
-    window.QurioNative.enableBiometric(pin);
+    window.QurioNative.enableBiometric(encodedSecret);
     if (!(await pending).success) return false;
-    this.record = { ...this.record, biometric: true };
+    this.record = { ...this.record, biometric: true, biometricVerifier: await this.digest(encodedSecret) };
     await this.request(this.store('readwrite').put(this.record));
     this.biometricEnabled.set(true);
     return true;
   }
 
   async authenticateBiometric(): Promise<boolean> {
-    if (!this.biometricEnabled() || !window.QurioNative?.authenticateBiometric) return false;
+    if (!this.biometricEnabled() || !this.record?.biometricVerifier || !window.QurioNative?.authenticateBiometric)
+      return false;
     const pending = this.nativeResult('biometric-unlock');
     window.QurioNative.authenticateBiometric();
     const result = await pending;
-    return result.success ? this.verify(result.data) : false;
+    const valid = result.success && this.constantTime(await this.digest(result.data), this.record.biometricVerifier);
+    if (valid) this.unlocked.set(true);
+    return valid;
+  }
+
+  async disableBiometric(): Promise<void> {
+    if (!this.record) return;
+    window.QurioNative?.disableBiometric?.();
+    this.record = { ...this.record, biometric: false, biometricVerifier: undefined };
+    await this.request(this.store('readwrite').put(this.record));
+    this.biometricEnabled.set(false);
   }
 
   private clearState(): void {
@@ -131,6 +145,11 @@ export class SecurityService {
       256,
     );
     return this.base64(new Uint8Array(bits));
+  }
+
+  private async digest(value: string): Promise<string> {
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+    return this.base64(new Uint8Array(digest));
   }
 
   private constantTime(left: string, right: string): boolean {

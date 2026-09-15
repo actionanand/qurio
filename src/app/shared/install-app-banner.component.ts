@@ -6,12 +6,20 @@ import { I18nService } from '../core/i18n.service';
 import { IconComponent } from './icon.component';
 
 const dismissKey = 'qurio.androidBannerDismissed';
-const autoHideMs = 15_000;
 
 export function buildAndroidIntent(deepLink: string, packageName: string, fallbackUrl: string): string {
   const separator = deepLink.indexOf('://');
   if (separator < 1) return fallbackUrl;
   return `intent://${deepLink.slice(separator + 3)}#Intent;scheme=${deepLink.slice(0, separator)};package=${packageName};S.browser_fallback_url=${encodeURIComponent(fallbackUrl)};end`;
+}
+
+export function shouldShowAndroidBanner(
+  promotionEnabled: boolean,
+  native: boolean,
+  userAgent: string,
+  dismissed: boolean,
+): boolean {
+  return promotionEnabled && !native && /android/i.test(userAgent) && !dismissed;
 }
 
 @Component({
@@ -120,19 +128,23 @@ export class InstallAppBannerComponent {
     afterNextRender(() => {
       if (!this.shouldShow()) return;
       this.visible.set(true);
-      this.timer = setTimeout(() => this.visible.set(false), autoHideMs);
+      this.timer = setTimeout(() => this.visible.set(false), environment.androidApp.bannerAutoHideMs);
       this.destroyRef.onDestroy(() => this.clearTimer());
     });
   }
 
   openApp(): void {
-    const deepLink = `${environment.androidDeepLinkBaseUrl}home`;
-    const target =
-      /android/i.test(navigator.userAgent) && /chrome\/\d+/i.test(navigator.userAgent)
-        ? buildAndroidIntent(deepLink, environment.androidPackageName, environment.androidPlayStoreUrl)
-        : deepLink;
+    const deepLink = `${environment.androidApp.deepLinkBaseUrl}home`;
+    const chrome = /chrome\/\d+/i.test(navigator.userAgent);
+    const target = chrome
+      ? buildAndroidIntent(deepLink, environment.androidApp.packageName, environment.androidApp.playStoreUrl)
+      : deepLink;
     this.dismiss();
     window.location.href = target;
+    if (!chrome)
+      window.setTimeout(() => {
+        if (document.visibilityState === 'visible') window.location.href = environment.androidApp.playStoreUrl;
+      }, 1200);
   }
 
   dismiss(): void {
@@ -146,11 +158,20 @@ export class InstallAppBannerComponent {
   }
 
   private shouldShow(): boolean {
-    if (Capacitor.isNativePlatform() || !/android/i.test(navigator.userAgent)) return false;
     try {
-      return sessionStorage.getItem(dismissKey) !== '1';
+      return shouldShowAndroidBanner(
+        environment.androidApp.promotionEnabled,
+        Capacitor.isNativePlatform(),
+        navigator.userAgent,
+        sessionStorage.getItem(dismissKey) === '1',
+      );
     } catch {
-      return true;
+      return shouldShowAndroidBanner(
+        environment.androidApp.promotionEnabled,
+        Capacitor.isNativePlatform(),
+        navigator.userAgent,
+        false,
+      );
     }
   }
 

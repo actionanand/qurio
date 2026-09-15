@@ -8,6 +8,7 @@ import { SecurityService } from '../core/security.service';
 import { SnackbarService } from '../core/snackbar.service';
 import { AuthService } from '../services/auth.service';
 import { IconComponent } from './icon.component';
+import { PreferencesService } from '../core/preferences.service';
 
 @Component({
   selector: 'app-device-settings',
@@ -95,9 +96,9 @@ import { IconComponent } from './icon.component';
           </ion-button>
         </form>
         @if (security.native) {
-          <ion-button fill="outline" [disabled]="!security.configured() || busy()" (click)="enableBiometric()">
+          <ion-button fill="outline" [disabled]="!security.configured() || busy()" (click)="toggleBiometric()">
             <app-icon name="fingerprint" />
-            {{ i.t(security.biometricEnabled() ? 'biometricEnabled' : 'enableBiometric') }}
+            {{ i.t(security.biometricEnabled() ? 'disableBiometric' : 'enableBiometric') }}
           </ion-button>
         }
         @if (security.configured()) {
@@ -196,16 +197,17 @@ export class DeviceSettingsComponent {
   private readonly alerts = inject(AlertController);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly preferences = inject(PreferencesService);
   readonly busy = signal(false);
   readonly signingOut = signal(false);
   readonly weekdays: { value: number; short: MessageKey; name: MessageKey }[] = [
-    { value: 2, short: 'mondayShort', name: 'monday' },
-    { value: 3, short: 'tuesdayShort', name: 'tuesday' },
-    { value: 4, short: 'wednesdayShort', name: 'wednesday' },
-    { value: 5, short: 'thursdayShort', name: 'thursday' },
-    { value: 6, short: 'fridayShort', name: 'friday' },
-    { value: 7, short: 'saturdayShort', name: 'saturday' },
-    { value: 1, short: 'sundayShort', name: 'sunday' },
+    { value: 1, short: 'mondayShort', name: 'monday' },
+    { value: 2, short: 'tuesdayShort', name: 'tuesday' },
+    { value: 3, short: 'wednesdayShort', name: 'wednesday' },
+    { value: 4, short: 'thursdayShort', name: 'thursday' },
+    { value: 5, short: 'fridayShort', name: 'friday' },
+    { value: 6, short: 'saturdayShort', name: 'saturday' },
+    { value: 7, short: 'sundayShort', name: 'sunday' },
   ];
   readonly pinForm = new FormGroup({
     current: new FormControl('', { nonNullable: true }),
@@ -215,22 +217,35 @@ export class DeviceSettingsComponent {
 
   constructor() {
     void this.security.initialize(this.auth.user()?.id).catch(() => undefined);
+    void this.reminders.initialize(this.preferences.reminderSettings()).catch(() => undefined);
   }
 
   async reminderChanged(enabled: boolean): Promise<void> {
     if (this.busy()) return;
     this.busy.set(true);
-    if (!enabled) {
-      await this.reminders.update({ ...this.reminders.settings(), enabled: false });
-      this.snackbar.show(this.i.t('reminderDisabled'), 'info');
-    } else if (!this.reminders.native) {
-      this.snackbar.show(this.i.t('androidReminderOnly'), 'info');
-    } else {
-      const granted = this.reminders.permissionGranted() || (await this.reminders.requestPermission());
-      const saved = granted && (await this.reminders.update({ ...this.reminders.settings(), enabled: true }));
-      this.snackbar.show(this.i.t(saved ? 'reminderEnabled' : 'notificationsNotAllowed'), saved ? 'success' : 'error');
+    try {
+      if (!enabled) {
+        const next = { ...this.reminders.settings(), enabled: false };
+        await this.reminders.update(next);
+        this.preferences.setReminder(next);
+        this.snackbar.show(this.i.t('reminderDisabled'), 'info');
+      } else if (!this.reminders.native) {
+        this.snackbar.show(this.i.t('androidReminderOnly'), 'info');
+      } else {
+        const granted = this.reminders.permissionGranted() || (await this.reminders.requestPermission());
+        const next = { ...this.reminders.settings(), enabled: true };
+        const saved = granted && (await this.reminders.update(next));
+        if (saved) this.preferences.setReminder(next);
+        this.snackbar.show(
+          this.i.t(saved ? 'reminderEnabled' : 'notificationsNotAllowed'),
+          saved ? 'success' : 'error',
+        );
+      }
+    } catch {
+      this.snackbar.show(this.i.t('reminderUpdateFailed'), 'error');
+    } finally {
+      this.busy.set(false);
     }
-    this.busy.set(false);
   }
 
   async timeChanged(event: Event): Promise<void> {
@@ -266,7 +281,14 @@ export class DeviceSettingsComponent {
     this.busy.set(false);
   }
 
-  async enableBiometric(): Promise<void> {
+  async toggleBiometric(): Promise<void> {
+    if (this.security.biometricEnabled()) {
+      this.busy.set(true);
+      await this.security.disableBiometric();
+      this.snackbar.show(this.i.t('biometricDisabled'), 'info');
+      this.busy.set(false);
+      return;
+    }
     const pin = await this.askForPin(this.i.t('enableBiometric'));
     if (!pin) return;
     this.busy.set(true);
@@ -295,6 +317,7 @@ export class DeviceSettingsComponent {
   private async saveReminder(settings: Parameters<ReminderService['update']>[0]): Promise<void> {
     this.busy.set(true);
     const saved = await this.reminders.update(settings);
+    if (saved) this.preferences.setReminder(settings);
     this.snackbar.show(this.i.t(saved ? 'reminderUpdated' : 'reminderUpdateFailed'), saved ? 'success' : 'error');
     this.busy.set(false);
   }

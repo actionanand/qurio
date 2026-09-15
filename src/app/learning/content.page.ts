@@ -7,6 +7,7 @@ import { ProgressService } from '../core/progress.service';
 import type { ManifestItem, Quiz, StudyDocument } from '../core/models';
 import { MarkdownViewerComponent } from './markdown-viewer.component';
 import { QuizPlayerComponent } from './quiz-player.component';
+import { BookmarkService } from '../core/bookmark.service';
 
 interface RelatedQuiz {
   item: ManifestItem;
@@ -28,6 +29,14 @@ interface RelatedQuiz {
     } @else {
       @if (fallback()) {
         <p class="notice" role="status">{{ i.t('fallback') }}</p>
+      }
+      @if (bookmarkItem(); as item) {
+        <div class="content-bookmark-action">
+          <button type="button" class="secondary-button" (click)="bookmarks.toggle(item)">
+            <app-icon [name]="bookmarks.isBookmarked(item.id) ? 'bookmarked' : 'bookmark'" />
+            {{ i.t(bookmarks.isBookmarked(item.id) ? 'removeBookmark' : 'bookmark') }}
+          </button>
+        </div>
       }
       @if (document(); as doc) {
         <article class="panel reader" [attr.lang]="doc.attributes.language">
@@ -74,6 +83,7 @@ export class ContentPage {
   readonly id = input.required<string>();
   readonly i = inject(I18nService);
   readonly progress = inject(ProgressService);
+  readonly bookmarks = inject(BookmarkService);
   private readonly content = inject(ContentService);
   readonly document = signal<StudyDocument | null>(null);
   readonly quiz = signal<Quiz | null>(null);
@@ -82,8 +92,10 @@ export class ContentPage {
   readonly error = signal(false);
   readonly fallback = signal(false);
   readonly retry = signal(0);
+  readonly bookmarkItem = signal<ManifestItem | null>(null);
   readonly increment = (value: number) => value + 1;
   constructor() {
+    void this.bookmarks.load();
     effect(onCleanup => {
       const id = this.id();
       const language = this.i.preferences.language();
@@ -94,6 +106,8 @@ export class ContentPage {
       this.quiz.set(null);
       this.document.set(null);
       this.relatedQuizzes.set([]);
+      const item = this.content.getItemById(id);
+      this.bookmarkItem.set(item?.type === 'syllabus' ? null : (item ?? null));
       void this.content
         .resolve(id, language)
         .then(result => {

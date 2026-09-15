@@ -3,8 +3,18 @@ import { AlertController } from '@ionic/angular';
 import { I18nService } from './i18n.service';
 import { ReminderService } from './reminder.service';
 import { SnackbarService } from './snackbar.service';
+import { AuthService } from '../services/auth.service';
 
-const promptKey = 'qurio.notificationPrompted.v1';
+const promptKey = 'qurio.notificationPromptSeen.v1';
+
+export function shouldPromptForNotifications(
+  approved: boolean,
+  nativeAndroid: boolean,
+  prompted: boolean,
+  granted: boolean,
+): boolean {
+  return approved && nativeAndroid && !prompted && !granted;
+}
 
 @Service()
 export class NotificationPromptService {
@@ -12,9 +22,18 @@ export class NotificationPromptService {
   private readonly i = inject(I18nService);
   private readonly reminders = inject(ReminderService);
   private readonly snackbar = inject(SnackbarService);
+  private readonly auth = inject(AuthService);
 
   async promptOnce(): Promise<void> {
-    if (!this.reminders.native || this.wasPrompted() || this.reminders.permissionGranted()) return;
+    if (
+      !shouldPromptForNotifications(
+        this.auth.approved(),
+        this.reminders.native,
+        this.wasPrompted(),
+        this.reminders.permissionGranted(),
+      )
+    )
+      return;
     const alert = await this.alerts.create({
       header: this.i.t('allowPracticeReminders'),
       message: this.i.t('notificationPermissionIntro'),

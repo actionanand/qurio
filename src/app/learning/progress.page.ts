@@ -1,77 +1,66 @@
-import { Component, effect, inject, signal } from '@angular/core';
-import { ContentService } from '../core/content.service';
-import { IconComponent } from '../shared/icon.component';
-import { DatePipe, DecimalPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
 import { I18nService } from '../core/i18n.service';
-import { ProgressService } from '../core/progress.service';
+import { IconComponent } from '../shared/icon.component';
+import { ProgressBookmarksComponent } from './progress-bookmarks.component';
+import { ProgressLeaderboardComponent } from './progress-leaderboard.component';
+import { ProgressMistakesComponent } from './progress-mistakes.component';
+import { ProgressOverviewComponent } from './progress-overview.component';
+
+type ProgressTab = 'overview' | 'mistakes' | 'leaderboard' | 'bookmarks';
+export const progressTabs = [
+  { id: 'overview', label: 'overview', icon: 'progress' },
+  { id: 'mistakes', label: 'mistakes', icon: 'warning' },
+  { id: 'leaderboard', label: 'leaderboard', icon: 'trophy' },
+  { id: 'bookmarks', label: 'bookmarks', icon: 'bookmark' },
+] as const satisfies readonly {
+  id: ProgressTab;
+  label: 'overview' | 'mistakes' | 'leaderboard' | 'bookmarks';
+  icon: 'progress' | 'warning' | 'trophy' | 'bookmark';
+}[];
+
 @Component({
   selector: 'app-progress',
-  imports: [DatePipe, DecimalPipe, RouterLink, IconComponent],
+  imports: [
+    IconComponent,
+    ProgressOverviewComponent,
+    ProgressMistakesComponent,
+    ProgressLeaderboardComponent,
+    ProgressBookmarksComponent,
+  ],
   template: `
     <span class="eyebrow">QURIO · {{ i.t('progress') }}</span>
     <h1>{{ i.t('progress') }}</h1>
-    <p class="muted">{{ i.t('local') }}</p>
-    <div class="stats panel">
-      <div>
-        <strong>{{ progress.completed().length }}</strong
-        >{{ i.t('notesDone') }}
-      </div>
-      <div>
-        <strong>{{ progress.attempts().length }}</strong
-        >{{ i.t('attempts') }}
-      </div>
-      <div>
-        <strong>{{ progress.average() }}%</strong>{{ i.t('average') }}
-      </div>
-    </div>
-    <h2>{{ i.t('recent') }}</h2>
-    <div class="content-list">
-      @for (attempt of progress.attempts(); track attempt.id) {
-        <a class="content-card" [routerLink]="['/content', attempt.quizId]"
-          ><div>
-            <h3>{{ titles()[attempt.quizId] || attempt.title || i.t('quiz') }}</h3>
-            <p class="muted">
-              {{ attempt.completedAt | date: 'medium' }} · {{ attempt.languageUsed }} · {{ attempt.elapsedSeconds }}s
-            </p>
-            <span>{{ attempt.correct }}/{{ attempt.total }} {{ i.t('correct') }}</span>
-          </div>
-          <strong class="attempt-score">{{ attempt.scorePercentage | number: '1.0-0' }}%</strong></a
-        >
-      } @empty {
-        <div class="panel">
-          <p>{{ i.t('noProgress') }}</p>
-          <a class="button" routerLink="/home">{{ i.t('learn') }}<app-icon name="forward" /></a>
-        </div>
+    <nav class="progress-tabs" [attr.aria-label]="i.t('progress')">
+      @for (item of tabs; track item.id) {
+        <button
+          type="button"
+          [class.active]="tab() === item.id"
+          [attr.aria-current]="tab() === item.id ? 'page' : null"
+          (click)="tab.set(item.id)">
+          <app-icon [name]="item.icon" />{{ i.t(item.label) }}
+        </button>
       }
-    </div>
+    </nav>
+    <section class="progress-section">
+      @switch (tab()) {
+        @case ('overview') {
+          <app-progress-overview />
+        }
+        @case ('mistakes') {
+          <app-progress-mistakes />
+        }
+        @case ('leaderboard') {
+          <app-progress-leaderboard />
+        }
+        @case ('bookmarks') {
+          <app-progress-bookmarks />
+        }
+      }
+    </section>
   `,
 })
 export class ProgressPage {
   readonly i = inject(I18nService);
-  readonly progress = inject(ProgressService);
-  private readonly content = inject(ContentService);
-  readonly titles = signal<Record<string, string>>({});
-  constructor() {
-    effect(onCleanup => {
-      const language = this.i.preferences.language();
-      const ids = [...new Set(this.progress.attempts().map(attempt => attempt.quizId))];
-      let cancelled = false;
-      this.titles.set({});
-      for (const id of ids) {
-        void this.content
-          .resolve(id, language)
-          .then(result => {
-            if (!cancelled && !('attributes' in result.content)) {
-              const title = result.content.title;
-              this.titles.update(titles => ({ ...titles, [id]: title }));
-            }
-          })
-          .catch(() => undefined);
-      }
-      onCleanup(() => {
-        cancelled = true;
-      });
-    });
-  }
+  readonly tab = signal<ProgressTab>('overview');
+  readonly tabs = progressTabs;
 }

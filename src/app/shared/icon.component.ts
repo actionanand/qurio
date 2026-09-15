@@ -9,6 +9,7 @@ import {
   calendarOutline,
   checkmarkCircleOutline,
   chevronForwardOutline,
+  chevronUpOutline,
   clipboardOutline,
   closeCircleOutline,
   colorPaletteOutline,
@@ -36,6 +37,9 @@ import {
   statsChartOutline,
   timerOutline,
   trophyOutline,
+  searchOutline,
+  bookmarkOutline,
+  bookmark,
 } from 'ionicons/icons';
 
 const icons = {
@@ -47,6 +51,7 @@ const icons = {
   calendar: calendarOutline,
   correct: checkmarkCircleOutline,
   chevron: chevronForwardOutline,
+  chevronUp: chevronUpOutline,
   exam: clipboardOutline,
   wrong: closeCircleOutline,
   appearance: colorPaletteOutline,
@@ -76,6 +81,9 @@ const icons = {
   progress: statsChartOutline,
   quiz: timerOutline,
   trophy: trophyOutline,
+  search: searchOutline,
+  bookmark: bookmarkOutline,
+  bookmarked: bookmark,
   syllabus: bookOutline,
 };
 @Component({

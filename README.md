@@ -2,6 +2,8 @@
 
 Authentication, administrator approval, database migrations, Edge Functions, Owner bootstrap, and end-to-end test instructions are documented in [docs/supabase-auth.md](docs/supabase-auth.md). Practical Dashboard and SQL examples are in [docs/supabase-query-guide.md](docs/supabase-query-guide.md).
 
+Android reminders, notification permission, app promotion links, PIN/biometric security, signing, and release builds are documented in [docs/ANDROID.md](docs/ANDROID.md). Learning experience migration 005 adds synchronized reminder choices, bookmarks, summary statistics, and best-attempt leaderboards; apply it manually before deploying this client.
+
 This project was generated using Ionic CLI version 7.2.1 for Angular version 22.0.1 with Ionic Angular version 9.0.0.
 
 ## Development server
