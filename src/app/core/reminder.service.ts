@@ -33,7 +33,7 @@ export class ReminderService {
       importance: 3,
       visibility: 0,
     });
-    this.permission.set((await LocalNotifications.checkPermissions()).display);
+    this.refreshPermission();
   }
 
   permissionGranted(): boolean {
@@ -41,10 +41,19 @@ export class ReminderService {
   }
 
   async requestPermission(): Promise<boolean> {
-    if (!this.native) return false;
-    const result = await LocalNotifications.requestPermissions();
-    this.permission.set(result.display);
-    return result.display === 'granted';
+    if (!this.native || !window.QurioNative?.requestNotificationPermission) return false;
+    if (this.refreshPermission()) return true;
+    try {
+      const result = await this.nativeResult('notification-permission', () =>
+        window.QurioNative?.requestNotificationPermission?.(),
+      );
+      const granted = result.success && result.data === 'granted';
+      this.permission.set(granted ? 'granted' : 'denied');
+      return granted;
+    } catch {
+      this.permission.set('denied');
+      return false;
+    }
   }
 
   async update(next: PracticeReminderSettings): Promise<boolean> {
@@ -78,6 +87,36 @@ export class ReminderService {
     if (!this.native) return;
     await LocalNotifications.cancel({
       notifications: environment.practiceReminder.defaultDays.map(day => ({ id: notificationId(day) })),
+    });
+  }
+
+  private refreshPermission(): boolean {
+    const granted = window.QurioNative?.notificationPermissionGranted?.() ?? false;
+    this.permission.set(granted ? 'granted' : 'prompt');
+    return granted;
+  }
+
+  private nativeResult(action: string, start: () => void, timeoutMs = 60_000): Promise<QurioNativeResult> {
+    return new Promise((resolve, reject) => {
+      let timeout: ReturnType<typeof setTimeout> | undefined;
+      const finish = (result?: QurioNativeResult, error?: Error): void => {
+        if (timeout) clearTimeout(timeout);
+        window.removeEventListener('qurio-native-result', listener);
+        if (result) resolve(result);
+        else reject(error ?? new Error('The Android request could not be completed.'));
+      };
+      const listener = (event: Event): void => {
+        const detail = (event as CustomEvent<QurioNativeResult>).detail;
+        if (detail.action !== action) return;
+        finish(detail);
+      };
+      window.addEventListener('qurio-native-result', listener);
+      timeout = setTimeout(() => finish(undefined, new Error('The Android request timed out.')), timeoutMs);
+      try {
+        start();
+      } catch (error) {
+        finish(undefined, error instanceof Error ? error : new Error('The Android request could not be started.'));
+      }
     });
   }
 }

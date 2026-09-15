@@ -78,10 +78,10 @@ export class AppComponent {
       const ready = this.deviceReady();
       const settings = this.preferences.reminderSettings();
       if (!approved || !ready || !this.reminders.native) return;
-      void this.reminders.initialize(settings).then(() => {
-        if (settings.enabled && this.reminders.permissionGranted()) return this.reminders.update(settings);
-        return undefined;
-      });
+      void (async () => {
+        await this.reminders.initialize(settings);
+        if (settings.enabled && this.reminders.permissionGranted()) await this.reminders.update(settings);
+      })().catch(() => undefined);
     });
     this.router.events.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe(event => {
       if (event instanceof NavigationEnd) {

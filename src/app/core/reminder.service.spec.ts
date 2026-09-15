@@ -16,11 +16,16 @@ vi.mock('@capacitor/local-notifications', () => ({
 import { ReminderService, notificationId } from './reminder.service';
 
 describe('ReminderService', () => {
+  let nativeBridge: QurioNativeBridge;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    nativeBridge = {
+      notificationPermissionGranted: () => true,
+      requestNotificationPermission: () => undefined,
+    };
+    window.QurioNative = nativeBridge;
     notifications.createChannel.mockResolvedValue(undefined);
-    notifications.checkPermissions.mockResolvedValue({ display: 'granted' });
-    notifications.requestPermissions.mockResolvedValue({ display: 'granted' });
     notifications.cancel.mockResolvedValue(undefined);
     notifications.schedule.mockResolvedValue(undefined);
   });
@@ -30,9 +35,18 @@ describe('ReminderService', () => {
     expect(service.native).toBe(true);
     await service.initialize();
     expect(service.permissionGranted()).toBe(true);
-    notifications.requestPermissions.mockResolvedValue({ display: 'denied' });
+    nativeBridge.notificationPermissionGranted = () => false;
+    nativeBridge.requestNotificationPermission = () => {
+      window.dispatchEvent(
+        new CustomEvent('qurio-native-result', {
+          detail: { action: 'notification-permission', success: true, data: 'denied', message: '' },
+        }),
+      );
+    };
     expect(await service.requestPermission()).toBe(false);
     expect(service.permission()).toBe('denied');
+    expect(notifications.checkPermissions).not.toHaveBeenCalled();
+    expect(notifications.requestPermissions).not.toHaveBeenCalled();
   });
 
   it('cancels its reserved IDs and schedules only selected weekdays in local time', async () => {

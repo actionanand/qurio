@@ -151,6 +151,8 @@ await writeFile(
 
 import android.os.Build;
 import android.os.Bundle;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
@@ -170,6 +172,7 @@ import org.json.JSONObject;
 public class MainActivity extends BridgeActivity {
   private static final String KEY_ALIAS = "qurio_biometric_key";
   private static final String SECURITY_PREFS = "qurio_security";
+  private static final int NOTIFICATION_PERMISSION_REQUEST = 7400;
   private BiometricPrompt biometricPrompt;
 
   @Override protected void onCreate(Bundle state) {
@@ -177,7 +180,37 @@ public class MainActivity extends BridgeActivity {
     getBridge().getWebView().addJavascriptInterface(new QurioNativeBridge(), "QurioNative");
   }
 
+  @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    if (requestCode == NOTIFICATION_PERMISSION_REQUEST) {
+      boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+      dispatch("notification-permission", true, granted ? "granted" : "denied", "");
+      return;
+    }
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+  }
+
+  private boolean hasNotificationPermission() {
+    return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+      || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+  }
+
   private class QurioNativeBridge {
+    @JavascriptInterface public boolean notificationPermissionGranted() { return hasNotificationPermission(); }
+    @JavascriptInterface public void requestNotificationPermission() {
+      runOnUiThread(() -> {
+        try {
+          if (hasNotificationPermission()) {
+            dispatch("notification-permission", true, "granted", "");
+          } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, NOTIFICATION_PERMISSION_REQUEST);
+          } else {
+            dispatch("notification-permission", false, "", "Notification permission could not be requested.");
+          }
+        } catch (Exception error) {
+          dispatch("notification-permission", false, "", error.getMessage());
+        }
+      });
+    }
     @JavascriptInterface public boolean isBiometricAvailable() {
       return BiometricManager.from(MainActivity.this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
         == BiometricManager.BIOMETRIC_SUCCESS;

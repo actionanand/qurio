@@ -3,17 +3,11 @@ import { AlertController } from '@ionic/angular';
 import { I18nService } from './i18n.service';
 import { ReminderService } from './reminder.service';
 import { SnackbarService } from './snackbar.service';
-import { AuthService } from '../services/auth.service';
 
-const promptKey = 'qurio.notificationPromptSeen.v1';
+const promptKey = 'qurio.notificationPromptSeen.v2';
 
-export function shouldPromptForNotifications(
-  approved: boolean,
-  nativeAndroid: boolean,
-  prompted: boolean,
-  granted: boolean,
-): boolean {
-  return approved && nativeAndroid && !prompted && !granted;
+export function shouldPromptForNotifications(nativeAndroid: boolean, prompted: boolean, granted: boolean): boolean {
+  return nativeAndroid && !prompted && !granted;
 }
 
 @Service()
@@ -22,18 +16,22 @@ export class NotificationPromptService {
   private readonly i = inject(I18nService);
   private readonly reminders = inject(ReminderService);
   private readonly snackbar = inject(SnackbarService);
-  private readonly auth = inject(AuthService);
+  private prompting = false;
 
   async promptOnce(): Promise<void> {
-    if (
-      !shouldPromptForNotifications(
-        this.auth.approved(),
-        this.reminders.native,
-        this.wasPrompted(),
-        this.reminders.permissionGranted(),
-      )
-    )
+    if (!shouldPromptForNotifications(this.reminders.native, this.wasPrompted(), this.reminders.permissionGranted()))
       return;
+    if (this.prompting) return;
+    this.prompting = true;
+    try {
+      await this.requestWithExplanation();
+      this.markPrompted();
+    } finally {
+      this.prompting = false;
+    }
+  }
+
+  async requestWithExplanation(): Promise<boolean> {
     const alert = await this.alerts.create({
       header: this.i.t('allowPracticeReminders'),
       message: this.i.t('notificationPermissionIntro'),
@@ -45,13 +43,13 @@ export class NotificationPromptService {
     });
     await alert.present();
     const result = await alert.onDidDismiss();
-    this.markPrompted();
-    if (result.role !== 'confirm') return;
+    if (result.role !== 'confirm') return false;
     const granted = await this.reminders.requestPermission();
     this.snackbar.show(
       this.i.t(granted ? 'notificationsAllowed' : 'notificationsNotAllowed'),
       granted ? 'success' : 'error',
     );
+    return granted;
   }
 
   private wasPrompted(): boolean {
