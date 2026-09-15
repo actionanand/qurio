@@ -1,6 +1,10 @@
 import { Service, inject, signal } from '@angular/core';
 import type { LeaderboardQuery, LeaderboardRow, LearningSummary } from './models';
-import { LearnerStateRepository, type WrongQuestionStat } from '../services/learner-state.repository';
+import {
+  LearnerStateRepository,
+  type WrongAnswerDetail,
+  type WrongQuestionStat,
+} from '../services/learner-state.repository';
 
 const emptySummary: LearningSummary = {
   lessonsStarted: 0,
@@ -24,13 +28,43 @@ export class LearningExperienceService {
   readonly myRank = signal<LeaderboardRow | null>(null);
   readonly loading = signal(false);
   readonly error = signal(false);
+  readonly overviewLoading = signal(false);
+  readonly overviewLoaded = signal(false);
+  readonly overviewError = signal(false);
+  readonly mistakesLoading = signal(false);
+  readonly mistakesLoaded = signal(false);
+  readonly mistakesError = signal(false);
 
   async loadOverview(): Promise<void> {
-    this.summary.set(await this.repository.loadLearningSummary());
+    this.overviewLoading.set(true);
+    this.overviewError.set(false);
+    try {
+      this.summary.set(await this.repository.loadLearningSummary());
+      this.overviewLoaded.set(true);
+    } catch (error) {
+      this.overviewError.set(true);
+      throw error;
+    } finally {
+      this.overviewLoading.set(false);
+    }
   }
 
   async loadMistakes(): Promise<void> {
-    this.mistakes.set(await this.repository.wrongQuestionStats());
+    this.mistakesLoading.set(true);
+    this.mistakesError.set(false);
+    try {
+      this.mistakes.set(await this.repository.wrongQuestionStats());
+      this.mistakesLoaded.set(true);
+    } catch (error) {
+      this.mistakesError.set(true);
+      throw error;
+    } finally {
+      this.mistakesLoading.set(false);
+    }
+  }
+
+  loadWrongAnswerDetails(quizId: string, questionIds: string[]): Promise<WrongAnswerDetail[]> {
+    return this.repository.latestWrongAnswers(quizId, questionIds);
   }
 
   async loadLeaderboard(query: LeaderboardQuery): Promise<void> {

@@ -46,6 +46,9 @@ import { IconComponent } from '../shared/icon.component';
         >
       }
     </div>
+    @if (scope() !== 'all') {
+      <p class="active-filter" role="status">{{ activeSelection() }}</p>
+    }
     @if (experience.myRank(); as own) {
       <aside class="my-rank">
         <app-icon name="trophy" /><span>{{ i.t('yourRank') }}</span
@@ -66,7 +69,7 @@ import { IconComponent } from '../shared/icon.component';
             <strong class="rank">#{{ row.rank }}</strong>
             <div>
               <h3>{{ row.displayName }}</h3>
-              <span>{{ row.quizzesCompleted }} {{ i.t('quizzesCompleted') }}</span>
+              <span>{{ i.count(row.quizzesCompleted, 'quizCompleted', 'quizzesCompleted') }}</span>
             </div>
             <div class="leaderboard-score">
               <strong>{{ row.points }}</strong
@@ -121,18 +124,39 @@ export class ProgressLeaderboardComponent {
   readonly topics = computed(() => {
     const grade = this.grade(),
       subject = this.subject();
-    const ids = new Set(
-      (this.content.manifest()?.items ?? [])
-        .filter(
-          item =>
-            item.type === 'quiz' &&
-            (!grade || item.grade === grade) &&
-            (!subject || item.subject === subject) &&
-            item.topic,
-        )
-        .map(item => item.topic as string),
+    const items = (this.content.manifest()?.items ?? []).filter(
+      item =>
+        item.type !== 'syllabus' &&
+        (!grade || item.grade === grade) &&
+        (!subject || item.subject === subject) &&
+        item.topic,
     );
-    return [...ids].map(id => ({ id, label: readable(id) })).sort((a, b) => a.label.localeCompare(b.label));
+    const ids = new Set(items.filter(item => item.type === 'quiz').map(item => item.topic as string));
+    return [...ids]
+      .map(id => {
+        const metadata =
+          items.find(item => item.topic === id && item.type === 'note') ?? items.find(item => item.topic === id);
+        return {
+          id,
+          label: metadata
+            ? this.content.getContentDisplayInfo(metadata.id, this.i.preferences.language()).title
+            : readable(id),
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label));
+  });
+  readonly activeSelection = computed(() => {
+    const parts: string[] = [];
+    if (this.grade()) parts.push(`${this.i.t('class')} ${this.grade()}`);
+    if (this.scope() === 'subject' || this.scope() === 'topic') {
+      const selected = this.subjects().find(value => value.id === this.subject());
+      if (selected) parts.push(selected.label);
+    }
+    if (this.scope() === 'topic') {
+      const selected = this.topics().find(value => value.id === this.topic());
+      if (selected) parts.push(selected.label);
+    }
+    return parts.join(' · ');
   });
 
   constructor() {

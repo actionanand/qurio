@@ -24,6 +24,14 @@ export interface WrongQuestionStat {
   last_wrong_at: string | null;
 }
 
+export interface WrongAnswerDetail {
+  quizId: string;
+  questionId: string;
+  selectedOptionId: string | null;
+  correctOptionId: string;
+  answeredAt: string | null;
+}
+
 @Service()
 export class LearnerStateRepository {
   private readonly auth = inject(AuthService);
@@ -54,37 +62,45 @@ export class LearnerStateRepository {
 
   async loadCompletedContent(): Promise<string[]> {
     if (!this.auth.approved()) return [];
-    const { data } = await this.supabase.from('study_progress').select('content_id').eq('state', 'completed');
+    const { data, error } = await this.supabase.from('study_progress').select('content_id').eq('state', 'completed');
+    if (error) throw error;
     return (data ?? []).map(row => String(row.content_id));
   }
 
   async loadAttempts(): Promise<Attempt[]> {
     if (!this.auth.approved()) return [];
-    const { data } = await this.supabase
-      .from('quiz_attempts')
-      .select(
-        'id,quiz_id,series_id,language_used,quiz_version,content_version,started_at,completed_at,auto_submitted,time_taken_seconds,total_questions,correct_count,wrong_count,unanswered_count,score_percent,passing_percentage,passed',
-      )
-      .order('completed_at', { ascending: false })
-      .limit(250);
-    return (data ?? []).map(row => ({
-      id: String(row.id),
-      quizId: String(row.quiz_id),
-      total: Number(row.total_questions),
-      correct: Number(row.correct_count),
-      wrong: Number(row.wrong_count),
-      unanswered: Number(row.unanswered_count),
-      scorePercentage: Number(row.score_percent),
-      passed: Boolean(row.passed),
-      elapsedSeconds: Number(row.time_taken_seconds),
-      completedAt: String(row.completed_at),
-      languageUsed: row.language_used as Language,
-      autoSubmitted: Boolean(row.auto_submitted),
-      startedAt: String(row.started_at),
-      seriesId: row.series_id ? String(row.series_id) : undefined,
-      quizVersion: row.quiz_version === null ? undefined : Number(row.quiz_version),
-      contentVersion: row.content_version ? String(row.content_version) : undefined,
-      passingPercentage: Number(row.passing_percentage),
+    const rows: Record<string, unknown>[] = [];
+    const pageSize = 500;
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await this.supabase
+        .from('quiz_attempts')
+        .select(
+          'id,quiz_id,series_id,language_used,quiz_version,content_version,started_at,completed_at,auto_submitted,time_taken_seconds,total_questions,correct_count,wrong_count,unanswered_count,score_percent,passing_percentage,passed',
+        )
+        .order('completed_at', { ascending: false })
+        .range(offset, offset + pageSize - 1);
+      if (error) throw error;
+      rows.push(...((data ?? []) as Record<string, unknown>[]));
+      if (!data || data.length < pageSize) break;
+    }
+    return rows.map(row => ({
+      id: String(row['id']),
+      quizId: String(row['quiz_id']),
+      total: Number(row['total_questions']),
+      correct: Number(row['correct_count']),
+      wrong: Number(row['wrong_count']),
+      unanswered: Number(row['unanswered_count']),
+      scorePercentage: Number(row['score_percent']),
+      passed: Boolean(row['passed']),
+      elapsedSeconds: Number(row['time_taken_seconds']),
+      completedAt: String(row['completed_at']),
+      languageUsed: row['language_used'] as Language,
+      autoSubmitted: Boolean(row['auto_submitted']),
+      startedAt: String(row['started_at']),
+      seriesId: row['series_id'] ? String(row['series_id']) : undefined,
+      quizVersion: row['quiz_version'] === null ? undefined : Number(row['quiz_version']),
+      contentVersion: row['content_version'] ? String(row['content_version']) : undefined,
+      passingPercentage: Number(row['passing_percentage']),
     }));
   }
 
@@ -101,7 +117,7 @@ export class LearnerStateRepository {
     const userId = this.auth.user()?.id;
     if (!userId || !this.auth.approved()) return;
     const now = new Date().toISOString();
-    await this.supabase.from('study_progress').upsert(
+    const { error } = await this.supabase.from('study_progress').upsert(
       {
         user_id: userId,
         content_id: contentId,
@@ -114,10 +130,12 @@ export class LearnerStateRepository {
       },
       { onConflict: 'user_id,content_id' },
     );
+    if (error) throw error;
   }
 
-  async submitAttempt(attempt: Attempt) {
-    if (!this.auth.approved() || !attempt.answers) return;
+  async submitAttempt(attempt: Attempt): Promise<void> {
+    if (!this.auth.approved()) throw new Error('Approved account required');
+    if (!attempt.answers) throw new Error('Complete answer records are required');
     const item = this.content.getItemById(attempt.quizId);
     const { error } = await this.supabase.rpc('submit_quiz_attempt', {
       payload: {
@@ -154,7 +172,7 @@ export class LearnerStateRepository {
         })),
       },
     });
-    if (error) console.warn('Unable to synchronize this quiz attempt. It remains saved on this device.');
+    if (error) throw error;
   }
 
   async saveExamTask(planId: string, planDate: string, taskKey: string, taskType: string, completed: boolean) {
@@ -178,10 +196,36 @@ export class LearnerStateRepository {
 
   async wrongQuestionStats(): Promise<WrongQuestionStat[]> {
     if (!this.auth.approved()) return [];
-    const { data } = await this.supabase
+    const { data, error } = await this.supabase
       .from('wrong_question_stats')
       .select('quiz_id,question_id,attempts,wrong_count,last_wrong_at');
+    if (error) throw error;
     return (data ?? []) as WrongQuestionStat[];
+  }
+
+  async latestWrongAnswers(quizId: string, questionIds: string[]): Promise<WrongAnswerDetail[]> {
+    if (!this.auth.approved() || !questionIds.length) return [];
+    const { data, error } = await this.supabase
+      .from('quiz_attempt_answers')
+      .select('quiz_id,question_id,selected_option_id,correct_option_id,answered_at')
+      .eq('quiz_id', quizId)
+      .eq('is_correct', false)
+      .in('question_id', questionIds)
+      .order('answered_at', { ascending: false, nullsFirst: false });
+    if (error) throw error;
+    const latest = new Map<string, WrongAnswerDetail>();
+    for (const row of data ?? []) {
+      const questionId = String(row.question_id);
+      if (latest.has(questionId)) continue;
+      latest.set(questionId, {
+        quizId: String(row.quiz_id),
+        questionId,
+        selectedOptionId: row.selected_option_id === null ? null : String(row.selected_option_id),
+        correctOptionId: String(row.correct_option_id),
+        answeredAt: row.answered_at === null ? null : String(row.answered_at),
+      });
+    }
+    return [...latest.values()];
   }
 
   async loadBookmarks(): Promise<Bookmark[]> {

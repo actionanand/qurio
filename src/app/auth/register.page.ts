@@ -4,10 +4,12 @@ import { Router, RouterLink } from '@angular/router';
 import { IonButton, IonInput, IonSpinner } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { IconComponent } from '../shared/icon.component';
+import { AuthCaptchaComponent } from './auth-captcha.component';
 import { safeAuthMessage } from './auth-page.shared';
+import { CaptchaService } from './captcha.service';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink, IonButton, IonInput, IonSpinner, IconComponent],
+  imports: [ReactiveFormsModule, RouterLink, IonButton, IonInput, IonSpinner, IconComponent, AuthCaptchaComponent],
   template: `
     <section class="auth-page">
       <article class="auth-card auth-card-wide">
@@ -46,7 +48,17 @@ import { safeAuthMessage } from './auth-page.shared';
           @if (message()) {
             <p class="form-message error" role="alert">{{ message() }}</p>
           }
-          <ion-button type="submit" expand="block" [disabled]="form.invalid || passwordMismatch() || busy()">
+          <app-auth-captcha [resetNonce]="captchaReset()" (tokenChange)="captchaToken.set($event)" />
+          <ion-button
+            type="submit"
+            expand="block"
+            [disabled]="
+              form.invalid ||
+              passwordMismatch() ||
+              busy() ||
+              !captcha.authAllowed() ||
+              !captcha.canSubmit(captchaToken())
+            ">
             @if (busy()) {
               <ion-spinner name="crescent" />
             } @else {
@@ -62,8 +74,11 @@ import { safeAuthMessage } from './auth-page.shared';
 export class RegisterPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  readonly captcha = inject(CaptchaService);
   readonly busy = signal(false);
   readonly message = signal('');
+  readonly captchaToken = signal('');
+  readonly captchaReset = signal(0);
   readonly form = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }),
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
@@ -76,18 +91,32 @@ export class RegisterPage {
   };
 
   async submit() {
-    if (this.form.invalid || this.passwordMismatch() || this.busy()) return;
+    if (
+      this.form.invalid ||
+      this.passwordMismatch() ||
+      this.busy() ||
+      !this.captcha.authAllowed() ||
+      !this.captcha.canSubmit(this.captchaToken())
+    )
+      return;
     this.busy.set(true);
     this.message.set('');
     const { name, email, password } = this.form.getRawValue();
     const normalizedEmail = email.trim().toLowerCase();
-    const result = await this.auth.signUp(name.trim(), normalizedEmail, password);
-    this.busy.set(false);
-    if (result.error) {
-      this.message.set(safeAuthMessage(result.error, 'Unable to create the account. Please try again later.'));
-      return;
+    try {
+      const result = await this.auth.signUp(name.trim(), normalizedEmail, password, this.captchaToken());
+      if (result.error) {
+        this.message.set(safeAuthMessage(result.error, 'Unable to create the account. Please try again later.'));
+        return;
+      }
+      sessionStorage.setItem('qurio.verificationEmail', normalizedEmail);
+      await this.router.navigate(['/auth/verify-email']);
+    } catch {
+      this.message.set('Unable to create the account. Please try again later.');
+    } finally {
+      this.busy.set(false);
+      this.captchaToken.set('');
+      this.captchaReset.update(value => value + 1);
     }
-    sessionStorage.setItem('qurio.verificationEmail', normalizedEmail);
-    await this.router.navigate(['/auth/verify-email']);
   }
 }

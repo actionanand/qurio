@@ -9,10 +9,36 @@ For Dashboard navigation, table descriptions, ready-to-run inspection queries, a
 The Angular environments contain only browser-safe values:
 
 - `appUrl`: `http://localhost:3039` in development and the existing GitHub Pages URL in production
+- `turnstile.siteKey`: the public Cloudflare Turnstile site key
 - `supabaseUrl`
 - `supabaseKey`: the publishable/anonymous client key
 
-Never place a database password, service-role key, Supabase secret key, Resend API key, or SMTP password in Angular or this repository. Resend SMTP and email templates remain external Supabase Dashboard configuration. Keep localhost as an allowed redirect and set the production Site URL/redirect allowlist to `https://actionanand.github.io/qurio/**` before production use.
+Never place a database password, service-role key, Supabase secret key, Turnstile secret, Resend API key, or SMTP password in Angular or this repository. Resend SMTP and email templates remain external Supabase Dashboard configuration. Localhost redirect support is temporary development configuration; it must not be part of the production Turnstile hostname allowlist.
+
+## CAPTCHA protection
+
+`environment.appUrl` is the single source for the hosted application, authentication redirects, and hosted CAPTCHA challenge. Its current production value is `https://actionanand.github.io/qurio`. The application derives:
+
+- origin: `new URL(environment.appUrl).origin`, currently `https://actionanand.github.io`
+- Turnstile hostname: `new URL(environment.appUrl).hostname`, currently `actionanand.github.io`
+- deployed base path: `new URL(environment.appUrl).pathname`, currently `/qurio`
+- hosted Android challenge: `${environment.appUrl}/auth/challenge`, currently `https://actionanand.github.io/qurio/auth/challenge`
+
+Changing `environment.appUrl` updates these URLs without changing services or components. The production environment contains the configured public Turnstile site key; do not print, rotate, or duplicate it unnecessarily. Production configuration rejects a disabled or empty Turnstile setup. The Turnstile secret must never enter Angular, GitHub, or the Android package.
+
+In **Cloudflare Dashboard**, create a managed Turnstile widget and allow only the hostname derived from `environment.appUrl`, currently `actionanand.github.io`. `/qurio` is a route path and is not part of the hostname. Do not permanently allow `localhost`, `127.0.0.1`, or `https://localhost` in the production widget.
+
+In **Supabase Dashboard → Authentication → Bot and Abuse Protection**, enable CAPTCHA protection, select Cloudflare Turnstile, and enter the Turnstile secret key. Supabase validates every token server-side. The client origin/path check only improves user experience and is not the security boundary.
+
+Hosted web login, signup, recovery-email requests, and verification-email resend render Turnstile directly and pass the short-lived token using the installed Supabase SDK's supported `captchaToken` option. The token is cleared and the widget reset after every operation. Tokens are never written to local storage, IndexedDB, URLs, Supabase tables, logs, or analytics.
+
+The Capacitor Android login form keeps credentials inside the app. It embeds `${environment.appUrl}/auth/challenge`; Turnstile therefore executes under the hosted production hostname. The challenge page returns only a CAPTCHA token and random request ID. The parent requires the hosted origin, the exact iframe window, the expected message type, the matching request ID, and a non-empty token. The challenge page uses the exact Capacitor parent origin as the `postMessage` target. No wildcard target is used, and no email, password, access token, or refresh token crosses this channel. The Capacitor transport origin `https://localhost` is not a Turnstile hostname allowlist entry.
+
+Development keeps `turnstile.enabled = false` in the non-production environment. Protected Auth submit buttons are disabled and Supabase Auth is never called without a CAPTCHA token. The application itself and existing authenticated sessions can still initialize. To test CAPTCHA locally, temporarily configure a development widget/hostname and enable the development setting. Do not weaken `environment.prod.ts` or the production Cloudflare widget.
+
+The GitHub Pages workflow copies the built `index.html` to `404.html`. This preserves Angular routing when Android directly requests `${environment.appUrl}/auth/challenge`; GitHub Pages serves the SPA fallback and Angular resolves `/auth/challenge` under the `/qurio/` base href.
+
+The production Cloudflare widget and Supabase CAPTCHA protection are already configured outside this repository. Supabase redirect allowlists are separate from Turnstile hostname allowlists: a temporary `http://localhost:3039/**` Auth redirect does not authorize localhost to render the production Turnstile widget.
 
 ## Apply the database source
 
@@ -109,7 +135,7 @@ For production, change `QURIO_APP_URL` to the real Qurio production origin. Supa
 - `pending`, `denied`, and `suspended` sessions are routed to their status page and rejected by learner RLS.
 - Owner plus at most three Admin accounts is enforced by the database.
 
-The browser preserves existing local settings and progress as an immediate cache. Approved users synchronize stable content IDs, quiz/question/option IDs, and plan task IDs with Supabase. Learning Markdown, questions, answers, and explanations remain in the public content repository.
+The browser preserves existing local settings and progress in `qurio.progress.v1`. For approved users, Supabase is the canonical source for completed lessons and Practice History. Complete device-only attempts are uploaded once by stable attempt ID; incomplete attempts created before answer synchronization remain in a separate device-only history and are never fabricated or uploaded. Per-user attempt sync state is stored in `qurio.progress.sync.v1`, and local completion ownership is stored in `qurio.progress.completions.v1`. These keys contain no Supabase token or secret. Learning Markdown, questions, answers, and explanations remain in the public content repository.
 
 ## End-to-end verification
 

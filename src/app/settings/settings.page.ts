@@ -7,9 +7,19 @@ import { AuthService } from '../services/auth.service';
 import { IconComponent } from '../shared/icon.component';
 import { DeviceSettingsComponent } from '../shared/device-settings.component';
 import { SnackbarService } from '../core/snackbar.service';
+import { AuthCaptchaComponent } from '../auth/auth-captcha.component';
+import { CaptchaService } from '../auth/captcha.service';
 
 @Component({
-  imports: [ReactiveFormsModule, IonButton, IonInput, IonSpinner, IconComponent, DeviceSettingsComponent],
+  imports: [
+    ReactiveFormsModule,
+    IonButton,
+    IonInput,
+    IonSpinner,
+    IconComponent,
+    DeviceSettingsComponent,
+    AuthCaptchaComponent,
+  ],
   template: `
     <section class="settings-page">
       <div class="section-heading">
@@ -57,7 +67,11 @@ import { SnackbarService } from '../core/snackbar.service';
           @if (resetMessage()) {
             <p class="form-message" [class.error]="resetFailed()" role="status">{{ resetMessage() }}</p>
           }
-          <ion-button fill="outline" [disabled]="resetBusy()" (click)="sendReset()">
+          <app-auth-captcha [resetNonce]="captchaReset()" (tokenChange)="captchaToken.set($event)" />
+          <ion-button
+            fill="outline"
+            [disabled]="resetBusy() || !captcha.canSubmit(captchaToken())"
+            (click)="sendReset()">
             @if (resetBusy()) {
               <ion-spinner name="crescent" />
             } @else {
@@ -75,12 +89,15 @@ export class SettingsPage {
   private readonly snackbar = inject(SnackbarService);
   readonly auth = inject(AuthService);
   readonly i = inject(I18nService);
+  readonly captcha = inject(CaptchaService);
   readonly profileBusy = signal(false);
   readonly profileFailed = signal(false);
   readonly profileMessage = signal('');
   readonly resetBusy = signal(false);
   readonly resetFailed = signal(false);
   readonly resetMessage = signal('');
+  readonly captchaToken = signal('');
+  readonly captchaReset = signal(0);
   readonly profileForm = new FormGroup({
     displayName: new FormControl('', {
       nonNullable: true,
@@ -118,12 +135,12 @@ export class SettingsPage {
 
   async sendReset() {
     const email = this.auth.user()?.email;
-    if (!email || this.resetBusy()) return;
+    if (!email || this.resetBusy() || !this.captcha.canSubmit(this.captchaToken())) return;
     this.resetBusy.set(true);
     this.resetFailed.set(false);
     this.resetMessage.set('');
     try {
-      const result = await this.auth.resetPassword(email);
+      const result = await this.auth.resetPassword(email, this.captchaToken());
       if (result.error) throw result.error;
       this.resetMessage.set(this.i.t('resetEmailSent'));
       this.snackbar.show(this.i.t('resetEmailSent'));
@@ -133,6 +150,8 @@ export class SettingsPage {
       this.snackbar.show(this.i.t('unableToSendReset'), 'error');
     } finally {
       this.resetBusy.set(false);
+      this.captchaToken.set('');
+      this.captchaReset.update(value => value + 1);
     }
   }
 }

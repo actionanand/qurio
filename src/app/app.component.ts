@@ -60,6 +60,7 @@ export class AppComponent {
   private appUrlListener?: PluginListenerHandle;
   private notificationListener?: PluginListenerHandle;
   private readonly deviceReady = signal(false);
+  readonly challengeRoute = signal(this.router.url.split('?')[0] === '/auth/challenge');
   readonly navigation = () => navigationItems(this.auth.isStaff());
   constructor() {
     effect(() => {
@@ -83,11 +84,13 @@ export class AppComponent {
       });
     });
     this.router.events.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe(event => {
-      if (event instanceof NavigationEnd)
+      if (event instanceof NavigationEnd) {
+        this.challengeRoute.set(event.urlAfterRedirects.split('?')[0] === '/auth/challenge');
         setTimeout(() => {
           document.getElementById('main')?.focus();
           document.getElementById('main')?.scrollTo(0, 0);
         });
+      }
     });
     afterNextRender(() => void this.initializeDeviceFeatures());
   }

@@ -58,6 +58,44 @@ const messages = {
     'सामग्री लोड नहीं हुई। कनेक्शन जाँचें और फिर कोशिश करें।',
   ],
   retry: ['Try again', 'மீண்டும் முயல்க', 'फिर कोशिश करें'],
+  captchaLoading: ['Checking security…', 'பாதுகாப்பு சரிபார்க்கப்படுகிறது…', 'सुरक्षा जाँच जारी है…'],
+  captchaVerify: ['Verify you are human', 'நீங்கள் மனிதர் என்பதை உறுதிப்படுத்தவும்', 'सत्यापित करें कि आप मानव हैं'],
+  captchaExpired: [
+    'Security check expired. Try verification again.',
+    'பாதுகாப்புச் சரிபார்ப்பு காலாவதியானது. மீண்டும் முயலவும்.',
+    'सुरक्षा जाँच की अवधि समाप्त हो गई। फिर सत्यापित करें।',
+  ],
+  captchaFailed: [
+    'Security check failed. Try verification again.',
+    'பாதுகாப்புச் சரிபார்ப்பு தோல்வியடைந்தது. மீண்டும் முயலவும்.',
+    'सुरक्षा जाँच विफल हुई। फिर सत्यापित करें।',
+  ],
+  captchaUnavailable: [
+    'Authentication protection is unavailable.',
+    'உள்நுழைவு பாதுகாப்பு கிடைக்கவில்லை.',
+    'प्रमाणीकरण सुरक्षा उपलब्ध नहीं है।',
+  ],
+  captchaDisabled: [
+    'Authentication CAPTCHA is disabled for this environment.',
+    'இந்தச் சூழலில் உள்நுழைவு CAPTCHA முடக்கப்பட்டுள்ளது.',
+    'इस परिवेश में प्रमाणीकरण CAPTCHA बंद है।',
+  ],
+  officialAppOnly: [
+    'Authentication is available only from the official Qurio app.',
+    'அதிகாரப்பூர்வ Qurio செயலியில் மட்டுமே உள்நுழைய முடியும்.',
+    'प्रमाणीकरण केवल आधिकारिक Qurio ऐप से उपलब्ध है।',
+  ],
+  openQurio: ['Open Qurio', 'Qurio-வைத் திறக்கவும்', 'Qurio खोलें'],
+  challengeInvalid: [
+    'Open this security check from the Qurio Android app.',
+    'இந்தப் பாதுகாப்புச் சரிபார்ப்பை Qurio Android செயலியில் இருந்து திறக்கவும்.',
+    'यह सुरक्षा जाँच Qurio Android ऐप से खोलें।',
+  ],
+  verificationComplete: [
+    'Verification complete. Return to Qurio.',
+    'சரிபார்ப்பு முடிந்தது. Qurio-க்கு திரும்பவும்.',
+    'सत्यापन पूरा हुआ। Qurio पर लौटें।',
+  ],
   empty: ['New learning content is on its way.', 'புதிய உள்ளடக்கம் விரைவில் வரும்.', 'नई सामग्री जल्द आएगी।'],
   back: ['Back to learning', 'கற்றலுக்குத் திரும்பு', 'सीखने पर लौटें'],
   fallback: [
@@ -69,6 +107,7 @@ const messages = {
   completed: ['Completed', 'முடிந்தது', 'पूर्ण'],
   start: ['Start practice', 'பயிற்சியைத் தொடங்கு', 'अभ्यास शुरू करें'],
   questions: ['Questions', 'கேள்விகள்', 'प्रश्न'],
+  questionLabel: ['Question', 'கேள்வி', 'प्रश्न'],
   passMark: ['Pass mark', 'தேர்ச்சி மதிப்பெண்', 'उत्तीर्ण अंक'],
   hint: ['Show hint', 'குறிப்பைக் காட்டு', 'संकेत दिखाएँ'],
   check: ['Check answer', 'பதிலைச் சரிபார்', 'उत्तर जाँचें'],
@@ -96,7 +135,7 @@ const messages = {
   ],
   attempts: ['Quiz attempts', 'வினாடி வினா முயற்சிகள்', 'प्रश्नोत्तरी प्रयास'],
   average: ['Average score', 'சராசரி மதிப்பெண்', 'औसत अंक'],
-  notesDone: ['Notes completed', 'முடித்த குறிப்புகள்', 'पूर्ण नोट्स'],
+  notesDone: ['Lessons completed', 'முடித்த பாடங்கள்', 'पूर्ण पाठ'],
   recent: ['Your practice history', 'உங்கள் பயிற்சி வரலாறு', 'आपका अभ्यास इतिहास'],
   noProgress: [
     'Your next chapter starts here. Complete a note or try a quiz.',
@@ -520,15 +559,26 @@ const messages = {
     'இன்னும் தவறுகள் இல்லை. தொடர்ந்து பயிற்சி செய்யுங்கள்!',
     'अभी कोई गलती नहीं है। अभ्यास जारी रखें!',
   ],
-  questionsMissed: ['questions missed', 'தவறிய கேள்விகள்', 'छूटे प्रश्न'],
-  totalWrong: ['Total wrong answers', 'மொத்த தவறான பதில்கள்', 'कुल गलत उत्तर'],
+  questionMissed: ['question missed', 'கேள்வி தவறியது', 'प्रश्न छूटा'],
+  questionsMissed: ['questions missed', 'கேள்விகள் தவறின', 'प्रश्न छूटे'],
+  wrongAnswer: ['wrong answer', 'தவறான பதில்', 'गलत उत्तर'],
+  wrongAnswers: ['Wrong answers', 'தவறான பதில்கள்', 'गलत उत्तर'],
+  totalWrong: ['Wrong answers', 'தவறான பதில்கள்', 'गलत उत्तर'],
   lastMistake: ['Last mistake', 'கடைசி தவறு', 'पिछली गलती'],
+  lastMissed: ['Last missed', 'கடைசியாக தவறியது', 'आखिरी बार छूटा'],
+  yourAnswer: ['Your answer', 'உங்கள் பதில்', 'आपका उत्तर'],
+  correctAnswer: ['Correct answer', 'சரியான பதில்', 'सही उत्तर'],
+  notAnswered: ['Not answered', 'பதிலளிக்கவில்லை', 'उत्तर नहीं दिया'],
+  missed: ['Missed', 'தவறியது', 'चूका'],
+  timeOnce: ['time', 'முறை', 'बार'],
+  times: ['times', 'முறைகள்', 'बार'],
   practiceAgain: ['Practice again', 'மீண்டும் பயிற்சி செய்', 'फिर अभ्यास करें'],
   leaderboard: ['Leaderboard', 'தரவரிசைப் பட்டியல்', 'लीडरबोर्ड'],
   overall: ['Overall', 'ஒட்டுமொத்தம்', 'कुल मिलाकर'],
   yourRank: ['Your rank', 'உங்கள் தரவரிசை', 'आपकी रैंक'],
   points: ['Points', 'புள்ளிகள்', 'अंक'],
   quizzesCompleted: ['Quizzes completed', 'முடித்த வினாடி வினாக்கள்', 'पूरी प्रश्नोत्तरी'],
+  quizCompleted: ['quiz completed', 'வினாடி வினா முடிந்தது', 'प्रश्नोत्तरी पूरी'],
   noLeaderboard: [
     'No leaderboard results yet.',
     'தரவரிசை முடிவுகள் இன்னும் இல்லை.',
@@ -545,6 +595,29 @@ const messages = {
   uniqueQuizzes: ['Unique quizzes', 'தனித்துவமான வினாடி வினாக்கள்', 'अलग प्रश्नोत्तरी'],
   correctAnswers: ['Correct answers', 'சரியான பதில்கள்', 'सही उत्तर'],
   bestScore: ['Best score', 'சிறந்த மதிப்பெண்', 'सर्वश्रेष्ठ अंक'],
+  best: ['Best', 'சிறந்தது', 'सर्वश्रेष्ठ'],
+  passedShort: ['Passed', 'தேர்ச்சி', 'उत्तीर्ण'],
+  needsPractice: ['Needs practice', 'மேலும் பயிற்சி தேவை', 'अभ्यास की आवश्यकता'],
+  viewMore: ['View more', 'மேலும் காண்க', 'और देखें'],
+  pendingSync: ['Pending sync', 'ஒத்திசைவு நிலுவையில்', 'सिंक बाकी है'],
+  syncFailed: ['Sync failed', 'ஒத்திசைவு தோல்வியடைந்தது', 'सिंक विफल हुआ'],
+  syncComplete: ['Attempt synced.', 'முயற்சி ஒத்திசைக்கப்பட்டது.', 'प्रयास सिंक हो गया।'],
+  synced: ['Synced', 'ஒத்திசைக்கப்பட்டது', 'सिंक किया गया'],
+  deviceOnlyHistory: [
+    'Older device-only attempts',
+    'சாதனத்தில் மட்டும் உள்ள பழைய முயற்சிகள்',
+    'पुराने केवल-डिवाइस प्रयास',
+  ],
+  recordedOnDevice: [
+    'Recorded before cloud synchronization was available.',
+    'மேக ஒத்திசைவு கிடைப்பதற்கு முன் இந்தச் சாதனத்தில் பதிவு செய்யப்பட்டது.',
+    'क्लाउड सिंक उपलब्ध होने से पहले इस डिवाइस पर दर्ज किया गया।',
+  ],
+  progressUnavailable: [
+    'Synced progress could not be loaded. Check your connection and try again.',
+    'ஒத்திசைக்கப்பட்ட முன்னேற்றத்தை ஏற்ற முடியவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயலுங்கள்.',
+    'सिंक की गई प्रगति लोड नहीं हुई। कनेक्शन जाँचें और फिर कोशिश करें।',
+  ],
   progressOverviewIntro: [
     'Your synced learning activity and recent practice.',
     'உங்கள் ஒத்திசைக்கப்பட்ட கற்றல் செயல்பாடு மற்றும் சமீபத்திய பயிற்சி.',
@@ -567,5 +640,9 @@ export class I18nService {
   readonly preferences = inject(PreferencesService);
   t(key: MessageKey): string {
     return messages[key][{ en: 0, ta: 1, hi: 2 }[this.preferences.language()]];
+  }
+
+  count(value: number, singular: MessageKey, plural: MessageKey): string {
+    return `${value} ${this.t(value === 1 ? singular : plural)}`;
   }
 }

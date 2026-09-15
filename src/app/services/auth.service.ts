@@ -1,11 +1,13 @@
 import { Service, computed, inject, signal } from '@angular/core';
 import type { EmailOtpType, Session, User } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
+import { CaptchaService } from '../auth/captcha.service';
 import type { AccountStatus, AppRole, UserProfile } from './auth.models';
 import { SupabaseService } from './supabase.service';
 
 @Service()
 export class AuthService {
+  private readonly captcha = inject(CaptchaService);
   private readonly supabase = inject(SupabaseService).client;
   private profileRequest?: Promise<UserProfile | null>;
   private initializationRequest?: Promise<void>;
@@ -53,16 +55,26 @@ export class AuthService {
     await this.initialize();
   }
 
-  async signUp(name: string, email: string, password: string) {
+  async signUp(name: string, email: string, password: string, captchaToken: string) {
+    const token = this.requireCaptchaToken(captchaToken);
     return this.supabase.auth.signUp({
       email,
       password,
-      options: { data: { display_name: name }, emailRedirectTo: `${environment.appUrl}/auth/callback` },
+      options: {
+        data: { display_name: name },
+        emailRedirectTo: `${environment.appUrl}/auth/callback`,
+        captchaToken: token,
+      },
     });
   }
 
-  async signIn(email: string, password: string) {
-    const result = await this.supabase.auth.signInWithPassword({ email, password });
+  async signIn(email: string, password: string, captchaToken: string) {
+    const token = this.requireCaptchaToken(captchaToken);
+    const result = await this.supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: { captchaToken: token },
+    });
     if (!result.error) {
       this.session.set(result.data.session);
       await this.refreshProfile();
@@ -76,18 +88,30 @@ export class AuthService {
     this.profile.set(null);
   }
 
-  resendVerification(email: string) {
+  resendVerification(email: string, captchaToken: string) {
+    const token = this.requireCaptchaToken(captchaToken);
     return this.supabase.auth.resend({
       type: 'signup',
       email,
-      options: { emailRedirectTo: `${environment.appUrl}/auth/callback` },
+      options: {
+        emailRedirectTo: `${environment.appUrl}/auth/callback`,
+        captchaToken: token,
+      },
     });
   }
 
-  resetPassword(email: string) {
+  resetPassword(email: string, captchaToken: string) {
+    const token = this.requireCaptchaToken(captchaToken);
     return this.supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${environment.appUrl}/auth/update-password?recovery=1`,
+      captchaToken: token,
     });
+  }
+
+  private requireCaptchaToken(value: string): string {
+    const token = value.trim();
+    if (!this.captcha.authAllowed() || !this.captcha.canSubmit(token)) throw new Error('CAPTCHA_REQUIRED');
+    return token;
   }
 
   updatePassword(password: string) {

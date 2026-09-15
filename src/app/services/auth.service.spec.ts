@@ -5,10 +5,13 @@ import { environment } from '../../environments/environment';
 import type { AccountStatus, UserProfile } from './auth.models';
 import { AuthService } from './auth.service';
 import { SupabaseService } from './supabase.service';
+import { CaptchaService } from '../auth/captcha.service';
 
 describe('AuthService', () => {
   const signUp = vi.fn(async () => ({ data: { user: null, session: null }, error: null }));
+  const signInWithPassword = vi.fn(async () => ({ data: { user: null, session: null }, error: null }));
   const resetPasswordForEmail = vi.fn(async () => ({ data: {}, error: null }));
+  const resend = vi.fn(async () => ({ data: { user: null, session: null }, error: null }));
   const exchangeCodeForSession = vi.fn(async () => ({
     data: { session: { user: { id: 'recovered-user' } } as Session },
     error: null,
@@ -22,7 +25,9 @@ describe('AuthService', () => {
       onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
       getSession,
       signUp,
+      signInWithPassword,
       resetPasswordForEmail,
+      resend,
       exchangeCodeForSession,
     },
     from: vi.fn(() => ({
@@ -40,7 +45,13 @@ describe('AuthService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     TestBed.resetTestingModule();
-    TestBed.configureTestingModule({ providers: [AuthService, { provide: SupabaseService, useValue: { client } }] });
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        { provide: SupabaseService, useValue: { client } },
+        { provide: CaptchaService, useValue: { authAllowed: () => true, canSubmit: (token: string) => !!token } },
+      ],
+    });
   });
 
   it('keeps verification and approval as separate state', async () => {
@@ -55,23 +66,54 @@ describe('AuthService', () => {
 
   it('uses the configured callback and display name during signup', async () => {
     const auth = TestBed.inject(AuthService);
-    await auth.signUp('Qurio Learner', 'learner@example.test', 'a-password');
+    await auth.signUp('Qurio Learner', 'learner@example.test', 'a-password', 'signup-captcha');
     expect(signUp).toHaveBeenCalledWith({
       email: 'learner@example.test',
       password: 'a-password',
       options: {
         data: { display_name: 'Qurio Learner' },
         emailRedirectTo: `${environment.appUrl}/auth/callback`,
+        captchaToken: 'signup-captcha',
       },
+    });
+  });
+
+  it('passes the CAPTCHA token during password sign-in', async () => {
+    const auth = TestBed.inject(AuthService);
+    await auth.signIn('learner@example.test', 'a-password', 'login-captcha');
+    expect(signInWithPassword).toHaveBeenCalledWith({
+      email: 'learner@example.test',
+      password: 'a-password',
+      options: { captchaToken: 'login-captcha' },
     });
   });
 
   it('marks password reset links as recovery routes', async () => {
     const auth = TestBed.inject(AuthService);
-    await auth.resetPassword('learner@example.test');
+    await auth.resetPassword('learner@example.test', 'reset-captcha');
     expect(resetPasswordForEmail).toHaveBeenCalledWith('learner@example.test', {
       redirectTo: `${environment.appUrl}/auth/update-password?recovery=1`,
+      captchaToken: 'reset-captcha',
     });
+  });
+
+  it('passes CAPTCHA to the supported verification resend operation', async () => {
+    const auth = TestBed.inject(AuthService);
+    await auth.resendVerification('learner@example.test', 'resend-captcha');
+    expect(resend).toHaveBeenCalledWith({
+      type: 'signup',
+      email: 'learner@example.test',
+      options: {
+        emailRedirectTo: `${environment.appUrl}/auth/callback`,
+        captchaToken: 'resend-captcha',
+      },
+    });
+  });
+
+  it('does not call protected Supabase Auth methods without a valid CAPTCHA token', async () => {
+    const auth = TestBed.inject(AuthService);
+    await expect(auth.signIn('learner@example.test', 'a-password', '')).rejects.toThrow('CAPTCHA_REQUIRED');
+    expect(signInWithPassword).not.toHaveBeenCalled();
   });
 
   it('exchanges a recovery code even when another session already exists', async () => {
