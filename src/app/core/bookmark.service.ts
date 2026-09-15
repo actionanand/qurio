@@ -12,14 +12,17 @@ export class BookmarkService {
   readonly bookmarks = signal<Bookmark[]>([]);
   readonly loaded = signal(false);
   readonly loading = signal(false);
+  readonly error = signal(false);
 
   async load(): Promise<void> {
     if (this.loading()) return;
     this.loading.set(true);
+    this.error.set(false);
     try {
       this.bookmarks.set(await this.repository.loadBookmarks());
       this.loaded.set(true);
     } catch {
+      this.error.set(true);
       this.snackbar.show(this.i.t('operationFailed'), 'error');
     } finally {
       this.loading.set(false);

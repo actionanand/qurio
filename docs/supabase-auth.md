@@ -109,7 +109,7 @@ For production, change `QURIO_APP_URL` to the real Qurio production origin. Supa
 - `pending`, `denied`, and `suspended` sessions are routed to their status page and rejected by learner RLS.
 - Owner plus at most three Admin accounts is enforced by the database.
 
-The browser preserves existing local settings and progress as an immediate cache. Approved users synchronize stable content IDs, quiz/question/option IDs, and plan task IDs with Supabase. Learning Markdown, questions, answers, and explanations remain in the public content repository.
+The browser preserves existing local settings and progress in `qurio.progress.v1`. For approved users, Supabase is the canonical source for completed lessons and Practice History. Complete device-only attempts are uploaded once by stable attempt ID; incomplete attempts created before answer synchronization remain in a separate device-only history and are never fabricated or uploaded. Per-user attempt sync state is stored in `qurio.progress.sync.v1`, and local completion ownership is stored in `qurio.progress.completions.v1`. These keys contain no Supabase token or secret. Learning Markdown, questions, answers, and explanations remain in the public content repository.
 
 ## End-to-end verification
 
