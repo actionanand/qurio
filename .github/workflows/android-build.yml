@@ -39,6 +39,13 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          # The action's default package list includes obsolete `tools`, which
+          # current Android SDK repositories no longer publish.
+          packages: platform-tools
+
+      - name: Install Android SDK platform and build tools
+        run: sdkmanager "platforms;android-${TARGET_SDK_VERSION}" "build-tools;36.0.0"
 
       - name: Install locked dependencies
         run: npm ci

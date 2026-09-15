@@ -1,7 +1,6 @@
 # Qurio Android ↔ Website Turnstile Verification — Current Implementation
 
 > **Repository reviewed:** `actionanand/qurio`  
-> **Branch:** `feature/3-new-content-structure`  
 > **Purpose:** Explain in detail how the Qurio Android app, whose Capacitor WebView origin is `https://localhost`, can securely use the deployed Qurio website at `https://actionanand.github.io/qurio` to complete Cloudflare Turnstile verification.
 
 ---
