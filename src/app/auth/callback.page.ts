@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonSpinner } from '@ionic/angular';
+import { I18nService } from '../core/i18n.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -9,13 +10,13 @@ import { AuthService } from '../services/auth.service';
     <section class="auth-page">
       <article class="auth-card auth-status-card">
         @if (error()) {
-          <p class="eyebrow">Unable to continue</p>
-          <h1>Verification link problem</h1>
+          <p class="eyebrow">{{ i.t('unableToContinue') }}</p>
+          <h1>{{ i.t('verificationLinkProblem') }}</h1>
           <p role="alert">{{ error() }}</p>
         } @else {
           <ion-spinner name="crescent" />
-          <h1>Confirming your account</h1>
-          <p>Securely checking your email and approval status…</p>
+          <h1>{{ i.t('confirmingAccount') }}</h1>
+          <p>{{ i.t('checkingApprovalStatus') }}</p>
         }
       </article>
     </section>
@@ -25,6 +26,7 @@ export class AuthCallbackPage {
   private readonly auth = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  readonly i = inject(I18nService);
   readonly error = signal('');
   constructor() {
     void this.complete();
@@ -42,7 +44,7 @@ export class AuthCallbackPage {
       });
       await this.router.navigateByUrl(this.auth.routeForProfile(profile), { replaceUrl: true });
     } catch {
-      this.error.set('This link is invalid or has expired. Please sign in or request another verification email.');
+      this.error.set(this.i.t('invalidVerificationLink'));
     }
   }
 }

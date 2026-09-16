@@ -81,6 +81,16 @@ export function createCaptchaInitMessage(requestId: string) {
   return { type: 'qurio:captcha-init' as const, requestId };
 }
 
+export function createCaptchaReadyMessage(requestId: string) {
+  return { type: 'qurio:captcha-ready' as const, requestId };
+}
+
+export function isCaptchaReadyMessage(value: unknown, requestId: string): boolean {
+  if (!value || typeof value !== 'object') return false;
+  const message = value as Record<string, unknown>;
+  return message['type'] === 'qurio:captcha-ready' && message['requestId'] === requestId;
+}
+
 export function isCaptchaInitMessage(value: unknown): value is { type: 'qurio:captcha-init'; requestId: string } {
   if (!value || typeof value !== 'object') return false;
   const message = value as Record<string, unknown>;

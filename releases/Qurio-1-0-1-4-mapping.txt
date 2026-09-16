@@ -3,8 +3,8 @@
 # min_api: 24
 # common_typos_disable
 # {"id":"com.android.tools.r8.mapping","version":"2.2"}
-# pg_map_id: 4530c99e663e6d5dbfa4b8887e189330b8f99c1d3ec643c63a47dd8d9fc66182
-# pg_map_hash: SHA-256 4530c99e663e6d5dbfa4b8887e189330b8f99c1d3ec643c63a47dd8d9fc66182
+# pg_map_id: 4b69515a67f2af7f8b4a6d3174b509c9c2f56ba589b3f704e6d95fe89528f03b
+# pg_map_hash: SHA-256 4b69515a67f2af7f8b4a6d3174b509c9c2f56ba589b3f704e6d95fe89528f03b
 android.app.AppComponentFactory -> android.app.AppComponentFactory:
 # {"id":"com.android.tools.r8.synthesized"}
     void <clinit>() -> <clinit>
@@ -109,7 +109,7 @@ androidx.activity.BackEventCompat -> androidx.activity.c:
     50:62:java.lang.String toString():88:88 -> toString
 androidx.activity.Cancellable -> androidx.activity.d:
 # {"id":"sourceFile","fileName":"Cancellable.kt"}
-androidx.activity.ComponentActivity -> androidx.activity.p:
+androidx.activity.ComponentActivity -> androidx.activity.q:
 # {"id":"sourceFile","fileName":"ComponentActivity.kt"}
     androidx.activity.contextaware.ContextAwareHelper contextAwareHelper -> b
       # {"id":"com.android.tools.r8.residualsignature","signature":"Lb/a;"}
@@ -120,12 +120,12 @@ androidx.activity.ComponentActivity -> androidx.activity.p:
     androidx.lifecycle.ViewModelStore _viewModelStore -> e
       # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/lifecycle/u0;"}
     androidx.activity.ComponentActivity$ReportFullyDrawnExecutor reportFullyDrawnExecutor -> f
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/m;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/n;"}
     kotlin.Lazy fullyDrawnReporter$delegate -> g
       # {"id":"com.android.tools.r8.residualsignature","signature":"Lm1/b;"}
     java.util.concurrent.atomic.AtomicInteger nextLocalRequestCode -> h
     androidx.activity.result.ActivityResultRegistry activityResultRegistry -> i
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/o;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/p;"}
     java.util.concurrent.CopyOnWriteArrayList onConfigurationChangedListeners -> j
     java.util.concurrent.CopyOnWriteArrayList onTrimMemoryListeners -> k
     java.util.concurrent.CopyOnWriteArrayList onNewIntentListeners -> l
@@ -251,7 +251,7 @@ androidx.activity.ComponentActivity -> androidx.activity.p:
     13:18:void androidx.activity.contextaware.ContextAwareHelper.addOnContextAvailableListener(androidx.activity.contextaware.OnContextAvailableListener):56:56 -> i
     13:18:void addOnContextAvailableListener(androidx.activity.contextaware.OnContextAvailableListener):437 -> i
     1:9:androidx.activity.OnBackPressedDispatcher getOnBackPressedDispatcher():597:597 -> j
-      # {"id":"com.android.tools.r8.residualsignature","signature":"()Landroidx/activity/c0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"()Landroidx/activity/d0;"}
     1:16:void initializeViewTreeOwners():417:417 -> k
     17:19:void androidx.lifecycle.ViewTreeLifecycleOwner.set(android.view.View,androidx.lifecycle.LifecycleOwner):37:37 -> k
     17:19:void initializeViewTreeOwners():417 -> k
@@ -489,14 +489,14 @@ androidx.activity.ComponentActivity$$ExternalSyntheticLambda11 -> androidx.activ
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
     androidx.activity.OnBackPressedDispatcher androidx.activity.ComponentActivity$$InternalSyntheticLambda$3$7dd8f3f473d56daf3164e1ca6841aba5a58aca3c0dabe9c947a84d891cbbea56$0.f$0 -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/c0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/d0;"}
       # {"id":"com.android.tools.r8.synthesized"}
     androidx.activity.ComponentActivity androidx.activity.ComponentActivity$$InternalSyntheticLambda$3$7dd8f3f473d56daf3164e1ca6841aba5a58aca3c0dabe9c947a84d891cbbea56$0.f$1 -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/p;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/q;"}
       # {"id":"com.android.tools.r8.synthesized"}
     1:8:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.activity.ComponentActivity):0:0 -> <init>
       # {"id":"com.android.tools.r8.synthesized"}
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/c0;Landroidx/activity/p;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/d0;Landroidx/activity/q;)V"}
     1:4:void androidx.activity.ComponentActivity.addObserverForBackInvoker$lambda$14(androidx.activity.OnBackPressedDispatcher,androidx.activity.ComponentActivity,androidx.lifecycle.LifecycleOwner,androidx.lifecycle.Lifecycle$Event):636:636 -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/lifecycle/s;Landroidx/lifecycle/m;)V"}
     5:10:void androidx.activity.ComponentActivity.addObserverForBackInvoker$lambda$14(androidx.activity.OnBackPressedDispatcher,androidx.activity.ComponentActivity,androidx.lifecycle.LifecycleOwner,androidx.lifecycle.Lifecycle$Event):638:638 -> a
@@ -610,7 +610,7 @@ androidx.activity.ComponentActivity$$ExternalSyntheticLambda5 -> androidx.activi
       # {"id":"com.android.tools.r8.synthesized"}
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lg/j;I)V"}
     8:9:void androidx.fragment.app.FragmentActivity.lambda$init$3(android.content.Context):139:139 -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/p;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/q;)V"}
     10:13:void androidx.fragment.app.FragmentController.attachHost(androidx.fragment.app.Fragment):117:117 -> a
     10:13:void androidx.fragment.app.FragmentActivity.lambda$init$3(android.content.Context):139 -> a
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
@@ -750,7 +750,7 @@ androidx.activity.ComponentActivity$NonConfigurationInstances -> androidx.activi
 # {"id":"sourceFile","fileName":"ComponentActivity.kt"}
     androidx.lifecycle.ViewModelStore viewModelStore -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/lifecycle/u0;"}
-androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl -> androidx.activity.m:
+androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl -> androidx.activity.n:
 # {"id":"sourceFile","fileName":"ComponentActivity.kt"}
     long endWatchTimeMillis -> a
     java.lang.Runnable currentRunnable -> b
@@ -786,7 +786,245 @@ androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl -> androidx.act
     59:60:void onDraw():1107:1107 -> onDraw
     61:74:void onDraw():1108:1108 -> onDraw
     1:18:void run():1117:1117 -> run
-androidx.activity.ComponentActivity$activityResultRegistry$1 -> androidx.activity.o:
+androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl$$ExternalSyntheticLambda0 -> androidx.activity.m:
+# {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
+# {"id":"com.android.tools.r8.synthesized"}
+    int $r8$classId -> a
+      # {"id":"com.android.tools.r8.synthesized"}
+    androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl$$InternalSyntheticLambda$2$c1e1c6a368d348383160fcb64aacf1e1d9b763fa190e87382e733f6de334cfa9$0.f$0 -> b
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
+      # {"id":"com.android.tools.r8.synthesized"}
+    1:1:void <init>(int,java.lang.Object):0:0 -> <init>
+      # {"id":"com.android.tools.r8.synthesized"}
+    2:2:void <init>(androidx.fragment.app.DefaultSpecialEffectsController,androidx.fragment.app.SpecialEffectsController$FragmentStateManagerOperation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.synthesized"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/fragment/app/m;Landroidx/fragment/app/w0;)V"}
+    24:29:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661:661 -> run
+    24:29:void run():0 -> run
+      # {"id":"com.android.tools.r8.synthesized"}
+    30:39:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):109:109 -> run
+    30:39:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    30:39:void run():0 -> run
+    40:56:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):110:110 -> run
+    40:56:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    40:56:void run():0 -> run
+    57:66:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):120:120 -> run
+    57:66:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    57:66:void run():0 -> run
+    67:76:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):124:124 -> run
+    67:76:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    67:76:void run():0 -> run
+    77:85:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):128:128 -> run
+    77:85:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    77:85:void run():0 -> run
+    86:89:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):133:133 -> run
+    86:89:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    86:89:void run():0 -> run
+    90:94:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):134:134 -> run
+    90:94:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    90:94:void run():0 -> run
+    95:97:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):135:135 -> run
+    95:97:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    95:97:void run():0 -> run
+    98:116:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):143:143 -> run
+    98:116:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    98:116:void run():0 -> run
+    117:137:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):153:153 -> run
+    117:137:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    117:137:void run():0 -> run
+    138:149:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):152:152 -> run
+    138:149:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    138:149:void run():0 -> run
+    150:152:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):155:155 -> run
+    150:152:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    150:152:void run():0 -> run
+    153:169:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):159:159 -> run
+    153:169:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    153:169:void run():0 -> run
+    170:170:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):169:169 -> run
+    170:170:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
+    170:170:void run():0 -> run
+    171:174:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):663:663 -> run
+    171:174:void run():0 -> run
+    175:178:void run():0:0 -> run
+    179:184:void androidx.core.view.SoftwareKeyboardControllerCompat$Impl20.lambda$show$0(android.view.View):133:133 -> run
+    179:184:void run():0 -> run
+    185:190:void androidx.core.view.SoftwareKeyboardControllerCompat$Impl20.lambda$show$0(android.view.View):134:134 -> run
+    185:190:void run():0 -> run
+    191:194:void androidx.core.view.SoftwareKeyboardControllerCompat$Impl20.lambda$show$0(android.view.View):135:135 -> run
+    191:194:void run():0 -> run
+    195:216:void run():0:0 -> run
+    217:220:void androidx.lifecycle.ProcessLifecycleOwner.dispatchPauseIfNeeded$lifecycle_process_release():127:127 -> run
+    217:220:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):56 -> run
+    217:220:void run():0 -> run
+    221:222:void androidx.lifecycle.ProcessLifecycleOwner.dispatchPauseIfNeeded$lifecycle_process_release():128:128 -> run
+    221:222:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):56 -> run
+    221:222:void run():0 -> run
+    223:227:void androidx.lifecycle.ProcessLifecycleOwner.dispatchPauseIfNeeded$lifecycle_process_release():129:129 -> run
+    223:227:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):56 -> run
+    223:227:void run():0 -> run
+    228:235:void androidx.lifecycle.ProcessLifecycleOwner.dispatchStopIfNeeded$lifecycle_process_release():134:134 -> run
+    228:235:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):57 -> run
+    228:235:void run():0 -> run
+    236:240:void androidx.lifecycle.ProcessLifecycleOwner.dispatchStopIfNeeded$lifecycle_process_release():135:135 -> run
+    236:240:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):57 -> run
+    236:240:void run():0 -> run
+    241:243:void androidx.lifecycle.ProcessLifecycleOwner.dispatchStopIfNeeded$lifecycle_process_release():136:136 -> run
+    241:243:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):57 -> run
+    241:243:void run():0 -> run
+    244:247:void run():0:0 -> run
+    248:264:void androidx.fragment.app.FragmentManager.lambda$cancelBackStackTransition$4():1066:1066 -> run
+    248:264:void run():0 -> run
+    265:267:void androidx.fragment.app.FragmentManager.lambda$cancelBackStackTransition$4():1067:1067 -> run
+    265:267:void run():0 -> run
+    268:273:void androidx.fragment.app.FragmentManager.lambda$cancelBackStackTransition$4():1066:1066 -> run
+    268:273:void run():0 -> run
+    274:277:void run():0:0 -> run
+    278:287:void androidx.fragment.app.DefaultSpecialEffectsController.collectEffects$lambda$2(androidx.fragment.app.DefaultSpecialEffectsController,androidx.fragment.app.SpecialEffectsController$Operation):0:0 -> run
+    278:287:void run():0 -> run
+    288:291:void androidx.fragment.app.DefaultSpecialEffectsController.collectEffects$lambda$2(androidx.fragment.app.DefaultSpecialEffectsController,androidx.fragment.app.SpecialEffectsController$Operation):89:89 -> run
+    288:291:void run():0 -> run
+    292:296:void run():0:0 -> run
+    297:301:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():350:350 -> run
+    297:301:void run():0 -> run
+    302:305:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():351:351 -> run
+    302:305:void run():0 -> run
+    306:311:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():352:352 -> run
+    306:311:void run():0 -> run
+    312:312:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():354:354 -> run
+    312:312:void run():0 -> run
+    313:316:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():356:356 -> run
+    313:316:void run():0 -> run
+    317:321:int androidx.core.provider.FontsContractCompat$FontInfo.getResultCode():519:519 -> run
+    317:321:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():358 -> run
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    317:321:void run():0 -> run
+    322:324:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():361:361 -> run
+    322:324:void run():0 -> run
+    325:334:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():369:369 -> run
+    325:334:void run():0 -> run
+    335:338:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():378:378 -> run
+    335:338:void run():0 -> run
+    339:341:void androidx.core.os.TraceCompat.beginSection(java.lang.String):108:108 -> run
+    339:341:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():378 -> run
+    339:341:void run():0 -> run
+    342:348:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380:380 -> run
+    342:348:void run():0 -> run
+    349:352:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424:424 -> run
+    349:352:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
+    349:352:void run():0 -> run
+    353:354:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87:87 -> run
+    353:354:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
+    353:354:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
+    353:354:void run():0 -> run
+    355:359:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):408:408 -> run
+    355:359:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
+    355:359:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
+    355:359:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
+    355:359:void run():0 -> run
+    360:365:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):411:411 -> run
+    360:365:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
+    360:365:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
+    360:365:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
+    360:365:void run():0 -> run
+    366:368:void androidx.tracing.TraceApi18Impl.endSection():60:60 -> run
+    366:368:void androidx.tracing.Trace.endSection():144 -> run
+    366:368:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):415 -> run
+    366:368:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
+    366:368:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
+    366:368:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
+    366:368:void run():0 -> run
+    369:370:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():381:381 -> run
+    369:370:void run():0 -> run
+    371:372:android.net.Uri androidx.core.provider.FontsContractCompat$FontInfo.getUri():474:474 -> run
+    371:372:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():382 -> run
+    371:372:void run():0 -> run
+    373:380:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():381:381 -> run
+    373:380:void run():0 -> run
+    381:382:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):130:130 -> run
+    381:382:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
+    381:382:void run():0 -> run
+    383:385:void androidx.core.os.TraceCompat.beginSection(java.lang.String):108:108 -> run
+    383:385:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):130 -> run
+    383:385:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
+    383:385:void run():0 -> run
+    386:394:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):131:131 -> run
+    386:394:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
+    386:394:void run():0 -> run
+    395:397:void androidx.core.os.TraceCompat.endSection():119:119 -> run
+    395:397:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):133 -> run
+    395:397:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
+    395:397:void run():0 -> run
+    398:400:void androidx.core.os.TraceCompat.endSection():119:119 -> run
+    398:400:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():388 -> run
+    398:400:void run():0 -> run
+    401:403:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():390:390 -> run
+    401:403:void run():0 -> run
+    404:407:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():391:391 -> run
+    404:407:void run():0 -> run
+    408:413:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():392:392 -> run
+    408:413:void run():0 -> run
+    414:415:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():394:395 -> run
+    414:415:void run():0 -> run
+    416:418:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():395:395 -> run
+    416:418:void run():0 -> run
+    419:421:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():394:394 -> run
+    419:421:void run():0 -> run
+    422:423:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):133:133 -> run
+    422:423:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
+    422:423:void run():0 -> run
+    424:426:void androidx.core.os.TraceCompat.endSection():119:119 -> run
+    424:426:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):133 -> run
+    424:426:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
+    424:426:void run():0 -> run
+    427:427:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):134:134 -> run
+    427:427:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
+    427:427:void run():0 -> run
+    428:438:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():384:384 -> run
+    428:438:void run():0 -> run
+    439:441:void androidx.tracing.TraceApi18Impl.endSection():60:60 -> run
+    439:441:void androidx.tracing.Trace.endSection():144 -> run
+    439:441:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):415 -> run
+    439:441:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
+    439:441:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
+    439:441:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
+    439:441:void run():0 -> run
+    442:442:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):417:417 -> run
+    442:442:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
+    442:442:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
+    442:442:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
+    442:442:void run():0 -> run
+    443:444:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():388:388 -> run
+    443:444:void run():0 -> run
+    445:447:void androidx.core.os.TraceCompat.endSection():119:119 -> run
+    445:447:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():388 -> run
+    445:447:void run():0 -> run
+    448:448:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():389:389 -> run
+    448:448:void run():0 -> run
+    449:471:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():373:373 -> run
+    449:471:void run():0 -> run
+    472:474:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():397:397 -> run
+    472:474:void run():0 -> run
+    475:478:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():398:398 -> run
+    475:478:void run():0 -> run
+    479:484:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():399:399 -> run
+    479:484:void run():0 -> run
+    485:486:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():401:402 -> run
+    485:486:void run():0 -> run
+    487:489:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():402:402 -> run
+    487:489:void run():0 -> run
+    490:491:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():401:401 -> run
+    490:491:void run():0 -> run
+    492:493:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():354:354 -> run
+    492:493:void run():0 -> run
+    494:505:void run():0:0 -> run
+    506:509:void androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl.execute$lambda$0(androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl):1087:1087 -> run
+    506:509:void run():0 -> run
+    510:512:void androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl.execute$lambda$0(androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl):1088:1088 -> run
+    510:512:void run():0 -> run
+    513:516:void androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl.execute$lambda$0(androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl):1089:1089 -> run
+    513:516:void run():0 -> run
+androidx.activity.ComponentActivity$activityResultRegistry$1 -> androidx.activity.p:
 # {"id":"sourceFile","fileName":"ComponentActivity.kt"}
     java.util.Map androidx.activity.result.ActivityResultRegistry.rcToKey -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/util/LinkedHashMap;"}
@@ -936,7 +1174,7 @@ androidx.activity.ComponentActivity$activityResultRegistry$1 -> androidx.activit
     147:149:void androidx.activity.result.ActivityResultRegistry$LifecycleContainer.clearObservers():403:403 -> e
     147:149:void androidx.activity.result.ActivityResultRegistry.unregister$activity_release(java.lang.String):235 -> e
     150:153:void androidx.activity.result.ActivityResultRegistry.unregister$activity_release(java.lang.String):236:236 -> e
-androidx.activity.ComponentActivity$activityResultRegistry$1$$ExternalSyntheticLambda0 -> androidx.activity.n:
+androidx.activity.ComponentActivity$activityResultRegistry$1$$ExternalSyntheticLambda0 -> androidx.activity.o:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
     int $r8$classId -> a
@@ -1022,14 +1260,14 @@ androidx.activity.ComponentActivity$activityResultRegistry$1$$ExternalSyntheticL
     202:206:boolean androidx.activity.result.ActivityResultRegistry.dispatchResult(int,java.lang.Object):335:335 -> run
     202:206:void androidx.activity.ComponentActivity$activityResultRegistry$1.onLaunch$lambda$0(androidx.activity.ComponentActivity$activityResultRegistry$1,int,androidx.activity.result.contract.ActivityResultContract$SynchronousResult):170 -> run
     202:206:void run():0 -> run
-androidx.activity.ComponentDialog -> androidx.activity.r:
+androidx.activity.ComponentDialog -> androidx.activity.s:
 # {"id":"sourceFile","fileName":"ComponentDialog.kt"}
     androidx.lifecycle.LifecycleRegistry _lifecycleRegistry -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/lifecycle/u;"}
     androidx.savedstate.SavedStateRegistryController savedStateRegistryController -> b
       # {"id":"com.android.tools.r8.residualsignature","signature":"Lcom/getcapacitor/a;"}
     androidx.activity.OnBackPressedDispatcher onBackPressedDispatcher -> c
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/c0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/d0;"}
     1:3:void <init>(android.content.Context,int):40:40 -> <init>
     4:8:androidx.savedstate.SavedStateRegistryController androidx.savedstate.SavedStateRegistryController$Companion.create(androidx.savedstate.SavedStateRegistryOwner):92:92 -> <init>
     4:8:void <init>(android.content.Context,int):50 -> <init>
@@ -1044,7 +1282,7 @@ androidx.activity.ComponentDialog -> androidx.activity.r:
     6:8:void addContentView(android.view.View,android.view.ViewGroup$LayoutParams):112:112 -> addContentView
     9:12:void addContentView(android.view.View,android.view.ViewGroup$LayoutParams):113:113 -> addContentView
     1:4:void onBackPressedDispatcher$lambda$1(androidx.activity.ComponentDialog):88:88 -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/r;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/s;)V"}
     1:19:void initializeViewTreeOwners():122:122 -> c
     20:22:void androidx.lifecycle.ViewTreeLifecycleOwner.set(android.view.View,androidx.lifecycle.LifecycleOwner):37:37 -> c
     20:22:void initializeViewTreeOwners():122 -> c
@@ -1087,7 +1325,7 @@ androidx.activity.ComponentDialog -> androidx.activity.r:
     1:2:void setContentView(int):97:98 -> setContentView
     3:4:void setContentView(android.view.View):102:103 -> setContentView
     5:6:void setContentView(android.view.View,android.view.ViewGroup$LayoutParams):107:108 -> setContentView
-androidx.activity.ComponentDialog$$ExternalSyntheticApiModelOutline0 -> androidx.activity.q:
+androidx.activity.ComponentDialog$$ExternalSyntheticApiModelOutline0 -> androidx.activity.r:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
     1:5:android.content.pm.PackageInfo m(android.content.pm.PackageManager,java.lang.String,android.content.pm.PackageManager$PackageInfoFlags):0:0 -> a
@@ -1102,7 +1340,7 @@ androidx.activity.ComponentDialog$$ExternalSyntheticApiModelOutline0 -> androidx
       # {"id":"com.android.tools.r8.synthesized"}
     1:5:android.window.OnBackInvokedDispatcher m(androidx.activity.ComponentDialog):0:0 -> f
       # {"id":"com.android.tools.r8.synthesized"}
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/r;)Landroid/window/OnBackInvokedDispatcher;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/s;)Landroid/window/OnBackInvokedDispatcher;"}
     1:3:android.window.OnBackInvokedDispatcher m(java.lang.Object):0:0 -> g
       # {"id":"com.android.tools.r8.synthesized"}
     1:9:java.lang.Object m(android.content.Intent):0:0 -> h
@@ -1111,8 +1349,8 @@ androidx.activity.ComponentDialog$$ExternalSyntheticApiModelOutline0 -> androidx
       # {"id":"com.android.tools.r8.synthesized"}
     1:7:void m(android.window.OnBackInvokedDispatcher,androidx.activity.OnBackPressedDispatcher$Api33Impl$$ExternalSyntheticLambda0):0:0 -> j
       # {"id":"com.android.tools.r8.synthesized"}
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroid/window/OnBackInvokedDispatcher;Landroidx/activity/y;)V"}
-androidx.activity.FullyDrawnReporter -> androidx.activity.s:
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroid/window/OnBackInvokedDispatcher;Landroidx/activity/z;)V"}
+androidx.activity.FullyDrawnReporter -> androidx.activity.t:
 # {"id":"sourceFile","fileName":"FullyDrawnReporter.kt"}
     java.lang.Object lock -> a
     boolean reportedFullyDrawn -> b
@@ -1132,7 +1370,7 @@ androidx.activity.ImmLeaksCleaner -> androidx.activity.ImmLeaksCleaner:
     1:6:void onStateChanged(androidx.lifecycle.LifecycleOwner,androidx.lifecycle.Lifecycle$Event):30:30 -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/lifecycle/s;Landroidx/lifecycle/m;)V"}
     7:7:void onStateChanged(androidx.lifecycle.LifecycleOwner,androidx.lifecycle.Lifecycle$Event):34:34 -> a
-androidx.activity.ImmLeaksCleaner$$ExternalSyntheticLambda0 -> androidx.activity.t:
+androidx.activity.ImmLeaksCleaner$$ExternalSyntheticLambda0 -> androidx.activity.u:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
     int $r8$classId -> a
@@ -1174,21 +1412,21 @@ androidx.activity.ImmLeaksCleaner$$ExternalSyntheticLambda0 -> androidx.activity
     62:65:androidx.activity.ImmLeaksCleaner$Cleaner androidx.activity.ImmLeaksCleaner.cleaner_delegate$lambda$5():119 -> a
     62:65:java.lang.Object invoke():0 -> a
     66:68:java.lang.Object invoke():0:0 -> a
-androidx.activity.ImmLeaksCleaner$FailedInitialization -> androidx.activity.u:
+androidx.activity.ImmLeaksCleaner$FailedInitialization -> androidx.activity.v:
 # {"id":"sourceFile","fileName":"ImmLeaksCleaner.kt"}
     androidx.activity.ImmLeaksCleaner$FailedInitialization INSTANCE -> m
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/u;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/v;"}
     3:5:void androidx.activity.ImmLeaksCleaner$Cleaner.<init>():56:56 -> <clinit>
     3:5:void androidx.activity.ImmLeaksCleaner$Cleaner.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
     3:5:void <init>():66 -> <clinit>
     3:5:void <clinit>():0 -> <clinit>
     6:8:void <clinit>():0:0 -> <clinit>
-androidx.activity.OnBackPressedCallback -> androidx.activity.v:
+androidx.activity.OnBackPressedCallback -> androidx.activity.w:
 # {"id":"sourceFile","fileName":"OnBackPressedCallback.kt"}
     boolean isEnabled -> a
     java.util.concurrent.CopyOnWriteArrayList cancellables -> b
     kotlin.jvm.functions.Function0 enabledChangedCallback -> c
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/b0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/c0;"}
     1:3:void <init>(boolean):39:39 -> <init>
     4:5:void <init>(boolean):50:50 -> <init>
     6:13:void <init>(boolean):56:56 -> <init>
@@ -1198,13 +1436,13 @@ androidx.activity.OnBackPressedCallback -> androidx.activity.v:
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/c;)V"}
     1:6:void handleOnBackStarted(androidx.activity.BackEventCompat):0:0 -> d
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/c;)V"}
-androidx.activity.OnBackPressedDispatcher -> androidx.activity.c0:
+androidx.activity.OnBackPressedDispatcher -> androidx.activity.d0:
 # {"id":"sourceFile","fileName":"OnBackPressedDispatcher.kt"}
     java.lang.Runnable fallbackOnBackPressed -> a
     kotlin.collections.ArrayDeque onBackPressedCallbacks -> b
       # {"id":"com.android.tools.r8.residualsignature","signature":"Ln1/b;"}
     androidx.activity.OnBackPressedCallback inProgressCallback -> c
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/v;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/w;"}
     android.window.OnBackInvokedCallback onBackInvokedCallback -> d
     android.window.OnBackInvokedDispatcher invokedDispatcher -> e
     boolean backInvokedCallbackRegistered -> f
@@ -1231,7 +1469,7 @@ androidx.activity.OnBackPressedDispatcher -> androidx.activity.c0:
     65:67:void <init>(java.lang.Runnable,androidx.core.util.Consumer):121:121 -> <init>
     65:67:void <init>(java.lang.Runnable):75 -> <init>
     11:14:void addCallback(androidx.lifecycle.LifecycleOwner,androidx.activity.OnBackPressedCallback):194:194 -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/lifecycle/s;Landroidx/activity/v;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/lifecycle/s;Landroidx/activity/w;)V"}
     15:16:androidx.lifecycle.Lifecycle$State androidx.lifecycle.LifecycleRegistry.getCurrentState():98:98 -> a
     15:16:void addCallback(androidx.lifecycle.LifecycleOwner,androidx.activity.OnBackPressedCallback):195 -> a
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
@@ -1303,17 +1541,17 @@ androidx.activity.OnBackPressedDispatcher -> androidx.activity.c0:
     36:39:void updateEnabledCallbacks():110:110 -> e
     40:45:void updateEnabledCallbacks():113:113 -> e
     46:49:void updateEnabledCallbacks():114:114 -> e
-androidx.activity.OnBackPressedDispatcher$$ExternalSyntheticLambda0 -> androidx.activity.w:
+androidx.activity.OnBackPressedDispatcher$$ExternalSyntheticLambda0 -> androidx.activity.x:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
     int $r8$classId -> a
       # {"id":"com.android.tools.r8.synthesized"}
     androidx.activity.OnBackPressedDispatcher androidx.activity.OnBackPressedDispatcher$$InternalSyntheticLambda$3$113415af61dc3511458efc3996d33b623b4d461e68db0004b4ad5546c1f8fa90$0.f$0 -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/c0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/d0;"}
       # {"id":"com.android.tools.r8.synthesized"}
     1:8:void <init>(androidx.activity.OnBackPressedDispatcher,int):0:0 -> <init>
       # {"id":"com.android.tools.r8.synthesized"}
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/c0;I)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/d0;I)V"}
     8:12:kotlin.Unit androidx.activity.OnBackPressedDispatcher._init_$lambda$2(androidx.activity.OnBackPressedDispatcher,androidx.activity.BackEventCompat):0:0 -> b
     8:12:java.lang.Object invoke(java.lang.Object):0 -> b
       # {"id":"com.android.tools.r8.synthesized"}
@@ -1403,7 +1641,7 @@ androidx.activity.OnBackPressedDispatcher$$ExternalSyntheticLambda0 -> androidx.
     109:111:kotlin.Unit androidx.activity.OnBackPressedDispatcher._init_$lambda$1(androidx.activity.OnBackPressedDispatcher,androidx.activity.BackEventCompat):124 -> b
     109:111:java.lang.Object invoke(java.lang.Object):0 -> b
     112:114:java.lang.Object invoke(java.lang.Object):0:0 -> b
-androidx.activity.OnBackPressedDispatcher$$ExternalSyntheticLambda2 -> androidx.activity.x:
+androidx.activity.OnBackPressedDispatcher$$ExternalSyntheticLambda2 -> androidx.activity.y:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
     int $r8$classId -> a
@@ -1426,7 +1664,7 @@ androidx.activity.OnBackPressedDispatcher$$ExternalSyntheticLambda2 -> androidx.
     54:56:kotlin.Unit androidx.activity.OnBackPressedDispatcher._init_$lambda$3(androidx.activity.OnBackPressedDispatcher):126:126 -> a
     54:56:java.lang.Object invoke():0 -> a
     57:60:java.lang.Object invoke():0:0 -> a
-androidx.activity.OnBackPressedDispatcher$Api33Impl$$ExternalSyntheticLambda0 -> androidx.activity.y:
+androidx.activity.OnBackPressedDispatcher$Api33Impl$$ExternalSyntheticLambda0 -> androidx.activity.z:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
     int $r8$classId -> a
@@ -1438,18 +1676,18 @@ androidx.activity.OnBackPressedDispatcher$Api33Impl$$ExternalSyntheticLambda0 ->
       # {"id":"com.android.tools.r8.synthesized"}
     26:30:void androidx.activity.OnBackPressedDispatcher$Api33Impl.createOnBackInvokedCallback$lambda$0(kotlin.jvm.functions.Function0):341:341 -> onBackInvoked
       # {"id":"com.android.tools.r8.residualsignature","signature":"()V"}
-androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1 -> androidx.activity.z:
+androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1 -> androidx.activity.a0:
 # {"id":"sourceFile","fileName":"OnBackPressedDispatcher.kt"}
     kotlin.jvm.functions.Function1 $onBackStarted -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/w;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/x;"}
     kotlin.jvm.functions.Function1 $onBackProgressed -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/w;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/x;"}
     kotlin.jvm.functions.Function0 $onBackInvoked -> c
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/x;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/y;"}
     kotlin.jvm.functions.Function0 $onBackCancelled -> d
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/x;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/y;"}
     1:3:void <init>(kotlin.jvm.functions.Function1,kotlin.jvm.functions.Function1,kotlin.jvm.functions.Function0,kotlin.jvm.functions.Function0):353:353 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/w;Landroidx/activity/w;Landroidx/activity/x;Landroidx/activity/x;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/x;Landroidx/activity/x;Landroidx/activity/y;Landroidx/activity/y;)V"}
     4:12:void <init>(kotlin.jvm.functions.Function1,kotlin.jvm.functions.Function1,kotlin.jvm.functions.Function0,kotlin.jvm.functions.Function0):0:0 -> <init>
     1:6:void onBackCancelled():367:367 -> onBackCancelled
     1:6:void onBackInvoked():363:363 -> onBackInvoked
@@ -1460,13 +1698,13 @@ androidx.activity.OnBackPressedDispatcher$LifecycleOnBackPressedCancellable -> a
     androidx.lifecycle.Lifecycle lifecycle -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/lifecycle/u;"}
     androidx.activity.OnBackPressedCallback onBackPressedCallback -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/v;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/w;"}
     androidx.activity.Cancellable currentCancellable -> c
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/a0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/b0;"}
     androidx.activity.OnBackPressedDispatcher this$0 -> d
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/c0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/d0;"}
     1:3:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.lifecycle.Lifecycle,androidx.activity.OnBackPressedCallback):297:297 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/c0;Landroidx/lifecycle/u;Landroidx/activity/v;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/d0;Landroidx/lifecycle/u;Landroidx/activity/w;)V"}
     4:8:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.lifecycle.Lifecycle,androidx.activity.OnBackPressedCallback):0:0 -> <init>
     9:10:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.lifecycle.Lifecycle,androidx.activity.OnBackPressedCallback):297:297 -> <init>
     11:12:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.lifecycle.Lifecycle,androidx.activity.OnBackPressedCallback):298:298 -> <init>
@@ -1512,14 +1750,14 @@ androidx.activity.OnBackPressedDispatcher$LifecycleOnBackPressedCancellable -> a
     10:12:void cancel():320 -> cancel
     13:20:void cancel():321:321 -> cancel
     21:23:void cancel():322:322 -> cancel
-androidx.activity.OnBackPressedDispatcher$OnBackPressedCancellable -> androidx.activity.a0:
+androidx.activity.OnBackPressedDispatcher$OnBackPressedCancellable -> androidx.activity.b0:
 # {"id":"sourceFile","fileName":"OnBackPressedDispatcher.kt"}
     androidx.activity.OnBackPressedCallback onBackPressedCallback -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/v;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/w;"}
     androidx.activity.OnBackPressedDispatcher this$0 -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/c0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/d0;"}
     1:3:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.activity.OnBackPressedCallback):282:282 -> <init>
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/c0;Landroidx/activity/v;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/d0;Landroidx/activity/w;)V"}
     4:8:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.activity.OnBackPressedCallback):0:0 -> <init>
     9:10:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.activity.OnBackPressedCallback):282:282 -> <init>
     11:13:void <init>(androidx.activity.OnBackPressedDispatcher,androidx.activity.OnBackPressedCallback):283:283 -> <init>
@@ -1544,10 +1782,10 @@ androidx.activity.OnBackPressedDispatcher$OnBackPressedCancellable -> androidx.a
     36:38:void androidx.activity.OnBackPressedCallback.setEnabledChangedCallback$activity_release(kotlin.jvm.functions.Function0):57:57 -> cancel
     36:38:void cancel():293 -> cancel
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-androidx.activity.OnBackPressedDispatcher$addCallback$1 -> androidx.activity.b0:
+androidx.activity.OnBackPressedDispatcher$addCallback$1 -> androidx.activity.c0:
 # {"id":"sourceFile","fileName":"OnBackPressedDispatcher.kt"}
     kotlin.reflect.KCallable kotlin.jvm.internal.CallableReference.reflected -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/b0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/c0;"}
     java.lang.Object kotlin.jvm.internal.CallableReference.receiver -> b
     boolean kotlin.jvm.internal.CallableReference.isTopLevel -> c
     int kotlin.jvm.internal.FunctionReference.flags -> d
@@ -1632,13 +1870,13 @@ androidx.activity.contextaware.ContextAwareHelper -> b.a:
     java.util.Set listeners -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/util/concurrent/CopyOnWriteArraySet;"}
     android.content.Context context -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/p;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/q;"}
     1:3:void <init>():32:32 -> <init>
     4:11:void <init>():33:33 -> <init>
 androidx.activity.contextaware.OnContextAvailableListener -> b.b:
 # {"id":"sourceFile","fileName":"OnContextAvailableListener.kt"}
     void onContextAvailable(android.content.Context) -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/p;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/q;)V"}
 androidx.activity.result.ActivityResult -> c.a:
 # {"id":"sourceFile","fileName":"ActivityResult.kt"}
     int resultCode -> a
@@ -1672,7 +1910,7 @@ androidx.activity.result.ActivityResultRegistry$$ExternalSyntheticLambda0 -> c.c
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
     androidx.activity.result.ActivityResultRegistry androidx.activity.result.ActivityResultRegistry$$InternalSyntheticLambda$3$073865f354efa79bc9ce380b350a9dd384a07a787c60f82103fd741e6d5d0501$0.f$0 -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/o;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/p;"}
       # {"id":"com.android.tools.r8.synthesized"}
     java.lang.String androidx.activity.result.ActivityResultRegistry$$InternalSyntheticLambda$3$073865f354efa79bc9ce380b350a9dd384a07a787c60f82103fd741e6d5d0501$0.f$1 -> b
       # {"id":"com.android.tools.r8.synthesized"}
@@ -1684,7 +1922,7 @@ androidx.activity.result.ActivityResultRegistry$$ExternalSyntheticLambda0 -> c.c
       # {"id":"com.android.tools.r8.synthesized"}
     1:12:void c.ActivityResultRegistry$$ExternalSyntheticLambda0.<init>(androidx.activity.ComponentActivity$activityResultRegistry$1,java.lang.String,c.ActivityResultCallback,e2.BoundaryInterfaceReflectionUtil):0:0 -> <init>
       # {"id":"com.android.tools.r8.synthesized"}
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/o;Ljava/lang/String;Lc/b;Le2/b;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/p;Ljava/lang/String;Lc/b;Le2/b;)V"}
     5:10:void androidx.activity.result.ActivityResultRegistry.register$lambda$1(androidx.activity.result.ActivityResultRegistry,java.lang.String,androidx.activity.result.ActivityResultCallback,androidx.activity.result.contract.ActivityResultContract,androidx.lifecycle.LifecycleOwner,androidx.lifecycle.Lifecycle$Event):96:96 -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/lifecycle/s;Landroidx/lifecycle/m;)V"}
     11:26:void androidx.activity.result.ActivityResultRegistry.register$lambda$1(androidx.activity.result.ActivityResultRegistry,java.lang.String,androidx.activity.result.ActivityResultCallback,androidx.activity.result.contract.ActivityResultContract,androidx.lifecycle.LifecycleOwner,androidx.lifecycle.Lifecycle$Event):97:97 -> a
@@ -1728,13 +1966,13 @@ androidx.activity.result.ActivityResultRegistry$register$2 -> c.f:
     int c.ActivityResultRegistry$register$2.$r8$classId -> a
       # {"id":"com.android.tools.r8.synthesized"}
     androidx.activity.result.ActivityResultRegistry this$0 -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/o;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/p;"}
     java.lang.String $key -> c
     androidx.activity.result.contract.ActivityResultContract $contract -> d
       # {"id":"com.android.tools.r8.residualsignature","signature":"Le2/b;"}
     1:12:void c.ActivityResultRegistry$register$2.<init>(androidx.activity.ComponentActivity$activityResultRegistry$1,java.lang.String,e2.BoundaryInterfaceReflectionUtil,int):0:0 -> <init>
       # {"id":"com.android.tools.r8.synthesized"}
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/o;Ljava/lang/String;Le2/b;I)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/p;Ljava/lang/String;Le2/b;I)V"}
     6:9:void androidx.activity.result.ActivityResultRegistry$register$3.launch(java.lang.Object,androidx.core.app.ActivityOptionsCompat):184:184 -> a
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/lang/Object;)V"}
     10:11:java.util.Map androidx.activity.result.ActivityResultRegistry.access$getKeyToRc$p(androidx.activity.result.ActivityResultRegistry):42:42 -> a
@@ -3705,7 +3943,7 @@ androidx.appcompat.app.AppCompatActivity$2 -> g.i:
     1:6:void <init>(androidx.appcompat.app.AppCompatActivity):124:124 -> <init>
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lcom/actionanand/qurio/app/MainActivity;)V"}
     1:6:void onContextAvailable(android.content.Context):127:127 -> a
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/p;)V"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/activity/q;)V"}
     7:9:void onContextAvailable(android.content.Context):128:128 -> a
     10:11:androidx.savedstate.SavedStateRegistry androidx.activity.ComponentActivity.getSavedStateRegistry():646:646 -> a
     10:11:void onContextAvailable(android.content.Context):129 -> a
@@ -43233,7 +43471,7 @@ androidx.fragment.app.FragmentManagerImpl -> androidx.fragment.app.l0:
     androidx.fragment.app.FragmentLayoutInflaterFactory androidx.fragment.app.FragmentManager.mLayoutInflaterFactory -> f
       # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/fragment/app/z;"}
     androidx.activity.OnBackPressedDispatcher androidx.fragment.app.FragmentManager.mOnBackPressedDispatcher -> g
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/c0;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/d0;"}
     androidx.fragment.app.BackStackRecord androidx.fragment.app.FragmentManager.mTransitioningOp -> h
       # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/fragment/app/a;"}
     boolean androidx.fragment.app.FragmentManager.mHandlingTransitioningOp -> i
@@ -47688,7 +47926,7 @@ androidx.lifecycle.ProcessLifecycleOwner -> androidx.lifecycle.d0:
     androidx.lifecycle.LifecycleRegistry registry -> f
       # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/lifecycle/u;"}
     java.lang.Runnable delayedPauseRunnable -> g
-      # {"id":"com.android.tools.r8.residualsignature","signature":"La1/e;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/m;"}
     androidx.lifecycle.ReportFragment$ActivityInitializationListener initializationListener -> h
       # {"id":"com.android.tools.r8.residualsignature","signature":"Lz0/i;"}
     androidx.lifecycle.ProcessLifecycleOwner newInstance -> i
@@ -51685,33 +51923,33 @@ com.actionanand.qurio.app.MainActivity -> com.actionanand.qurio.app.MainActivity
       # {"id":"com.android.tools.r8.synthesized"}
     1:3:void androidx.appcompat.app.AppCompatActivity.<init>():92:92 -> <init>
     1:3:void com.getcapacitor.BridgeActivity.<init>():11 -> <init>
-    1:3:void <init>():21 -> <init>
+    1:3:void <init>():23 -> <init>
     4:5:androidx.savedstate.SavedStateRegistry androidx.activity.ComponentActivity.getSavedStateRegistry():646:646 -> <init>
     4:5:void androidx.appcompat.app.AppCompatActivity.initDelegate():114 -> <init>
     4:5:void androidx.appcompat.app.AppCompatActivity.<init>():93 -> <init>
     4:5:void com.getcapacitor.BridgeActivity.<init>():11 -> <init>
-    4:5:void <init>():21 -> <init>
+    4:5:void <init>():23 -> <init>
     6:9:androidx.savedstate.SavedStateRegistry androidx.savedstate.SavedStateRegistryController.getSavedStateRegistry():33:33 -> <init>
     6:9:androidx.savedstate.SavedStateRegistry androidx.activity.ComponentActivity.getSavedStateRegistry():646 -> <init>
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     6:9:void androidx.appcompat.app.AppCompatActivity.initDelegate():114 -> <init>
     6:9:void androidx.appcompat.app.AppCompatActivity.<init>():93 -> <init>
     6:9:void com.getcapacitor.BridgeActivity.<init>():11 -> <init>
-    6:9:void <init>():21 -> <init>
+    6:9:void <init>():23 -> <init>
     10:19:void androidx.appcompat.app.AppCompatActivity.initDelegate():114:114 -> <init>
     10:19:void androidx.appcompat.app.AppCompatActivity.<init>():93 -> <init>
     10:19:void com.getcapacitor.BridgeActivity.<init>():11 -> <init>
-    10:19:void <init>():21 -> <init>
+    10:19:void <init>():23 -> <init>
     20:28:void androidx.appcompat.app.AppCompatActivity.initDelegate():124:124 -> <init>
     20:28:void androidx.appcompat.app.AppCompatActivity.<init>():93 -> <init>
     20:28:void com.getcapacitor.BridgeActivity.<init>():11 -> <init>
-    20:28:void <init>():21 -> <init>
+    20:28:void <init>():23 -> <init>
     29:30:void com.getcapacitor.BridgeActivity.<init>():17:17 -> <init>
-    29:30:void <init>():21 -> <init>
+    29:30:void <init>():23 -> <init>
     31:37:void com.getcapacitor.BridgeActivity.<init>():18:18 -> <init>
-    31:37:void <init>():21 -> <init>
+    31:37:void <init>():23 -> <init>
     38:45:void com.getcapacitor.BridgeActivity.<init>():19:19 -> <init>
-    38:45:void <init>():21 -> <init>
+    38:45:void <init>():23 -> <init>
     1:5:void com.getcapacitor.BridgeActivity.onActivityResult(int,int,android.content.Intent):188:188 -> onActivityResult
     6:11:boolean com.getcapacitor.Bridge.onActivityResult(int,int,android.content.Intent):1270:1270 -> onActivityResult
     6:11:void com.getcapacitor.BridgeActivity.onActivityResult(int,int,android.content.Intent):192 -> onActivityResult
@@ -51751,13 +51989,13 @@ com.actionanand.qurio.app.MainActivity -> com.actionanand.qurio.app.MainActivity
     31:32:void com.getcapacitor.BridgeActivity.onConfigurationChanged(android.content.res.Configuration):216 -> onConfigurationChanged
     33:37:void com.getcapacitor.Bridge.onConfigurationChanged(android.content.res.Configuration):1316:1316 -> onConfigurationChanged
     33:37:void com.getcapacitor.BridgeActivity.onConfigurationChanged(android.content.res.Configuration):216 -> onConfigurationChanged
-    1:3:void onCreate(android.os.Bundle):27:27 -> onCreate
+    1:3:void onCreate(android.os.Bundle):30:30 -> onCreate
     4:5:com.getcapacitor.Bridge com.getcapacitor.BridgeActivity.getBridge():63:63 -> onCreate
-    4:5:void onCreate(android.os.Bundle):28 -> onCreate
+    4:5:void onCreate(android.os.Bundle):31 -> onCreate
     6:7:android.webkit.WebView com.getcapacitor.Bridge.getWebView():512:512 -> onCreate
-    6:7:void onCreate(android.os.Bundle):28 -> onCreate
+    6:7:void onCreate(android.os.Bundle):31 -> onCreate
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    8:18:void onCreate(android.os.Bundle):28:28 -> onCreate
+    8:18:void onCreate(android.os.Bundle):31:31 -> onCreate
     1:3:void com.getcapacitor.BridgeActivity.onDestroy():128:128 -> onDestroy
     4:7:void com.getcapacitor.BridgeActivity.onDestroy():129:129 -> onDestroy
     8:9:void com.getcapacitor.Bridge.onDestroy():1386:1386 -> onDestroy
@@ -51823,21 +52061,9 @@ com.actionanand.qurio.app.MainActivity -> com.actionanand.qurio.app.MainActivity
     61:65:void com.getcapacitor.Bridge.onPause():1365:1365 -> onPause
     61:65:void com.getcapacitor.BridgeActivity.onPause():107 -> onPause
     66:71:void com.getcapacitor.BridgeActivity.onPause():108:108 -> onPause
-    1:5:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):161:161 -> onRequestPermissionsResult
-    6:11:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1130:1130 -> onRequestPermissionsResult
-    6:11:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> onRequestPermissionsResult
-    12:28:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1134:1134 -> onRequestPermissionsResult
-    12:28:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> onRequestPermissionsResult
-    29:36:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1136:1136 -> onRequestPermissionsResult
-    29:36:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> onRequestPermissionsResult
-    37:59:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1138:1138 -> onRequestPermissionsResult
-    37:59:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> onRequestPermissionsResult
-    60:61:com.getcapacitor.Plugin com.getcapacitor.PluginHandle.getInstance():91:91 -> onRequestPermissionsResult
-    60:61:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1145 -> onRequestPermissionsResult
-    60:61:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> onRequestPermissionsResult
-    62:67:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1145:1145 -> onRequestPermissionsResult
-    62:67:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> onRequestPermissionsResult
-    68:71:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):166:166 -> onRequestPermissionsResult
+    5:16:void onRequestPermissionsResult(int,java.lang.String[],int[]):36:36 -> onRequestPermissionsResult
+    17:29:void onRequestPermissionsResult(int,java.lang.String[],int[]):37:37 -> onRequestPermissionsResult
+    30:33:void onRequestPermissionsResult(int,java.lang.String[],int[]):40:40 -> onRequestPermissionsResult
     1:3:void com.getcapacitor.BridgeActivity.onRestart():86:86 -> onRestart
     4:7:void com.getcapacitor.BridgeActivity.onRestart():87:87 -> onRestart
     8:9:void com.getcapacitor.Bridge.onRestart():1324:1324 -> onRestart
@@ -51957,229 +52183,229 @@ com.actionanand.qurio.app.MainActivity -> com.actionanand.qurio.app.MainActivity
     74:76:void com.getcapacitor.Bridge.onStop():1378:1378 -> onStop
     74:76:void com.getcapacitor.BridgeActivity.onStop():121 -> onStop
     77:82:void com.getcapacitor.BridgeActivity.onStop():122:122 -> onStop
-    1:8:javax.crypto.SecretKey createKey():81:81 -> s
+    1:8:javax.crypto.SecretKey createKey():114:114 -> s
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lcom/actionanand/qurio/app/MainActivity;)Ljavax/crypto/SecretKey;"}
-    9:22:javax.crypto.SecretKey createKey():82:82 -> s
-    23:37:javax.crypto.SecretKey createKey():84:84 -> s
-    38:45:javax.crypto.SecretKey createKey():85:85 -> s
-    46:51:javax.crypto.SecretKey createKey():86:86 -> s
-    52:56:javax.crypto.SecretKey createKey():87:87 -> s
-    57:59:javax.crypto.SecretKey createKey():88:88 -> s
-    60:66:javax.crypto.SecretKey createKey():89:89 -> s
-    67:71:javax.crypto.SecretKey createKey():90:90 -> s
+    9:22:javax.crypto.SecretKey createKey():115:115 -> s
+    23:37:javax.crypto.SecretKey createKey():117:117 -> s
+    38:45:javax.crypto.SecretKey createKey():118:118 -> s
+    46:51:javax.crypto.SecretKey createKey():119:119 -> s
+    52:56:javax.crypto.SecretKey createKey():120:120 -> s
+    57:59:javax.crypto.SecretKey createKey():121:121 -> s
+    60:66:javax.crypto.SecretKey createKey():122:122 -> s
+    67:71:javax.crypto.SecretKey createKey():123:123 -> s
     3:6:androidx.biometric.BiometricPrompt$PromptInfo androidx.biometric.BiometricPrompt$PromptInfo$Builder.build():579:579 -> t
-    3:6:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):106 -> t
+    3:6:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):139 -> t
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lcom/actionanand/qurio/app/MainActivity;Ljava/lang/String;Ljavax/crypto/Cipher;Ljava/lang/Runnable;Ljava/lang/String;)V"}
-    7:11:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):94:94 -> t
-    12:19:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):94:94 -> t
+    7:11:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):127:127 -> t
+    12:19:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):127:127 -> t
     20:25:java.util.concurrent.Executor androidx.core.content.ContextCompat.getMainExecutor(android.content.Context):687:687 -> t
-    20:25:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):95 -> t
+    20:25:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):128 -> t
     26:30:java.util.concurrent.Executor androidx.core.content.ContextCompat.getMainExecutor(android.content.Context):688:688 -> t
-    26:30:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):95 -> t
+    26:30:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):128 -> t
     31:39:java.util.concurrent.Executor androidx.core.content.ContextCompat.getMainExecutor(android.content.Context):690:690 -> t
-    31:39:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):95 -> t
+    31:39:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):128 -> t
     40:46:java.util.concurrent.Executor androidx.core.os.ExecutorCompat.create(android.os.Handler):37:37 -> t
     40:46:java.util.concurrent.Executor androidx.core.content.ContextCompat.getMainExecutor(android.content.Context):690 -> t
-    40:46:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):95 -> t
-    47:53:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96:96 -> t
+    40:46:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):128 -> t
+    47:53:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129:129 -> t
     54:58:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):831:831 -> t
-    54:58:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
+    54:58:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
     59:60:androidx.fragment.app.FragmentManager androidx.fragment.app.FragmentActivity.getSupportFragmentManager():461:461 -> t
     59:60:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):843 -> t
-    59:60:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
+    59:60:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
     61:64:androidx.fragment.app.FragmentManager androidx.fragment.app.FragmentController.getSupportFragmentManager():70:70 -> t
     61:64:androidx.fragment.app.FragmentManager androidx.fragment.app.FragmentActivity.getSupportFragmentManager():461 -> t
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     61:64:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):843 -> t
-    61:64:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
+    61:64:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
     65:66:androidx.fragment.app.FragmentManager androidx.fragment.app.FragmentHostCallback.getFragmentManager():74:74 -> t
     65:66:androidx.fragment.app.FragmentManager androidx.fragment.app.FragmentController.getSupportFragmentManager():70 -> t
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     65:66:androidx.fragment.app.FragmentManager androidx.fragment.app.FragmentActivity.getSupportFragmentManager():461 -> t
     65:66:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):843 -> t
-    65:66:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
+    65:66:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
     67:79:androidx.biometric.BiometricViewModel androidx.biometric.BiometricPrompt.getViewModel(androidx.fragment.app.FragmentActivity):1027:1027 -> t
     67:79:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):844 -> t
-    67:79:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
+    67:79:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
     80:81:void androidx.biometric.BiometricPrompt.init(androidx.fragment.app.FragmentManager,androidx.biometric.BiometricViewModel,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):905:905 -> t
     80:81:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):845 -> t
-    80:81:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
+    80:81:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
     82:83:void androidx.biometric.BiometricViewModel.setClientExecutor(java.util.concurrent.Executor):274:274 -> t
     82:83:void androidx.biometric.BiometricPrompt.init(androidx.fragment.app.FragmentManager,androidx.biometric.BiometricViewModel,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):909 -> t
     82:83:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):845 -> t
-    82:83:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
+    82:83:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
     84:85:void androidx.biometric.BiometricViewModel.setClientCallback(androidx.biometric.BiometricPrompt$AuthenticationCallback):286:286 -> t
     84:85:void androidx.biometric.BiometricPrompt.init(androidx.fragment.app.FragmentManager,androidx.biometric.BiometricViewModel,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):911 -> t
     84:85:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):845 -> t
-    84:85:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
-    86:87:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96:96 -> t
+    84:85:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
+    86:87:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129:129 -> t
     88:93:androidx.biometric.BiometricPrompt$PromptInfo androidx.biometric.BiometricPrompt$PromptInfo$Builder.build():569:569 -> t
-    88:93:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):106 -> t
+    88:93:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):139 -> t
     94:104:androidx.biometric.BiometricPrompt$PromptInfo androidx.biometric.BiometricPrompt$PromptInfo$Builder.build():581:581 -> t
-    94:104:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):106 -> t
+    94:104:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):139 -> t
     105:112:androidx.biometric.BiometricPrompt$PromptInfo androidx.biometric.BiometricPrompt$PromptInfo$Builder.build():582:582 -> t
-    105:112:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):106 -> t
+    105:112:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):139 -> t
     113:121:androidx.biometric.BiometricPrompt$PromptInfo androidx.biometric.BiometricPrompt$PromptInfo$Builder.build():584:584 -> t
-    113:121:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):106 -> t
+    113:121:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):139 -> t
     122:129:androidx.biometric.BiometricPrompt$PromptInfo androidx.biometric.BiometricPrompt$PromptInfo$Builder.build():585:585 -> t
-    122:129:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):106 -> t
+    122:129:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):139 -> t
     130:134:androidx.biometric.BiometricPrompt$PromptInfo androidx.biometric.BiometricPrompt$PromptInfo$Builder.build():589:589 -> t
-    130:134:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):106 -> t
-    135:151:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107:107 -> t
+    130:134:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):139 -> t
+    135:151:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140:140 -> t
     152:159:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):951:951 -> t
-    152:159:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    152:159:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     160:165:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):982:982 -> t
     160:165:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    160:165:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    160:165:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     166:171:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):983:983 -> t
     166:171:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    166:171:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    166:171:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     172:177:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):986:986 -> t
     172:177:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    172:177:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    172:177:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     178:183:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):987:987 -> t
     178:183:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    178:183:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    178:183:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     184:185:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):991:991 -> t
     184:185:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    184:185:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    184:185:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     186:196:androidx.biometric.BiometricFragment androidx.biometric.BiometricPrompt.findBiometricFragment(androidx.fragment.app.FragmentManager):1056:1056 -> t
     186:196:androidx.biometric.BiometricFragment androidx.biometric.BiometricPrompt.findOrAddBiometricFragment(androidx.fragment.app.FragmentManager):1071 -> t
     186:196:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):992 -> t
     186:196:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    186:196:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    186:196:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     197:201:androidx.biometric.BiometricFragment androidx.biometric.BiometricFragment.newInstance():215:215 -> t
     197:201:androidx.biometric.BiometricFragment androidx.biometric.BiometricPrompt.findOrAddBiometricFragment(androidx.fragment.app.FragmentManager):1075 -> t
     197:201:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):992 -> t
     197:201:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    197:201:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    197:201:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     202:206:androidx.fragment.app.FragmentTransaction androidx.fragment.app.FragmentManager.beginTransaction():753:753 -> t
     202:206:androidx.biometric.BiometricFragment androidx.biometric.BiometricPrompt.findOrAddBiometricFragment(androidx.fragment.app.FragmentManager):1076 -> t
     202:206:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):992 -> t
     202:206:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    202:206:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    202:206:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     207:209:androidx.fragment.app.FragmentTransaction androidx.fragment.app.FragmentTransaction.add(androidx.fragment.app.Fragment,java.lang.String):225:225 -> t
     207:209:androidx.biometric.BiometricFragment androidx.biometric.BiometricPrompt.findOrAddBiometricFragment(androidx.fragment.app.FragmentManager):1077 -> t
     207:209:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):992 -> t
     207:209:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    207:209:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    207:209:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     210:212:int androidx.fragment.app.BackStackRecord.commitAllowingStateLoss():311:311 -> t
     210:212:androidx.biometric.BiometricFragment androidx.biometric.BiometricPrompt.findOrAddBiometricFragment(androidx.fragment.app.FragmentManager):1078 -> t
     210:212:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):992 -> t
     210:212:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    210:212:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    210:212:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     213:215:boolean androidx.fragment.app.FragmentManager.executePendingTransactions():779:779 -> t
     213:215:androidx.biometric.BiometricFragment androidx.biometric.BiometricPrompt.findOrAddBiometricFragment(androidx.fragment.app.FragmentManager):1082 -> t
     213:215:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):992 -> t
     213:215:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    213:215:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    213:215:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     216:218:boolean androidx.fragment.app.FragmentManager.executePendingTransactions():780:780 -> t
     216:218:androidx.biometric.BiometricFragment androidx.biometric.BiometricPrompt.findOrAddBiometricFragment(androidx.fragment.app.FragmentManager):1082 -> t
     216:218:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):992 -> t
     216:218:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    216:218:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    216:218:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     219:224:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):360:360 -> t
     219:224:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     219:224:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    219:224:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    219:224:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     225:232:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):362:362 -> t
     225:232:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     225:232:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    225:232:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    225:232:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     233:234:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):366:366 -> t
     233:234:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     233:234:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    233:234:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    233:234:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     235:236:void androidx.biometric.BiometricViewModel.setPromptInfo(androidx.biometric.BiometricPrompt$PromptInfo):297:297 -> t
     235:236:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):366 -> t
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     235:236:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     235:236:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    235:236:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    235:236:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     237:238:void androidx.biometric.BiometricViewModel.setCryptoObject(androidx.biometric.BiometricPrompt$CryptoObject):400:400 -> t
     237:238:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):377 -> t
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     237:238:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     237:238:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    237:238:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    237:238:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     239:244:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):380:380 -> t
     239:244:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     239:244:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    239:244:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    239:244:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     245:249:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):381:381 -> t
     245:249:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     245:249:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    245:249:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    245:249:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     250:253:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):382:382 -> t
     250:253:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     250:253:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    250:253:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    250:253:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     254:256:void androidx.biometric.BiometricViewModel.setNegativeButtonTextOverride(java.lang.CharSequence):429:429 -> t
     254:256:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):381 -> t
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     254:256:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     254:256:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    254:256:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    254:256:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     257:259:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):385:385 -> t
     257:259:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     257:259:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    257:259:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    257:259:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     260:261:void androidx.biometric.BiometricViewModel.setNegativeButtonTextOverride(java.lang.CharSequence):429:429 -> t
     260:261:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):385 -> t
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     260:261:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     260:261:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    260:261:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    260:261:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     262:267:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):390:390 -> t
     262:267:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     262:267:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    262:267:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    262:267:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     268:280:androidx.biometric.BiometricManager androidx.biometric.BiometricManager.from(android.content.Context):282:282 -> t
     268:280:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):391 -> t
     268:280:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     268:280:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    268:280:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    268:280:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     281:286:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):391:391 -> t
     281:286:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     281:286:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    281:286:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    281:286:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     287:288:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):393:393 -> t
     287:288:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     287:288:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    287:288:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    287:288:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     289:290:void androidx.biometric.BiometricViewModel.setAwaitingResult(boolean):453:453 -> t
     289:290:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):393 -> t
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     289:290:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     289:290:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    289:290:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    289:290:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     291:294:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):394:394 -> t
     291:294:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     291:294:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    291:294:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    291:294:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     295:296:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):399:399 -> t
     295:296:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     295:296:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    295:296:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    295:296:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     297:300:boolean androidx.biometric.BiometricViewModel.isDelayingPrompt():465:465 -> t
     297:300:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):399 -> t
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     297:300:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     297:300:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    297:300:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    297:300:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     301:313:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):400:400 -> t
     301:313:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     301:313:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    301:313:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    301:313:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     314:317:void androidx.biometric.BiometricFragment.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):403:403 -> t
     314:317:void androidx.biometric.BiometricPrompt.authenticateInternal(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):993 -> t
     314:317:void androidx.biometric.BiometricPrompt.authenticate(androidx.biometric.BiometricPrompt$PromptInfo,androidx.biometric.BiometricPrompt$CryptoObject):955 -> t
-    314:317:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):107 -> t
+    314:317:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):140 -> t
     318:325:androidx.biometric.BiometricPrompt$PromptInfo androidx.biometric.BiometricPrompt$PromptInfo$Builder.build():570:570 -> t
-    318:325:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):106 -> t
+    318:325:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):139 -> t
     326:333:void androidx.biometric.BiometricPrompt.<init>(androidx.fragment.app.FragmentActivity,java.util.concurrent.Executor,androidx.biometric.BiometricPrompt$AuthenticationCallback):837:837 -> t
-    326:333:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):96 -> t
-    1:14:void dispatch(java.lang.String,boolean,java.lang.String,java.lang.String):111:111 -> u
+    326:333:void showPrompt(java.lang.String,javax.crypto.Cipher,java.lang.Runnable,java.lang.String):129 -> t
+    1:14:void dispatch(java.lang.String,boolean,java.lang.String,java.lang.String):144:144 -> u
     1:3:void com.getcapacitor.BridgeActivity.onCreate(android.os.Bundle):23:23 -> v
     4:9:com.getcapacitor.Bridge$Builder com.getcapacitor.Bridge$Builder.setInstanceState(android.os.Bundle):1519:1519 -> v
     4:9:void com.getcapacitor.BridgeActivity.onCreate(android.os.Bundle):24 -> v
@@ -52322,6 +52548,21 @@ com.actionanand.qurio.app.MainActivity -> com.actionanand.qurio.app.MainActivity
     279:289:void com.getcapacitor.BridgeActivity.load():51:51 -> v
     279:289:void com.getcapacitor.BridgeActivity.onCreate(android.os.Bundle):42 -> v
     290:293:void com.getcapacitor.BridgeActivity.onCreate(android.os.Bundle):30:30 -> v
+    1:5:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):161:161 -> w
+    6:11:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1130:1130 -> w
+    6:11:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> w
+    12:28:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1134:1134 -> w
+    12:28:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> w
+    29:36:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1136:1136 -> w
+    29:36:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> w
+    37:59:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1138:1138 -> w
+    37:59:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> w
+    60:61:com.getcapacitor.Plugin com.getcapacitor.PluginHandle.getInstance():91:91 -> w
+    60:61:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1145 -> w
+    60:61:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> w
+    62:67:boolean com.getcapacitor.Bridge.onRequestPermissionsResult(int,java.lang.String[],int[]):1145:1145 -> w
+    62:67:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):165 -> w
+    68:71:void com.getcapacitor.BridgeActivity.onRequestPermissionsResult(int,java.lang.String[],int[]):166:166 -> w
 com.actionanand.qurio.app.MainActivity$$ExternalSyntheticApiModelOutline0 -> a1.a:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
@@ -52393,18 +52634,18 @@ com.actionanand.qurio.app.MainActivity$$ExternalSyntheticLambda1 -> a1.b:
 # {"id":"com.android.tools.r8.synthesized"}
     int a1.MainActivity$$ExternalSyntheticLambda1.$r8$classId -> a
       # {"id":"com.android.tools.r8.synthesized"}
-    boolean com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$4$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$2 -> b
+    boolean com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$1$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$2 -> b
       # {"id":"com.android.tools.r8.synthesized"}
-    com.actionanand.qurio.app.MainActivity com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$4$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$0 -> c
+    com.actionanand.qurio.app.MainActivity com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$1$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$0 -> c
       # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
       # {"id":"com.android.tools.r8.synthesized"}
-    java.lang.String com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$4$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$1 -> d
+    java.lang.String com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$1$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$1 -> d
       # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
       # {"id":"com.android.tools.r8.synthesized"}
-    java.lang.String com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$4$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$3 -> e
+    java.lang.String com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$1$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$3 -> e
       # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
       # {"id":"com.android.tools.r8.synthesized"}
-    java.lang.String com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$4$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$4 -> f
+    java.lang.String com.actionanand.qurio.app.MainActivity$$InternalSyntheticLambda$1$57de3c038fc85393e3fe98d5f96f47d65c29f7cb662a6b85a41a8f1cb89414c6$0.f$4 -> f
       # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
       # {"id":"com.android.tools.r8.synthesized"}
     1:1:void a1.MainActivity$$ExternalSyntheticLambda1.<init>(com.actionanand.qurio.app.MainActivity,java.lang.String,boolean,java.lang.String,java.lang.String):0:0 -> <init>
@@ -52477,21 +52718,21 @@ com.actionanand.qurio.app.MainActivity$$ExternalSyntheticLambda1 -> a1.b:
     194:197:void a1.MainActivity$$ExternalSyntheticLambda1.run():0 -> run
     198:213:void a1.MainActivity$$ExternalSyntheticLambda1.run():0:0 -> run
     214:215:com.getcapacitor.Bridge com.getcapacitor.BridgeActivity.getBridge():63:63 -> run
-    214:215:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):111 -> run
+    214:215:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):144 -> run
     214:215:void a1.MainActivity$$ExternalSyntheticLambda1.run():0 -> run
     216:217:android.webkit.WebView com.getcapacitor.Bridge.getWebView():512:512 -> run
-    216:217:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):111 -> run
+    216:217:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):144 -> run
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     216:217:void a1.MainActivity$$ExternalSyntheticLambda1.run():0 -> run
-    218:224:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):111:111 -> run
+    218:224:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):144:144 -> run
     218:224:void a1.MainActivity$$ExternalSyntheticLambda1.run():0 -> run
-    225:246:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):112:112 -> run
+    225:246:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):145:145 -> run
     225:246:void a1.MainActivity$$ExternalSyntheticLambda1.run():0 -> run
-    247:260:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):113:113 -> run
+    247:260:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):146:146 -> run
     247:260:void a1.MainActivity$$ExternalSyntheticLambda1.run():0 -> run
-    261:279:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):114:114 -> run
+    261:279:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):147:147 -> run
     261:279:void a1.MainActivity$$ExternalSyntheticLambda1.run():0 -> run
-    280:284:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):111:111 -> run
+    280:284:void com.actionanand.qurio.app.MainActivity.lambda$dispatch$0(java.lang.String,boolean,java.lang.String,java.lang.String):144:144 -> run
     280:284:void a1.MainActivity$$ExternalSyntheticLambda1.run():0 -> run
 com.actionanand.qurio.app.MainActivity$1 -> a1.c:
 # {"id":"sourceFile","fileName":"MainActivity.java"}
@@ -52499,23 +52740,29 @@ com.actionanand.qurio.app.MainActivity$1 -> a1.c:
     java.lang.String val$action -> n
     com.actionanand.qurio.app.MainActivity this$0 -> o
     1:3:void androidx.biometric.BiometricPrompt$AuthenticationCallback.<init>():365:365 -> <init>
-    1:3:void <init>(com.actionanand.qurio.app.MainActivity,java.lang.Runnable,java.lang.String):96 -> <init>
-    4:10:void <init>(com.actionanand.qurio.app.MainActivity,java.lang.Runnable,java.lang.String):96:96 -> <init>
-    2:18:void onAuthenticationError(int,java.lang.CharSequence):101:101 -> C
+    1:3:void <init>(com.actionanand.qurio.app.MainActivity,java.lang.Runnable,java.lang.String):129 -> <init>
+    4:10:void <init>(com.actionanand.qurio.app.MainActivity,java.lang.Runnable,java.lang.String):129:129 -> <init>
+    2:18:void onAuthenticationError(int,java.lang.CharSequence):134:134 -> C
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/lang/CharSequence;)V"}
-    1:11:void onAuthenticationSucceeded(androidx.biometric.BiometricPrompt$AuthenticationResult):98:98 -> D
+    1:11:void onAuthenticationSucceeded(androidx.biometric.BiometricPrompt$AuthenticationResult):131:131 -> D
       # {"id":"com.android.tools.r8.residualsignature","signature":"()V"}
 com.actionanand.qurio.app.MainActivity$QurioNativeBridge -> a1.g:
 # {"id":"sourceFile","fileName":"MainActivity.java"}
     com.actionanand.qurio.app.MainActivity this$0 -> a
-    1:6:void <init>(com.actionanand.qurio.app.MainActivity):31:31 -> <init>
-    1:12:void authenticateBiometric():60:60 -> authenticateBiometric
-    1:20:void disableBiometric():37:37 -> disableBiometric
-    21:36:void disableBiometric():38:38 -> disableBiometric
-    1:12:void enableBiometric(java.lang.String):42:42 -> enableBiometric
+    1:6:void <init>(com.actionanand.qurio.app.MainActivity):48:48 -> <init>
+    1:12:void authenticateBiometric():93:93 -> authenticateBiometric
+    1:20:void disableBiometric():70:70 -> disableBiometric
+    21:36:void disableBiometric():71:71 -> disableBiometric
+    1:12:void enableBiometric(java.lang.String):75:75 -> enableBiometric
     1:15:androidx.biometric.BiometricManager androidx.biometric.BiometricManager.from(android.content.Context):282:282 -> isBiometricAvailable
-    1:15:boolean isBiometricAvailable():33 -> isBiometricAvailable
-    16:25:boolean isBiometricAvailable():33:33 -> isBiometricAvailable
+    1:15:boolean isBiometricAvailable():66 -> isBiometricAvailable
+    16:25:boolean isBiometricAvailable():66:66 -> isBiometricAvailable
+    1:2:boolean notificationPermissionGranted():49:49 -> notificationPermissionGranted
+    3:10:boolean com.actionanand.qurio.app.MainActivity.hasNotificationPermission():44:44 -> notificationPermissionGranted
+    3:10:boolean notificationPermissionGranted():49 -> notificationPermissionGranted
+    11:23:boolean com.actionanand.qurio.app.MainActivity.hasNotificationPermission():45:45 -> notificationPermissionGranted
+    11:23:boolean notificationPermissionGranted():49 -> notificationPermissionGranted
+    1:12:void requestNotificationPermission():51:51 -> requestNotificationPermission
 com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda0 -> a1.d:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
 # {"id":"com.android.tools.r8.synthesized"}
@@ -52584,15 +52831,15 @@ com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$ExternalSyntheticLambd
     120:128:void androidx.activity.ComponentActivity.onBackPressedDispatcher_delegate$lambda$13$lambda$12$lambda$11(androidx.activity.ComponentActivity,androidx.activity.OnBackPressedDispatcher):623 -> run
     120:128:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda0.run():0 -> run
     129:132:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda0.run():0:0 -> run
-    133:139:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(java.lang.String):44:44 -> run
+    133:139:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$2(java.lang.String):77:77 -> run
     133:139:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda0.run():0 -> run
-    140:145:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(java.lang.String):45:45 -> run
+    140:145:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$2(java.lang.String):78:78 -> run
     140:145:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda0.run():0 -> run
-    146:153:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(java.lang.String):46:46 -> run
+    146:153:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$2(java.lang.String):79:79 -> run
     146:153:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda0.run():0 -> run
-    154:165:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(java.lang.String):47:47 -> run
+    154:165:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$2(java.lang.String):80:80 -> run
     154:165:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda0.run():0 -> run
-    166:178:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(java.lang.String):56:56 -> run
+    166:178:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$2(java.lang.String):89:89 -> run
     166:178:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda0.run():0 -> run
 com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1 -> a1.e:
 # {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
@@ -52600,288 +52847,59 @@ com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$ExternalSyntheticLambd
     int a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.$r8$classId -> a
       # {"id":"com.android.tools.r8.synthesized"}
     com.actionanand.qurio.app.MainActivity$QurioNativeBridge com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$InternalSyntheticLambda$2$35700a45442ae212b17dfe352dbeba2643b66980c41470e4150609fbb023cf45$0.f$0 -> b
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Ljava/lang/Object;"}
-      # {"id":"com.android.tools.r8.synthesized"}
-    1:1:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.<init>(int,java.lang.Object):0:0 -> <init>
-      # {"id":"com.android.tools.r8.synthesized"}
-    2:2:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.<init>(androidx.fragment.app.DefaultSpecialEffectsController,androidx.fragment.app.SpecialEffectsController$FragmentStateManagerOperation):0:0 -> <init>
-      # {"id":"com.android.tools.r8.synthesized"}
-      # {"id":"com.android.tools.r8.residualsignature","signature":"(Landroidx/fragment/app/m;Landroidx/fragment/app/w0;)V"}
-    25:30:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661:661 -> run
-    25:30:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-      # {"id":"com.android.tools.r8.synthesized"}
-    31:40:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):109:109 -> run
-    31:40:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    31:40:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    41:57:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):110:110 -> run
-    41:57:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    41:57:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    58:67:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):120:120 -> run
-    58:67:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    58:67:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    68:77:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):124:124 -> run
-    68:77:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    68:77:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    78:86:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):128:128 -> run
-    78:86:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    78:86:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    87:90:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):133:133 -> run
-    87:90:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    87:90:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    91:95:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):134:134 -> run
-    91:95:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    91:95:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    96:98:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):135:135 -> run
-    96:98:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    96:98:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    99:117:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):143:143 -> run
-    99:117:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    99:117:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    118:138:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):153:153 -> run
-    118:138:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    118:138:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    139:150:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):152:152 -> run
-    139:150:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    139:150:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    151:153:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):155:155 -> run
-    151:153:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    151:153:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    154:170:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):159:159 -> run
-    154:170:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    154:170:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    171:171:boolean androidx.core.app.ActivityRecreator.recreate(android.app.Activity):169:169 -> run
-    171:171:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):661 -> run
-    171:171:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    172:175:void androidx.core.app.ActivityCompat.lambda$recreate$0(android.app.Activity):663:663 -> run
-    172:175:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    176:179:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0:0 -> run
-    180:185:void androidx.core.view.SoftwareKeyboardControllerCompat$Impl20.lambda$show$0(android.view.View):133:133 -> run
-    180:185:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    186:191:void androidx.core.view.SoftwareKeyboardControllerCompat$Impl20.lambda$show$0(android.view.View):134:134 -> run
-    186:191:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    192:195:void androidx.core.view.SoftwareKeyboardControllerCompat$Impl20.lambda$show$0(android.view.View):135:135 -> run
-    192:195:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    196:217:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0:0 -> run
-    218:221:void androidx.lifecycle.ProcessLifecycleOwner.dispatchPauseIfNeeded$lifecycle_process_release():127:127 -> run
-    218:221:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):56 -> run
-    218:221:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    222:223:void androidx.lifecycle.ProcessLifecycleOwner.dispatchPauseIfNeeded$lifecycle_process_release():128:128 -> run
-    222:223:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):56 -> run
-    222:223:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    224:228:void androidx.lifecycle.ProcessLifecycleOwner.dispatchPauseIfNeeded$lifecycle_process_release():129:129 -> run
-    224:228:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):56 -> run
-    224:228:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    229:236:void androidx.lifecycle.ProcessLifecycleOwner.dispatchStopIfNeeded$lifecycle_process_release():134:134 -> run
-    229:236:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):57 -> run
-    229:236:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    237:241:void androidx.lifecycle.ProcessLifecycleOwner.dispatchStopIfNeeded$lifecycle_process_release():135:135 -> run
-    237:241:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):57 -> run
-    237:241:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    242:244:void androidx.lifecycle.ProcessLifecycleOwner.dispatchStopIfNeeded$lifecycle_process_release():136:136 -> run
-    242:244:void androidx.lifecycle.ProcessLifecycleOwner.delayedPauseRunnable$lambda$0(androidx.lifecycle.ProcessLifecycleOwner):57 -> run
-    242:244:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    245:248:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0:0 -> run
-    249:265:void androidx.fragment.app.FragmentManager.lambda$cancelBackStackTransition$4():1066:1066 -> run
-    249:265:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    266:268:void androidx.fragment.app.FragmentManager.lambda$cancelBackStackTransition$4():1067:1067 -> run
-    266:268:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    269:274:void androidx.fragment.app.FragmentManager.lambda$cancelBackStackTransition$4():1066:1066 -> run
-    269:274:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    275:278:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0:0 -> run
-    279:288:void androidx.fragment.app.DefaultSpecialEffectsController.collectEffects$lambda$2(androidx.fragment.app.DefaultSpecialEffectsController,androidx.fragment.app.SpecialEffectsController$Operation):0:0 -> run
-    279:288:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    289:292:void androidx.fragment.app.DefaultSpecialEffectsController.collectEffects$lambda$2(androidx.fragment.app.DefaultSpecialEffectsController,androidx.fragment.app.SpecialEffectsController$Operation):89:89 -> run
-    289:292:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    293:297:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0:0 -> run
-    298:302:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():350:350 -> run
-    298:302:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    303:306:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():351:351 -> run
-    303:306:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    307:312:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():352:352 -> run
-    307:312:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    313:313:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():354:354 -> run
-    313:313:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    314:317:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():356:356 -> run
-    314:317:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    318:321:int androidx.core.provider.FontsContractCompat$FontInfo.getResultCode():519:519 -> run
-    318:321:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():358 -> run
-      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    318:321:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    322:324:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():361:361 -> run
-    322:324:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    325:334:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():369:369 -> run
-    325:334:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    335:338:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():378:378 -> run
-    335:338:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    339:341:void androidx.core.os.TraceCompat.beginSection(java.lang.String):108:108 -> run
-    339:341:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():378 -> run
-    339:341:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    342:348:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380:380 -> run
-    342:348:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    349:352:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424:424 -> run
-    349:352:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
-    349:352:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    353:354:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87:87 -> run
-    353:354:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
-    353:354:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
-    353:354:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    355:359:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):408:408 -> run
-    355:359:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
-    355:359:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
-    355:359:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
-    355:359:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    360:365:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):411:411 -> run
-    360:365:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
-    360:365:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
-    360:365:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
-    360:365:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    366:368:void androidx.tracing.TraceApi18Impl.endSection():60:60 -> run
-    366:368:void androidx.tracing.Trace.endSection():144 -> run
-    366:368:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):415 -> run
-    366:368:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
-    366:368:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
-    366:368:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
-    366:368:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    369:370:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():381:381 -> run
-    369:370:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    371:372:android.net.Uri androidx.core.provider.FontsContractCompat$FontInfo.getUri():474:474 -> run
-    371:372:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():382 -> run
-    371:372:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    373:380:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():381:381 -> run
-    373:380:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    381:382:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):130:130 -> run
-    381:382:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
-    381:382:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    383:385:void androidx.core.os.TraceCompat.beginSection(java.lang.String):108:108 -> run
-    383:385:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):130 -> run
-    383:385:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
-    383:385:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    386:394:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):131:131 -> run
-    386:394:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
-    386:394:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    395:397:void androidx.core.os.TraceCompat.endSection():119:119 -> run
-    395:397:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):133 -> run
-    395:397:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
-    395:397:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    398:400:void androidx.core.os.TraceCompat.endSection():119:119 -> run
-    398:400:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():388 -> run
-    398:400:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    401:403:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():390:390 -> run
-    401:403:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    404:407:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():391:391 -> run
-    404:407:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    408:413:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():392:392 -> run
-    408:413:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    414:415:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():394:395 -> run
-    414:415:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    416:418:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():395:395 -> run
-    416:418:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    419:421:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():394:394 -> run
-    419:421:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    422:423:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):133:133 -> run
-    422:423:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
-    422:423:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    424:426:void androidx.core.os.TraceCompat.endSection():119:119 -> run
-    424:426:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):133 -> run
-    424:426:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
-    424:426:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    427:427:androidx.emoji2.text.MetadataRepo androidx.emoji2.text.MetadataRepo.create(android.graphics.Typeface,java.nio.ByteBuffer):134:134 -> run
-    427:427:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():386 -> run
-    427:427:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    428:438:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():384:384 -> run
-    428:438:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    439:441:void androidx.tracing.TraceApi18Impl.endSection():60:60 -> run
-    439:441:void androidx.tracing.Trace.endSection():144 -> run
-    439:441:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):415 -> run
-    439:441:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
-    439:441:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
-    439:441:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
-    439:441:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    442:442:android.graphics.Typeface androidx.core.graphics.TypefaceCompat.createFromFontInfo(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[],int):417:417 -> run
-    442:442:android.graphics.Typeface androidx.core.provider.FontsContractCompat.buildTypeface(android.content.Context,android.os.CancellationSignal,androidx.core.provider.FontsContractCompat$FontInfo[]):87 -> run
-    442:442:android.graphics.Typeface androidx.emoji2.text.FontRequestEmojiCompatConfig$FontProviderHelper.buildTypeface(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo):424 -> run
-    442:442:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():380 -> run
-    442:442:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    443:444:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():388:388 -> run
-    443:444:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    445:447:void androidx.core.os.TraceCompat.endSection():119:119 -> run
-    445:447:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():388 -> run
-    445:447:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    448:448:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():389:389 -> run
-    448:448:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    449:471:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():373:373 -> run
-    449:471:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    472:474:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():397:397 -> run
-    472:474:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    475:478:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():398:398 -> run
-    475:478:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    479:484:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():399:399 -> run
-    479:484:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    485:486:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():401:402 -> run
-    485:486:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    487:489:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():402:402 -> run
-    487:489:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    490:491:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():401:401 -> run
-    490:491:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    492:493:void androidx.emoji2.text.FontRequestEmojiCompatConfig$FontRequestMetadataLoader.createMetadata():354:354 -> run
-    492:493:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    494:505:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0:0 -> run
-    506:509:void androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl.execute$lambda$0(androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl):1087:1087 -> run
-    506:509:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    510:512:void androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl.execute$lambda$0(androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl):1088:1088 -> run
-    510:512:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    513:515:void androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl.execute$lambda$0(androidx.activity.ComponentActivity$ReportFullyDrawnExecutorImpl):1089:1089 -> run
-    513:515:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    516:519:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0:0 -> run
-    520:537:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():62:62 -> run
-    520:537:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    538:547:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():63:63 -> run
-    538:547:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    548:556:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():64:64 -> run
-    548:556:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    557:564:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():65:65 -> run
-    557:564:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    565:578:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():66:66 -> run
-    565:578:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    579:584:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():67:67 -> run
-    579:584:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    585:598:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():68:68 -> run
-    585:598:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    599:611:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():69:69 -> run
-    599:611:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    612:619:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():66:66 -> run
-    612:619:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-    620:630:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3():75:75 -> run
-    620:630:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.run():0 -> run
-com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda2 -> a1.f:
-# {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
-# {"id":"com.android.tools.r8.synthesized"}
-    int a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda2.$r8$classId -> a
-      # {"id":"com.android.tools.r8.synthesized"}
-    com.actionanand.qurio.app.MainActivity$QurioNativeBridge com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$InternalSyntheticLambda$3$4d9dd910a45db1c7c0e4b4676ff2bee40baaf8fde43b53cb429e087dfc51b8cc$0.f$0 -> b
       # {"id":"com.android.tools.r8.residualsignature","signature":"La1/g;"}
       # {"id":"com.android.tools.r8.synthesized"}
-    javax.crypto.Cipher com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$InternalSyntheticLambda$3$4d9dd910a45db1c7c0e4b4676ff2bee40baaf8fde43b53cb429e087dfc51b8cc$0.f$1 -> c
+    1:8:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda1.<init>(a1.MainActivity$QurioNativeBridge,int):0:0 -> <init>
       # {"id":"com.android.tools.r8.synthesized"}
-    java.lang.String com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$InternalSyntheticLambda$3$4d9dd910a45db1c7c0e4b4676ff2bee40baaf8fde43b53cb429e087dfc51b8cc$0.f$2 -> d
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(La1/g;I)V"}
+    11:16:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$requestNotificationPermission$0():53:53 -> run
+    17:25:boolean com.actionanand.qurio.app.MainActivity.hasNotificationPermission():44:44 -> run
+    17:25:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$requestNotificationPermission$0():53 -> run
+    26:37:boolean com.actionanand.qurio.app.MainActivity.hasNotificationPermission():45:45 -> run
+    26:37:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$requestNotificationPermission$0():53 -> run
+    38:47:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$requestNotificationPermission$0():54:54 -> run
+    48:57:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$requestNotificationPermission$0():56:56 -> run
+    58:63:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$requestNotificationPermission$0():58:58 -> run
+    64:73:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$requestNotificationPermission$0():61:61 -> run
+    74:89:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():95:95 -> run
+    90:99:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():96:96 -> run
+    100:109:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():97:97 -> run
+    110:117:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():98:98 -> run
+    118:131:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():99:99 -> run
+    132:137:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():100:100 -> run
+    138:152:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():101:101 -> run
+    153:165:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():102:102 -> run
+    166:173:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():99:99 -> run
+    174:184:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$4():108:108 -> run
+com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda3 -> a1.f:
+# {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
+# {"id":"com.android.tools.r8.synthesized"}
+    int a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda3.$r8$classId -> a
       # {"id":"com.android.tools.r8.synthesized"}
-    1:12:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda2.<init>(a1.MainActivity$QurioNativeBridge,javax.crypto.Cipher,java.lang.String,int):0:0 -> <init>
+    com.actionanand.qurio.app.MainActivity$QurioNativeBridge com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$InternalSyntheticLambda$3$5a4c15b862701075317ed0c2889894bb4dd43cb414cc94a790688fc688fdee88$0.f$0 -> b
+      # {"id":"com.android.tools.r8.residualsignature","signature":"La1/g;"}
+      # {"id":"com.android.tools.r8.synthesized"}
+    javax.crypto.Cipher com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$InternalSyntheticLambda$3$5a4c15b862701075317ed0c2889894bb4dd43cb414cc94a790688fc688fdee88$0.f$1 -> c
+      # {"id":"com.android.tools.r8.synthesized"}
+    java.lang.String com.actionanand.qurio.app.MainActivity$QurioNativeBridge$$InternalSyntheticLambda$3$5a4c15b862701075317ed0c2889894bb4dd43cb414cc94a790688fc688fdee88$0.f$2 -> d
+      # {"id":"com.android.tools.r8.synthesized"}
+    1:12:void a1.MainActivity$QurioNativeBridge$$ExternalSyntheticLambda3.<init>(a1.MainActivity$QurioNativeBridge,javax.crypto.Cipher,java.lang.String,int):0:0 -> <init>
       # {"id":"com.android.tools.r8.synthesized"}
       # {"id":"com.android.tools.r8.residualsignature","signature":"(La1/g;Ljavax/crypto/Cipher;Ljava/lang/String;I)V"}
-    17:30:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$0(javax.crypto.Cipher,java.lang.String):49:49 -> run
+    17:30:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(javax.crypto.Cipher,java.lang.String):82:82 -> run
       # {"id":"com.android.tools.r8.residualsignature","signature":"()V"}
-    31:42:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$0(javax.crypto.Cipher,java.lang.String):50:50 -> run
-    43:56:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$0(javax.crypto.Cipher,java.lang.String):51:51 -> run
-    57:67:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$0(javax.crypto.Cipher,java.lang.String):52:52 -> run
-    68:74:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$0(javax.crypto.Cipher,java.lang.String):53:53 -> run
-    75:84:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$0(javax.crypto.Cipher,java.lang.String):54:54 -> run
-    85:103:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$2(javax.crypto.Cipher,java.lang.String):71:71 -> run
-    104:110:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$2(javax.crypto.Cipher,java.lang.String):72:72 -> run
-    111:120:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$2(javax.crypto.Cipher,java.lang.String):73:73 -> run
+    31:42:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(javax.crypto.Cipher,java.lang.String):83:83 -> run
+    43:56:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(javax.crypto.Cipher,java.lang.String):84:84 -> run
+    57:67:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(javax.crypto.Cipher,java.lang.String):85:85 -> run
+    68:74:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(javax.crypto.Cipher,java.lang.String):86:86 -> run
+    75:84:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$enableBiometric$1(javax.crypto.Cipher,java.lang.String):87:87 -> run
+    85:103:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3(javax.crypto.Cipher,java.lang.String):104:104 -> run
+    104:110:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3(javax.crypto.Cipher,java.lang.String):105:105 -> run
+    111:120:void com.actionanand.qurio.app.MainActivity$QurioNativeBridge.lambda$authenticateBiometric$3(javax.crypto.Cipher,java.lang.String):106:106 -> run
 com.capacitorjs.plugins.app.AppPlugin -> com.capacitorjs.plugins.app.AppPlugin:
 # {"id":"sourceFile","fileName":"AppPlugin.java"}
     androidx.activity.OnBackPressedCallback onBackPressedCallback -> onBackPressedCallback
-      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/v;"}
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Landroidx/activity/w;"}
     1:4:void <init>():21:21 -> <init>
     5:7:void <init>():29:29 -> <init>
     1:5:boolean access$000(com.capacitorjs.plugins.app.AppPlugin,java.lang.String):21:21 -> access$000
@@ -53549,7 +53567,7 @@ com.capacitorjs.plugins.keyboard.KeyboardPlugin -> com.capacitorjs.plugins.keybo
     21:24:void lambda$show$1(com.getcapacitor.PluginCall):31:31 -> lambda$show$1
     1:21:void lambda$show$2(com.getcapacitor.PluginCall):29:29 -> lambda$show$2
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Lcom/getcapacitor/g0;)V"}
-    1:11:void load():18:18 -> load
+    1:10:void load():18:18 -> load
     1:2:void onKeyboardEvent(java.lang.String,int):73:73 -> onKeyboardEvent
     3:5:void com.getcapacitor.JSObject.<init>():18:18 -> onKeyboardEvent
     3:5:void onKeyboardEvent(java.lang.String,int):73 -> onKeyboardEvent

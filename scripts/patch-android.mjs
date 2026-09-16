@@ -153,9 +153,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowInsetsController;
 import android.webkit.JavascriptInterface;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -176,6 +180,7 @@ public class MainActivity extends BridgeActivity {
   private BiometricPrompt biometricPrompt;
 
   @Override protected void onCreate(Bundle state) {
+    registerPlugin(QurioCredentialsPlugin.class);
     super.onCreate(state);
     getBridge().getWebView().addJavascriptInterface(new QurioNativeBridge(), "QurioNative");
   }
@@ -194,7 +199,42 @@ public class MainActivity extends BridgeActivity {
       || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
   }
 
+  @SuppressWarnings("deprecation")
+  private void applySystemBars(boolean dark) {
+    Window window = getWindow();
+    int background = Color.parseColor(dark ? "#111d17" : "#f5f7f2");
+    window.setStatusBarColor(background);
+    window.setNavigationBarColor(background);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      window.setStatusBarContrastEnforced(false);
+      window.setNavigationBarContrastEnforced(false);
+    }
+    View decor = window.getDecorView();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      WindowInsetsController controller = decor.getWindowInsetsController();
+      if (controller != null) {
+        int appearance = dark ? 0 : WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+          | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+        controller.setSystemBarsAppearance(
+          appearance,
+          WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+        );
+      }
+      return;
+    }
+    int flags = decor.getSystemUiVisibility();
+    flags = dark ? flags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR : flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      flags = dark ? flags & ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : flags | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+    }
+    decor.setSystemUiVisibility(flags);
+  }
+
   private class QurioNativeBridge {
+    @JavascriptInterface public void setDarkMode(boolean enabled) {
+      runOnUiThread(() -> applySystemBars(enabled));
+    }
     @JavascriptInterface public boolean notificationPermissionGranted() { return hasNotificationPermission(); }
     @JavascriptInterface public void requestNotificationPermission() {
       runOnUiThread(() -> {
@@ -301,3 +341,5 @@ public class MainActivity extends BridgeActivity {
 );
 
 console.log('Applied Qurio splash, deep link, biometric bridge, system bars, and R8 optimization.');
+
+await import('./patch-android-credentials.mjs');

@@ -1,4 +1,5 @@
 interface QurioNativeBridge {
+  setDarkMode?(enabled: boolean): void;
   disableBiometric?(): void;
   isBiometricAvailable?(): boolean;
   enableBiometric?(secret: string): void;

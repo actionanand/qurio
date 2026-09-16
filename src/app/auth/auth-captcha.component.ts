@@ -14,7 +14,7 @@ import {
 import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 import { I18nService } from '../core/i18n.service';
 import { CaptchaService } from './captcha.service';
-import { createCaptchaInitMessage, isTrustedCaptchaEvent } from './hosted-auth.util';
+import { createCaptchaInitMessage, isCaptchaReadyMessage, isTrustedCaptchaEvent } from './hosted-auth.util';
 import { loadTurnstile } from './turnstile-api';
 
 export type CaptchaState = 'disabled' | 'loading' | 'ready' | 'verified' | 'expired' | 'error';
@@ -35,12 +35,12 @@ export type CaptchaState = 'disabled' | 'loading' | 'ready' | 'verified' | 'expi
           <iframe
             #frame
             class="auth-captcha-frame"
-            title="Human verification"
+            [title]="i.t('humanVerification')"
             [src]="frameUrl()"
             (load)="initializeHostedFrame()"
             sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
         } @else {
-          <div #container class="auth-captcha-widget" aria-label="Human verification"></div>
+          <div #container class="auth-captcha-widget" [attr.aria-label]="i.t('humanVerification')"></div>
         }
         @switch (state()) {
           @case ('loading') {
@@ -182,6 +182,15 @@ export class AuthCaptchaComponent {
 
   private receiveMessage(event: MessageEvent<unknown>): void {
     const source = this.frame()?.nativeElement.contentWindow ?? null;
+    if (
+      event.origin === this.captcha.officialOrigin &&
+      event.source === source &&
+      isCaptchaReadyMessage(event.data, this.requestId)
+    ) {
+      source?.postMessage(createCaptchaInitMessage(this.requestId), this.captcha.officialOrigin);
+      this.setState('ready');
+      return;
+    }
     if (!isTrustedCaptchaEvent(event, this.captcha.officialOrigin, source, this.requestId)) return;
     const message = event.data as { captchaToken: string };
     this.cleanupNativeChallenge();

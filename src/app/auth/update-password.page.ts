@@ -4,10 +4,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IonButton, IonInput, IonSpinner } from '@ionic/angular';
 import { I18nService } from '../core/i18n.service';
 import { AuthService } from '../services/auth.service';
+import { IconComponent } from '../shared/icon.component';
 import { safeAuthMessage } from './auth-page.shared';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink, IonButton, IonInput, IonSpinner],
+  imports: [ReactiveFormsModule, RouterLink, IonButton, IonInput, IonSpinner, IconComponent],
   template: `<section class="auth-page">
     <article class="auth-card">
       <p class="eyebrow">{{ i.t('accountRecovery') }}</p>
@@ -16,16 +17,34 @@ import { safeAuthMessage } from './auth-page.shared';
         <ion-input
           [label]="i.t('newPassword')"
           labelPlacement="stacked"
-          type="password"
+          [type]="passwordVisible() ? 'text' : 'password'"
           autocomplete="new-password"
           formControlName="password"
-          fill="outline" /><ion-input
+          fill="outline">
+          <ion-button
+            slot="end"
+            fill="clear"
+            type="button"
+            [attr.aria-label]="i.t(passwordVisible() ? 'hidePassword' : 'showPassword')"
+            (click)="passwordVisible.update(value => !value)">
+            <app-icon [name]="passwordVisible() ? 'eyeOff' : 'eye'" />
+          </ion-button> </ion-input
+        ><ion-input
           [label]="i.t('confirmPassword')"
           labelPlacement="stacked"
-          type="password"
+          [type]="confirmVisible() ? 'text' : 'password'"
           autocomplete="new-password"
           formControlName="confirm"
-          fill="outline" />
+          fill="outline">
+          <ion-button
+            slot="end"
+            fill="clear"
+            type="button"
+            [attr.aria-label]="i.t(confirmVisible() ? 'hidePassword' : 'showPassword')"
+            (click)="confirmVisible.update(value => !value)">
+            <app-icon [name]="confirmVisible() ? 'eyeOff' : 'eye'" />
+          </ion-button>
+        </ion-input>
         @if (mismatch()) {
           <p class="form-message error">{{ i.t('passwordsMismatch') }}</p>
         }
@@ -52,6 +71,8 @@ export class UpdatePasswordPage {
   readonly busy = signal(false);
   readonly message = signal('');
   readonly recoveryReady = signal(false);
+  readonly passwordVisible = signal(false);
+  readonly confirmVisible = signal(false);
   readonly form = new FormGroup({
     password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(8)] }),
     confirm: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -96,7 +117,7 @@ export class UpdatePasswordPage {
     const result = await this.auth.updatePassword(this.form.getRawValue().password);
     this.busy.set(false);
     if (result.error) {
-      this.message.set(safeAuthMessage(result.error, this.i.t('unableToUpdatePassword')));
+      this.message.set(safeAuthMessage(result.error, this.i.t('unableToUpdatePassword'), key => this.i.t(key)));
       return;
     }
     await this.auth.signOut();
