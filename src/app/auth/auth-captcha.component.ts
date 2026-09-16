@@ -14,7 +14,7 @@ import {
 import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 import { I18nService } from '../core/i18n.service';
 import { CaptchaService } from './captcha.service';
-import { createCaptchaInitMessage, isCaptchaReadyMessage, isTrustedCaptchaEvent } from './hosted-auth.util';
+import { hostedChallengeRequestUrl, isTrustedCaptchaEvent } from './hosted-auth.util';
 import { loadTurnstile } from './turnstile-api';
 
 export type CaptchaState = 'disabled' | 'loading' | 'ready' | 'verified' | 'expired' | 'error';
@@ -37,7 +37,7 @@ export type CaptchaState = 'disabled' | 'loading' | 'ready' | 'verified' | 'expi
             class="auth-captcha-frame"
             [title]="i.t('humanVerification')"
             [src]="frameUrl()"
-            (load)="initializeHostedFrame()"
+            (load)="hostedFrameLoaded()"
             sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
         } @else {
           <div #container class="auth-captcha-widget" [attr.aria-label]="i.t('humanVerification')"></div>
@@ -116,12 +116,8 @@ export class AuthCaptchaComponent {
     } else void this.startWidget();
   }
 
-  initializeHostedFrame(): void {
-    if (!this.useHostedFrame() || !this.requestId) return;
-    const target = this.frame()?.nativeElement.contentWindow;
-    if (!target) return;
-    target.postMessage(createCaptchaInitMessage(this.requestId), this.captcha.officialOrigin);
-    this.setState('ready');
+  hostedFrameLoaded(): void {
+    if (this.useHostedFrame() && this.requestId) this.setState('ready');
   }
 
   private start(): void {
@@ -168,8 +164,6 @@ export class AuthCaptchaComponent {
     this.clearToken();
     this.setState('loading');
     this.requestId = crypto.randomUUID();
-    const url = new URL(this.captcha.challengeUrl);
-    url.searchParams.set('request', this.requestId);
     this.nativeMessageListener = event => this.receiveMessage(event);
     window.addEventListener('message', this.nativeMessageListener);
     this.nativeTimeout = setTimeout(() => {
@@ -177,20 +171,15 @@ export class AuthCaptchaComponent {
       this.clearToken();
       this.setState('error');
     }, 120_000);
-    this.frameUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url.toString()));
+    this.frameUrl.set(
+      this.sanitizer.bypassSecurityTrustResourceUrl(
+        hostedChallengeRequestUrl(this.captcha.challengeUrl, this.requestId),
+      ),
+    );
   }
 
   private receiveMessage(event: MessageEvent<unknown>): void {
     const source = this.frame()?.nativeElement.contentWindow ?? null;
-    if (
-      event.origin === this.captcha.officialOrigin &&
-      event.source === source &&
-      isCaptchaReadyMessage(event.data, this.requestId)
-    ) {
-      source?.postMessage(createCaptchaInitMessage(this.requestId), this.captcha.officialOrigin);
-      this.setState('ready');
-      return;
-    }
     if (!isTrustedCaptchaEvent(event, this.captcha.officialOrigin, source, this.requestId)) return;
     const message = event.data as { captchaToken: string };
     this.cleanupNativeChallenge();

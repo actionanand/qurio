@@ -1,14 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { environment as productionEnvironment } from '../../environments/environment.prod';
 import {
+  captchaRequestIdFromLocation,
   createCaptchaMessage,
-  createCaptchaReadyMessage,
-  createCaptchaInitMessage,
+  hostedChallengeRequestUrl,
   hostedChallengeUrl,
   isAllowedNativeChallengeCaller,
   isCaptchaMessage,
-  isCaptchaInitMessage,
-  isCaptchaReadyMessage,
+  isValidCaptchaRequestId,
   isOfficialHostedLocation,
   isTrustedCaptchaEvent,
   officialAppBasePath,
@@ -70,11 +69,19 @@ describe('hosted authentication URL policy', () => {
     expect(isCaptchaMessage(valid, 'request-2')).toBe(false);
     expect(isCaptchaMessage({ ...valid, type: 'other' }, 'request-1')).toBe(false);
     expect(isCaptchaMessage({ ...valid, captchaToken: ' ' }, 'request-1')).toBe(false);
-    expect(isCaptchaInitMessage(createCaptchaInitMessage('08ccf240-5f00-42fd-a55c-d95f800fad2c'))).toBe(true);
-    expect(isCaptchaInitMessage(createCaptchaInitMessage('short'))).toBe(false);
-    const ready = createCaptchaReadyMessage('08ccf240-5f00-42fd-a55c-d95f800fad2c');
-    expect(isCaptchaReadyMessage(ready, '08ccf240-5f00-42fd-a55c-d95f800fad2c')).toBe(true);
-    expect(isCaptchaReadyMessage(ready, 'different-request')).toBe(false);
+  });
+
+  it('initializes a hosted challenge only from a strong URL-bound request ID', () => {
+    const requestId = '08ccf240-5f00-42fd-a55c-d95f800fad2c';
+    expect(isValidCaptchaRequestId(requestId)).toBe(true);
+    expect(isValidCaptchaRequestId('short')).toBe(false);
+    expect(captchaRequestIdFromLocation({ search: `?request=${requestId}`, hash: '' })).toBe(requestId);
+    expect(captchaRequestIdFromLocation({ search: '', hash: `#request=${requestId}` })).toBe(requestId);
+    expect(captchaRequestIdFromLocation({ search: '?request=short', hash: '' })).toBe('');
+    expect(hostedChallengeRequestUrl(`${appUrl}/auth/challenge`, requestId)).toBe(
+      `${appUrl}/auth/challenge?request=${requestId}#request=${requestId}`,
+    );
+    expect(() => hostedChallengeRequestUrl(`${appUrl}/auth/challenge`, 'short')).toThrow();
   });
 
   it('accepts a challenge message only from the official origin and expected iframe', () => {
