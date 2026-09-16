@@ -7,6 +7,7 @@ import { CaptchaService } from './captcha.service';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { I18nService } from '../core/i18n.service';
+import { CredentialManagerService, type PasswordLookupResult } from '../core/credential-manager.service';
 
 describe('authentication page CAPTCHA lifecycle', () => {
   const signIn = vi.fn(async () => ({ data: { session: null }, error: null }));
@@ -25,9 +26,15 @@ describe('authentication page CAPTCHA lifecycle', () => {
     canSubmit: (token: string) => token.length > 0,
   };
   const router = { navigateByUrl: vi.fn(async () => true), navigate: vi.fn(async () => true) };
+  const credentials = {
+    native: false,
+    savePassword: vi.fn(async () => undefined),
+    getPassword: vi.fn(async (): Promise<PasswordLookupResult> => ({ status: 'unavailable' })),
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    credentials.native = false;
     sessionStorage.clear();
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
@@ -36,6 +43,7 @@ describe('authentication page CAPTCHA lifecycle', () => {
         { provide: CaptchaService, useValue: captcha },
         { provide: Router, useValue: router },
         { provide: I18nService, useValue: { t: (key: string) => key } },
+        { provide: CredentialManagerService, useValue: credentials },
       ],
     });
   });
@@ -55,6 +63,8 @@ describe('authentication page CAPTCHA lifecycle', () => {
         { provide: AuthService, useValue: auth },
         { provide: CaptchaService, useValue: disabledCaptcha },
         { provide: Router, useValue: router },
+        { provide: I18nService, useValue: { t: (key: string) => key } },
+        { provide: CredentialManagerService, useValue: credentials },
       ],
     });
     const page = TestBed.runInInjectionContext(() => new LoginPage());
@@ -70,8 +80,23 @@ describe('authentication page CAPTCHA lifecycle', () => {
     page.captchaToken.set('login-token');
     await page.submit();
     expect(signIn).toHaveBeenCalledWith('learner@example.test', 'password', 'login-token');
+    expect(credentials.savePassword).toHaveBeenCalledWith('learner@example.test', 'password');
     expect(page.captchaToken()).toBe('');
     expect(page.captchaReset()).toBe(1);
+  });
+
+  it('fills Android login fields from Password Manager without submitting', async () => {
+    credentials.native = true;
+    credentials.getPassword.mockResolvedValueOnce({
+      status: 'success',
+      email: 'saved@example.test',
+      password: 'saved-password',
+    });
+    const page = TestBed.runInInjectionContext(() => new LoginPage());
+    await page.useSavedCredentials();
+    expect(page.form.getRawValue()).toEqual({ email: 'saved@example.test', password: 'saved-password' });
+    expect(signIn).not.toHaveBeenCalled();
+    credentials.native = false;
   });
 
   it('passes and clears CAPTCHA during signup', async () => {

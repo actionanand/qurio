@@ -64,7 +64,7 @@ export class ForgotPasswordPage {
       const result = await this.auth.resetPassword(this.form.getRawValue().email.trim(), this.captchaToken());
       if (result.error) {
         this.failed.set(true);
-        this.message.set(safeAuthMessage(result.error, this.i.t('unableToSendReset')));
+        this.message.set(safeAuthMessage(result.error, this.i.t('unableToSendReset'), key => this.i.t(key)));
         return;
       }
       this.message.set(this.i.t('resetEmailSent'));

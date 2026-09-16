@@ -2,7 +2,12 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { I18nService } from '../core/i18n.service';
 import { AuthCaptchaComponent } from './auth-captcha.component';
 import { CaptchaService } from './captcha.service';
-import { createCaptchaMessage, isCaptchaInitMessage, isOfficialHostedLocation } from './hosted-auth.util';
+import {
+  createCaptchaMessage,
+  createCaptchaReadyMessage,
+  isCaptchaInitMessage,
+  isOfficialHostedLocation,
+} from './hosted-auth.util';
 
 @Component({
   imports: [AuthCaptchaComponent],
@@ -27,6 +32,7 @@ export class ChallengePage {
   private readonly captcha = inject(CaptchaService);
   private readonly destroyRef = inject(DestroyRef);
   private requestId = '';
+  private readonly expectedRequestId = new URLSearchParams(window.location.search).get('request') ?? '';
   private targetOrigin = '';
   private listening = true;
   readonly i = inject(I18nService);
@@ -37,6 +43,7 @@ export class ChallengePage {
   constructor() {
     window.addEventListener('message', this.acceptInitialization);
     this.destroyRef.onDestroy(() => this.stopListening());
+    queueMicrotask(() => this.announceReady());
   }
 
   complete(token: string): void {
@@ -49,11 +56,18 @@ export class ChallengePage {
     if (!this.officialLocation() || window.parent === window) return;
     if (event.source !== window.parent || event.origin !== this.captcha.nativeWebViewOrigin) return;
     if (!isCaptchaInitMessage(event.data)) return;
+    if (event.data.requestId !== this.expectedRequestId) return;
     this.requestId = event.data.requestId;
     this.targetOrigin = event.origin;
     this.initialized.set(true);
     this.stopListening();
   };
+
+  private announceReady(): void {
+    if (!this.officialLocation() || window.parent === window || !/^[a-f0-9-]{20,}$/i.test(this.expectedRequestId))
+      return;
+    window.parent.postMessage(createCaptchaReadyMessage(this.expectedRequestId), this.captcha.nativeWebViewOrigin);
+  }
 
   private stopListening(): void {
     if (!this.listening) return;

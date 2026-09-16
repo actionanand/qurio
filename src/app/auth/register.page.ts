@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { IonButton, IonInput, IonSpinner } from '@ionic/angular';
+import { I18nService } from '../core/i18n.service';
 import { AuthService } from '../services/auth.service';
 import { IconComponent } from '../shared/icon.component';
 import { AuthCaptchaComponent } from './auth-captcha.component';
@@ -14,13 +15,22 @@ import { CaptchaService } from './captcha.service';
     <section class="auth-page">
       <article class="auth-card auth-card-wide">
         <div class="auth-mark"><app-icon name="book" /></div>
-        <p class="eyebrow">Start learning</p>
-        <h1>Create your Qurio account</h1>
-        <p class="auth-intro">After confirming your email, your account will be reviewed for approval.</p>
-        <form [formGroup]="form" (ngSubmit)="submit()">
-          <ion-input label="Name" labelPlacement="stacked" autocomplete="name" formControlName="name" fill="outline" />
+        <p class="eyebrow">{{ i.t('startLearning') }}</p>
+        <h1>{{ i.t('createQurioAccount') }}</h1>
+        <p class="auth-intro">{{ i.t('registrationIntro') }}</p>
+        <form [formGroup]="form" autocomplete="on" (ngSubmit)="submit()">
           <ion-input
-            label="Email"
+            id="qurio-name"
+            name="name"
+            [label]="i.t('name')"
+            labelPlacement="stacked"
+            autocomplete="name"
+            formControlName="name"
+            fill="outline" />
+          <ion-input
+            id="qurio-register-email"
+            name="email"
+            [label]="i.t('email')"
             labelPlacement="stacked"
             type="email"
             autocomplete="email"
@@ -28,22 +38,44 @@ import { CaptchaService } from './captcha.service';
             fill="outline" />
           <div class="auth-form-grid">
             <ion-input
-              label="Password"
+              id="qurio-register-password"
+              name="password"
+              [label]="i.t('password')"
               labelPlacement="stacked"
-              type="password"
+              [type]="passwordVisible() ? 'text' : 'password'"
               autocomplete="new-password"
               formControlName="password"
-              fill="outline" />
+              fill="outline">
+              <ion-button
+                slot="end"
+                fill="clear"
+                type="button"
+                [attr.aria-label]="i.t(passwordVisible() ? 'hidePassword' : 'showPassword')"
+                (click)="passwordVisible.update(value => !value)">
+                <app-icon [name]="passwordVisible() ? 'eyeOff' : 'eye'" />
+              </ion-button>
+            </ion-input>
             <ion-input
-              label="Confirm password"
+              id="qurio-confirm-password"
+              name="confirm-password"
+              [label]="i.t('confirmPassword')"
               labelPlacement="stacked"
-              type="password"
+              [type]="confirmVisible() ? 'text' : 'password'"
               autocomplete="new-password"
               formControlName="confirmPassword"
-              fill="outline" />
+              fill="outline">
+              <ion-button
+                slot="end"
+                fill="clear"
+                type="button"
+                [attr.aria-label]="i.t(confirmVisible() ? 'hidePassword' : 'showPassword')"
+                (click)="confirmVisible.update(value => !value)">
+                <app-icon [name]="confirmVisible() ? 'eyeOff' : 'eye'" />
+              </ion-button>
+            </ion-input>
           </div>
           @if (passwordMismatch()) {
-            <p class="form-message error" role="alert">Passwords do not match.</p>
+            <p class="form-message error" role="alert">{{ i.t('passwordsMismatch') }}</p>
           }
           @if (message()) {
             <p class="form-message error" role="alert">{{ message() }}</p>
@@ -62,11 +94,13 @@ import { CaptchaService } from './captcha.service';
             @if (busy()) {
               <ion-spinner name="crescent" />
             } @else {
-              Create account
+              {{ i.t('createAccount') }}
             }
           </ion-button>
         </form>
-        <p class="auth-switch">Already registered? <a routerLink="/auth/login">Sign in</a></p>
+        <p class="auth-switch">
+          {{ i.t('alreadyRegistered') }} <a routerLink="/auth/login">{{ i.t('signIn') }}</a>
+        </p>
       </article>
     </section>
   `,
@@ -74,11 +108,14 @@ import { CaptchaService } from './captcha.service';
 export class RegisterPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  readonly i = inject(I18nService);
   readonly captcha = inject(CaptchaService);
   readonly busy = signal(false);
   readonly message = signal('');
   readonly captchaToken = signal('');
   readonly captchaReset = signal(0);
+  readonly passwordVisible = signal(false);
+  readonly confirmVisible = signal(false);
   readonly form = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }),
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
@@ -106,13 +143,13 @@ export class RegisterPage {
     try {
       const result = await this.auth.signUp(name.trim(), normalizedEmail, password, this.captchaToken());
       if (result.error) {
-        this.message.set(safeAuthMessage(result.error, 'Unable to create the account. Please try again later.'));
+        this.message.set(safeAuthMessage(result.error, this.i.t('unableToCreateAccount'), key => this.i.t(key)));
         return;
       }
       sessionStorage.setItem('qurio.verificationEmail', normalizedEmail);
       await this.router.navigate(['/auth/verify-email']);
     } catch {
-      this.message.set('Unable to create the account. Please try again later.');
+      this.message.set(this.i.t('unableToCreateAccount'));
     } finally {
       this.busy.set(false);
       this.captchaToken.set('');

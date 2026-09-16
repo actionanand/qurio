@@ -2,11 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { environment as productionEnvironment } from '../../environments/environment.prod';
 import {
   createCaptchaMessage,
+  createCaptchaReadyMessage,
   createCaptchaInitMessage,
   hostedChallengeUrl,
   isAllowedNativeChallengeCaller,
   isCaptchaMessage,
   isCaptchaInitMessage,
+  isCaptchaReadyMessage,
   isOfficialHostedLocation,
   isTrustedCaptchaEvent,
   officialAppBasePath,
@@ -70,6 +72,9 @@ describe('hosted authentication URL policy', () => {
     expect(isCaptchaMessage({ ...valid, captchaToken: ' ' }, 'request-1')).toBe(false);
     expect(isCaptchaInitMessage(createCaptchaInitMessage('08ccf240-5f00-42fd-a55c-d95f800fad2c'))).toBe(true);
     expect(isCaptchaInitMessage(createCaptchaInitMessage('short'))).toBe(false);
+    const ready = createCaptchaReadyMessage('08ccf240-5f00-42fd-a55c-d95f800fad2c');
+    expect(isCaptchaReadyMessage(ready, '08ccf240-5f00-42fd-a55c-d95f800fad2c')).toBe(true);
+    expect(isCaptchaReadyMessage(ready, 'different-request')).toBe(false);
   });
 
   it('accepts a challenge message only from the official origin and expected iframe', () => {

@@ -44,11 +44,12 @@ export class PreferencesService {
     effect(onCleanup => {
       const appearance = this.appearance();
       const media = window.matchMedia('(prefers-color-scheme: dark)');
-      const apply = () =>
-        document.documentElement.classList.toggle(
-          'dark',
-          appearance === 'dark' || (appearance === 'system' && media.matches),
-        );
+      const apply = () => {
+        const dark = appearance === 'dark' || (appearance === 'system' && media.matches);
+        document.documentElement.classList.toggle('dark', dark);
+        document.documentElement.classList.toggle('ion-palette-dark', dark);
+        window.QurioNative?.setDarkMode?.(dark);
+      };
       apply();
       media.addEventListener('change', apply);
       onCleanup(() => media.removeEventListener('change', apply));
