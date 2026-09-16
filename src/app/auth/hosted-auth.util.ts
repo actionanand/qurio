@@ -64,6 +64,25 @@ export function isCaptchaMessage(
   );
 }
 
+export function isValidCaptchaRequestId(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+export function captchaRequestIdFromLocation(location: Pick<Location, 'search' | 'hash'>): string {
+  const query = new URLSearchParams(location.search).get('request') ?? '';
+  const fragment = new URLSearchParams(location.hash.replace(/^#/, '')).get('request') ?? '';
+  const requestId = query || fragment;
+  return isValidCaptchaRequestId(requestId) ? requestId : '';
+}
+
+export function hostedChallengeRequestUrl(challengeUrl: string, requestId: string): string {
+  if (!isValidCaptchaRequestId(requestId)) throw new Error('Invalid CAPTCHA request ID.');
+  const url = new URL(challengeUrl);
+  url.searchParams.set('request', requestId);
+  url.hash = new URLSearchParams({ request: requestId }).toString();
+  return url.toString();
+}
+
 export function isTrustedCaptchaEvent(
   event: Pick<MessageEvent<unknown>, 'origin' | 'source' | 'data'>,
   expectedOrigin: string,
@@ -75,28 +94,4 @@ export function isTrustedCaptchaEvent(
 
 export function createCaptchaMessage(requestId: string, token: string) {
   return { type: 'qurio:captcha-result' as const, requestId, captchaToken: token.trim() };
-}
-
-export function createCaptchaInitMessage(requestId: string) {
-  return { type: 'qurio:captcha-init' as const, requestId };
-}
-
-export function createCaptchaReadyMessage(requestId: string) {
-  return { type: 'qurio:captcha-ready' as const, requestId };
-}
-
-export function isCaptchaReadyMessage(value: unknown, requestId: string): boolean {
-  if (!value || typeof value !== 'object') return false;
-  const message = value as Record<string, unknown>;
-  return message['type'] === 'qurio:captcha-ready' && message['requestId'] === requestId;
-}
-
-export function isCaptchaInitMessage(value: unknown): value is { type: 'qurio:captcha-init'; requestId: string } {
-  if (!value || typeof value !== 'object') return false;
-  const message = value as Record<string, unknown>;
-  return (
-    message['type'] === 'qurio:captcha-init' &&
-    typeof message['requestId'] === 'string' &&
-    /^[a-f0-9-]{20,}$/i.test(message['requestId'])
-  );
 }

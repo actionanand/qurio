@@ -1,13 +1,8 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { I18nService } from '../core/i18n.service';
 import { AuthCaptchaComponent } from './auth-captcha.component';
 import { CaptchaService } from './captcha.service';
-import {
-  createCaptchaMessage,
-  createCaptchaReadyMessage,
-  isCaptchaInitMessage,
-  isOfficialHostedLocation,
-} from './hosted-auth.util';
+import { captchaRequestIdFromLocation, createCaptchaMessage, isOfficialHostedLocation } from './hosted-auth.util';
 
 @Component({
   imports: [AuthCaptchaComponent],
@@ -30,48 +25,15 @@ import {
 })
 export class ChallengePage {
   private readonly captcha = inject(CaptchaService);
-  private readonly destroyRef = inject(DestroyRef);
-  private requestId = '';
-  private readonly expectedRequestId = new URLSearchParams(window.location.search).get('request') ?? '';
-  private targetOrigin = '';
-  private listening = true;
+  private readonly requestId = captchaRequestIdFromLocation(window.location);
   readonly i = inject(I18nService);
   readonly completed = signal(false);
-  readonly initialized = signal(false);
   readonly officialLocation = signal(isOfficialHostedLocation(window.location));
-
-  constructor() {
-    window.addEventListener('message', this.acceptInitialization);
-    this.destroyRef.onDestroy(() => this.stopListening());
-    queueMicrotask(() => this.announceReady());
-  }
+  readonly initialized = signal(this.officialLocation() && window.parent !== window && !!this.requestId);
 
   complete(token: string): void {
     if (!this.initialized() || !token.trim() || !this.requestId || window.parent === window) return;
-    window.parent.postMessage(createCaptchaMessage(this.requestId, token), this.targetOrigin);
+    window.parent.postMessage(createCaptchaMessage(this.requestId, token), this.captcha.nativeWebViewOrigin);
     this.completed.set(true);
-  }
-
-  private readonly acceptInitialization = (event: MessageEvent<unknown>): void => {
-    if (!this.officialLocation() || window.parent === window) return;
-    if (event.source !== window.parent || event.origin !== this.captcha.nativeWebViewOrigin) return;
-    if (!isCaptchaInitMessage(event.data)) return;
-    if (event.data.requestId !== this.expectedRequestId) return;
-    this.requestId = event.data.requestId;
-    this.targetOrigin = event.origin;
-    this.initialized.set(true);
-    this.stopListening();
-  };
-
-  private announceReady(): void {
-    if (!this.officialLocation() || window.parent === window || !/^[a-f0-9-]{20,}$/i.test(this.expectedRequestId))
-      return;
-    window.parent.postMessage(createCaptchaReadyMessage(this.expectedRequestId), this.captcha.nativeWebViewOrigin);
-  }
-
-  private stopListening(): void {
-    if (!this.listening) return;
-    window.removeEventListener('message', this.acceptInitialization);
-    this.listening = false;
   }
 }
