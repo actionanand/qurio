@@ -153,6 +153,7 @@ export class AuthService {
     if (!this.session()) return '/auth/login';
     if (!profile) return '/auth/pending';
     if (profile.status === 'approved') return '/home';
+    if (profile.status === 'unverified') return '/auth/verify-email';
     return `/auth/${profile.status}`;
   }
 
