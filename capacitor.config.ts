@@ -15,10 +15,6 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: false,
     },
-    LocalNotifications: {
-      smallIcon: 'ic_stat_qurio',
-      iconColor: '#176B4A',
-    },
   },
 };
 

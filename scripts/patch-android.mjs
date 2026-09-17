@@ -27,6 +27,7 @@ const manifestPath = path.join(appRoot, 'src', 'main', 'AndroidManifest.xml');
 const proguardPath = path.join(appRoot, 'proguard-rules.pro');
 const javaDirectory = path.join(appRoot, 'src', 'main', 'java', 'com', 'actionanand', 'qurio', 'app');
 const javaPath = path.join(javaDirectory, 'MainActivity.java');
+const reminderReceiverPath = path.join(javaDirectory, 'QurioReminderReceiver.java');
 
 await mkdir(drawableDirectory, { recursive: true });
 await mkdir(drawableXmlDirectory, { recursive: true });
@@ -68,6 +69,30 @@ for (const permission of ['android.permission.POST_NOTIFICATIONS', 'android.perm
       '<application',
       `    <uses-permission android:name="${permission}" />\n\n    <application`,
     );
+}
+if (!manifest.includes('QURIO_REMINDER_RECEIVER')) {
+  manifest = manifest.replace(
+    '</application>',
+    `        <!-- QURIO_REMINDER_RECEIVER -->
+        <receiver
+            android:name=".QurioReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.actionanand.qurio.app.PRACTICE_REMINDER" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
+    </application>`,
+  );
+}
+if (!manifest.includes('android.intent.action.MY_PACKAGE_REPLACED')) {
+  manifest = manifest.replace(
+    '<action android:name="android.intent.action.BOOT_COMPLETED" />',
+    '<action android:name="android.intent.action.BOOT_COMPLETED" />\n                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />',
+  );
 }
 if (!manifest.includes('QURIO_DEEP_LINK')) {
   const deepLink = `
@@ -140,8 +165,8 @@ await ensureThemes(nightStylesPath, true);
 let proguard = existsSync(proguardPath) ? await readFile(proguardPath, 'utf8') : '';
 if (!proguard.includes('@android.webkit.JavascriptInterface <methods>'))
   proguard += `\n# Qurio native bridge methods called by the WebView.\n-keepclassmembers class * {\n    @android.webkit.JavascriptInterface <methods>;\n}\n`;
-if (!proguard.includes('Qurio keeps Capacitor plugin metadata'))
-  proguard += `\n# Qurio keeps Capacitor plugin metadata used through runtime reflection.\n# Without these attributes, release R8 builds can remove Local Notifications\n# permission annotations and crash while checking notification permission.\n-keepattributes RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations,AnnotationDefault\n-keep @com.getcapacitor.annotation.CapacitorPlugin class * { *; }\n-keepclassmembers class * {\n    @com.getcapacitor.annotation.PluginMethod <methods>;\n    @com.getcapacitor.annotation.PermissionCallback <methods>;\n    @com.getcapacitor.annotation.ActivityCallback <methods>;\n}\n`;
+if (!proguard.includes('-keep class com.actionanand.qurio.app.QurioReminderReceiver { *; }'))
+  proguard += `\n# Keep the manifest receiver that rebuilds and delivers native reminders.\n-keep class com.actionanand.qurio.app.QurioReminderReceiver { *; }\n`;
 await writeFile(proguardPath, proguard, 'utf8');
 
 await mkdir(javaDirectory, { recursive: true });
@@ -149,11 +174,18 @@ await writeFile(
   javaPath,
   `package com.actionanand.qurio.app;
 
-import android.os.Build;
-import android.os.Bundle;
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
+import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
@@ -165,6 +197,7 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import com.getcapacitor.BridgeActivity;
+import java.util.Calendar;
 import java.security.KeyStore;
 import java.util.concurrent.Executor;
 import javax.crypto.Cipher;
@@ -177,6 +210,10 @@ public class MainActivity extends BridgeActivity {
   private static final String KEY_ALIAS = "qurio_biometric_key";
   private static final String SECURITY_PREFS = "qurio_security";
   private static final int NOTIFICATION_PERMISSION_REQUEST = 7400;
+  private static final String REMINDER_CHANNEL_ID = "qurio-practice-reminders";
+  private static final String REMINDER_ACTION = "com.actionanand.qurio.app.PRACTICE_REMINDER";
+  private static final String REMINDER_PREFS = "qurio_practice_reminders";
+  private static final int REMINDER_ID_BASE = 7400;
   private BiometricPrompt biometricPrompt;
 
   @Override protected void onCreate(Bundle state) {
@@ -188,6 +225,7 @@ public class MainActivity extends BridgeActivity {
   @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
     if (requestCode == NOTIFICATION_PERMISSION_REQUEST) {
       boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+      if (granted) ensureReminderChannel();
       dispatch("notification-permission", true, granted ? "granted" : "denied", "");
       return;
     }
@@ -197,6 +235,71 @@ public class MainActivity extends BridgeActivity {
   private boolean hasNotificationPermission() {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
       || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+  }
+
+  private void ensureReminderChannel() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
+    NotificationManager manager = getSystemService(NotificationManager.class);
+    if (manager == null || manager.getNotificationChannel(REMINDER_CHANNEL_ID) != null) return;
+    NotificationChannel channel = new NotificationChannel(
+      REMINDER_CHANNEL_ID,
+      "Practice reminders",
+      NotificationManager.IMPORTANCE_DEFAULT
+    );
+    channel.setDescription("Reminders to practise with Qurio");
+    channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+    manager.createNotificationChannel(channel);
+  }
+
+  private void scheduleWeeklyReminders(int hour, int minute, String calendarDays) {
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) throw new IllegalArgumentException("Invalid reminder time.");
+    cancelReminderAlarms();
+    ensureReminderChannel();
+    String days = calendarDays == null ? "" : calendarDays;
+    getSharedPreferences(REMINDER_PREFS, MODE_PRIVATE).edit()
+      .putBoolean("enabled", true)
+      .putInt("hour", hour)
+      .putInt("minute", minute)
+      .putString("days", days)
+      .apply();
+    for (String value : days.split(",")) {
+      try {
+        int day = Integer.parseInt(value.trim());
+        if (day >= Calendar.SUNDAY && day <= Calendar.SATURDAY) scheduleNextReminder(day, hour, minute);
+      } catch (NumberFormatException ignored) { }
+    }
+  }
+
+  private void scheduleNextReminder(int day, int hour, int minute) {
+    AlarmManager alarms = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    if (alarms == null) throw new IllegalStateException("Android reminders are unavailable.");
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(Calendar.DAY_OF_WEEK, day);
+    calendar.set(Calendar.HOUR_OF_DAY, hour);
+    calendar.set(Calendar.MINUTE, minute);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+    if (calendar.getTimeInMillis() <= System.currentTimeMillis()) calendar.add(Calendar.WEEK_OF_YEAR, 1);
+    alarms.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), reminderPendingIntent(day, hour, minute));
+  }
+
+  private void cancelReminderAlarms() {
+    AlarmManager alarms = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    if (alarms != null) {
+      for (int day = Calendar.SUNDAY; day <= Calendar.SATURDAY; day++) alarms.cancel(reminderPendingIntent(day, 0, 0));
+    }
+    getSharedPreferences(REMINDER_PREFS, MODE_PRIVATE).edit().putBoolean("enabled", false).apply();
+  }
+
+  private PendingIntent reminderPendingIntent(int day, int hour, int minute) {
+    Intent intent = new Intent(this, QurioReminderReceiver.class);
+    intent.setAction(REMINDER_ACTION);
+    intent.putExtra("day", day);
+    intent.putExtra("hour", hour);
+    intent.putExtra("minute", minute);
+    int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flags |= PendingIntent.FLAG_IMMUTABLE;
+    return PendingIntent.getBroadcast(this, REMINDER_ID_BASE + day, intent, flags);
   }
 
   @SuppressWarnings("deprecation")
@@ -240,6 +343,7 @@ public class MainActivity extends BridgeActivity {
       runOnUiThread(() -> {
         try {
           if (hasNotificationPermission()) {
+            ensureReminderChannel();
             dispatch("notification-permission", true, "granted", "");
           } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, NOTIFICATION_PERMISSION_REQUEST);
@@ -248,6 +352,30 @@ public class MainActivity extends BridgeActivity {
           }
         } catch (Exception error) {
           dispatch("notification-permission", false, "", error.getMessage());
+        }
+      });
+    }
+    @JavascriptInterface public void scheduleReminder(int hour, int minute, String calendarDays) {
+      runOnUiThread(() -> {
+        try {
+          if (!hasNotificationPermission()) {
+            dispatch("reminder-schedule", false, "", "Notification permission was not granted.");
+            return;
+          }
+          scheduleWeeklyReminders(hour, minute, calendarDays);
+          dispatch("reminder-schedule", true, "", "");
+        } catch (Exception error) {
+          dispatch("reminder-schedule", false, "", error.getMessage());
+        }
+      });
+    }
+    @JavascriptInterface public void cancelReminder() {
+      runOnUiThread(() -> {
+        try {
+          cancelReminderAlarms();
+          dispatch("reminder-cancel", true, "", "");
+        } catch (Exception error) {
+          dispatch("reminder-cancel", false, "", error.getMessage());
         }
       });
     }
@@ -340,6 +468,120 @@ public class MainActivity extends BridgeActivity {
   'utf8',
 );
 
-console.log('Applied Qurio splash, deep link, biometric bridge, system bars, and R8 optimization.');
+await writeFile(
+  reminderReceiverPath,
+  `package com.actionanand.qurio.app;
+
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
+import androidx.core.content.ContextCompat;
+import java.util.Calendar;
+
+public class QurioReminderReceiver extends BroadcastReceiver {
+  private static final String CHANNEL_ID = "qurio-practice-reminders";
+  private static final String REMINDER_ACTION = "com.actionanand.qurio.app.PRACTICE_REMINDER";
+  private static final String REMINDER_PREFS = "qurio_practice_reminders";
+  private static final int REMINDER_ID_BASE = 7400;
+
+  @Override public void onReceive(Context context, Intent intent) {
+    String action = intent == null ? "" : intent.getAction();
+    if (!REMINDER_ACTION.equals(action)) {
+      rebuildStoredReminders(context);
+      return;
+    }
+    int day = intent.getIntExtra("day", Calendar.MONDAY);
+    int hour = intent.getIntExtra("hour", 19);
+    int minute = intent.getIntExtra("minute", 0);
+    if (context.getSharedPreferences(REMINDER_PREFS, Context.MODE_PRIVATE).getBoolean("enabled", false)) {
+      scheduleNextReminder(context, day, hour, minute);
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+      && ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+    ensureChannel(context);
+    Intent launch = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+    if (launch == null) launch = new Intent(context, MainActivity.class);
+    launch.setData(Uri.parse("qurio://home"));
+    launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flags |= PendingIntent.FLAG_IMMUTABLE;
+    PendingIntent contentIntent = PendingIntent.getActivity(context, 7410, launch, flags);
+    Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+      ? new Notification.Builder(context, CHANNEL_ID)
+      : new Notification.Builder(context);
+    builder.setSmallIcon(R.drawable.ic_stat_qurio)
+      .setColor(Color.parseColor("#176B4A"))
+      .setContentTitle("Qurio practice time")
+      .setContentText("Ready for a quick learning session?")
+      .setStyle(new Notification.BigTextStyle().bigText("Ready for a quick learning session?"))
+      .setContentIntent(contentIntent)
+      .setAutoCancel(true)
+      .setVisibility(Notification.VISIBILITY_PRIVATE);
+    NotificationManager manager = context.getSystemService(NotificationManager.class);
+    if (manager != null) manager.notify(REMINDER_ID_BASE + day, builder.build());
+  }
+
+  private void rebuildStoredReminders(Context context) {
+    SharedPreferences settings = context.getSharedPreferences(REMINDER_PREFS, Context.MODE_PRIVATE);
+    if (!settings.getBoolean("enabled", false)) return;
+    int hour = settings.getInt("hour", 19);
+    int minute = settings.getInt("minute", 0);
+    String days = settings.getString("days", "");
+    if (days == null) return;
+    for (String value : days.split(",")) {
+      try {
+        int day = Integer.parseInt(value.trim());
+        if (day >= Calendar.SUNDAY && day <= Calendar.SATURDAY) scheduleNextReminder(context, day, hour, minute);
+      } catch (NumberFormatException ignored) { }
+    }
+  }
+
+  private void scheduleNextReminder(Context context, int day, int hour, int minute) {
+    AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    if (alarms == null || day < Calendar.SUNDAY || day > Calendar.SATURDAY) return;
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(Calendar.DAY_OF_WEEK, day);
+    calendar.set(Calendar.HOUR_OF_DAY, hour);
+    calendar.set(Calendar.MINUTE, minute);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+    if (calendar.getTimeInMillis() <= System.currentTimeMillis()) calendar.add(Calendar.WEEK_OF_YEAR, 1);
+    Intent reminder = new Intent(context, QurioReminderReceiver.class);
+    reminder.setAction(REMINDER_ACTION);
+    reminder.putExtra("day", day);
+    reminder.putExtra("hour", hour);
+    reminder.putExtra("minute", minute);
+    int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) flags |= PendingIntent.FLAG_IMMUTABLE;
+    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REMINDER_ID_BASE + day, reminder, flags);
+    alarms.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+  }
+
+  private void ensureChannel(Context context) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
+    NotificationManager manager = context.getSystemService(NotificationManager.class);
+    if (manager == null || manager.getNotificationChannel(CHANNEL_ID) != null) return;
+    NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Practice reminders", NotificationManager.IMPORTANCE_DEFAULT);
+    channel.setDescription("Reminders to practise with Qurio");
+    channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+    manager.createNotificationChannel(channel);
+  }
+}
+`,
+  'utf8',
+);
+
+console.log('Applied Qurio splash, deep link, biometric bridge, system bars, and native practice reminders.');
 
 await import('./patch-android-credentials.mjs');

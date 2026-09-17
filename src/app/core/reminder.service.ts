@@ -1,6 +1,5 @@
 import { Service, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import { LocalNotifications, Weekday, type LocalNotificationSchema } from '@capacitor/local-notifications';
 import { environment } from '../../environments/environment';
 
 export interface PracticeReminderSettings {
@@ -8,8 +7,6 @@ export interface PracticeReminderSettings {
   time: string;
   days: number[];
 }
-
-const firstNotificationId = 7401;
 
 @Service()
 export class ReminderService {
@@ -26,13 +23,6 @@ export class ReminderService {
   async initialize(settings?: PracticeReminderSettings): Promise<void> {
     if (settings) this.settings.set(normalizeSettings(settings));
     if (!this.native || !environment.practiceReminder.enabled) return;
-    await LocalNotifications.createChannel({
-      id: environment.practiceReminder.channelId,
-      name: environment.practiceReminder.channelName,
-      description: 'Reminders to practise with Qurio',
-      importance: 3,
-      visibility: 0,
-    });
     this.refreshPermission();
   }
 
@@ -60,24 +50,19 @@ export class ReminderService {
     const normalized = normalizeSettings(next);
     if (normalized.enabled && (!normalized.days.length || !this.permissionGranted())) return false;
     if (this.native) {
-      await this.cancel();
-      if (normalized.enabled) {
-        const [hour, minute] = normalized.time.split(':').map(Number);
-        const notifications: LocalNotificationSchema[] = normalized.days.map(day => ({
-          id: notificationId(day),
-          title: 'Qurio practice time',
-          body: 'Ready for a quick learning session?',
-          channelId: environment.practiceReminder.channelId,
-          extra: { route: '/home', kind: 'practice-reminder' },
-          schedule: {
-            on: { weekday: appDayToPluginWeekday(day), hour, minute },
-            repeats: true,
-            allowWhileIdle: true,
-            isExactNotification: false,
-          },
-        }));
-        await LocalNotifications.schedule({ notifications });
-      }
+      const bridge = window.QurioNative;
+      if (!bridge) return false;
+      if (normalized.enabled && !bridge.scheduleReminder) return false;
+      if (!normalized.enabled && !bridge.cancelReminder) return false;
+      const action = normalized.enabled ? 'reminder-schedule' : 'reminder-cancel';
+      const result = await this.nativeResult(action, () => {
+        if (!normalized.enabled) bridge.cancelReminder?.();
+        else {
+          const [hour, minute] = normalized.time.split(':').map(Number);
+          bridge.scheduleReminder?.(hour, minute, normalized.days.map(appDayToCalendarDay).join(','));
+        }
+      });
+      if (!result.success) return false;
     }
     this.settings.set(normalized);
     return true;
@@ -85,9 +70,9 @@ export class ReminderService {
 
   async cancel(): Promise<void> {
     if (!this.native) return;
-    await LocalNotifications.cancel({
-      notifications: environment.practiceReminder.defaultDays.map(day => ({ id: notificationId(day) })),
-    });
+    const bridge = window.QurioNative;
+    if (!bridge?.cancelReminder) return;
+    await this.nativeResult('reminder-cancel', () => bridge.cancelReminder?.());
   }
 
   private refreshPermission(): boolean {
@@ -121,12 +106,8 @@ export class ReminderService {
   }
 }
 
-export function appDayToPluginWeekday(day: number): Weekday {
-  return (day === 7 ? Weekday.Sunday : day + 1) as Weekday;
-}
-
-export function notificationId(day: number): number {
-  return firstNotificationId + day - 1;
+export function appDayToCalendarDay(day: number): number {
+  return day === 7 ? 1 : day + 1;
 }
 
 function normalizeSettings(settings: PracticeReminderSettings): PracticeReminderSettings {
