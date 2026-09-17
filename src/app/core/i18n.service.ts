@@ -406,6 +406,8 @@ const messages = {
   confirmPin: ['Confirm PIN', 'PIN-ஐ உறுதிப்படுத்து', 'PIN की पुष्टि करें'],
   pinHelp: ['Use 4 to 8 digits', '4 முதல் 8 இலக்கங்களைப் பயன்படுத்தவும்', '4 से 8 अंक इस्तेमाल करें'],
   changePin: ['Change PIN', 'PIN-ஐ மாற்று', 'PIN बदलें'],
+  enablePin: ['Enable PIN', 'PIN-ஐ இயக்கு', 'PIN चालू करें'],
+  lockNow: ['Lock now', 'இப்போது பூட்டு', 'अभी लॉक करें'],
   enableAppLock: ['Enable app lock', 'செயலி பூட்டை இயக்கு', 'ऐप लॉक चालू करें'],
   disableAppLock: ['Disable app lock', 'செயலி பூட்டை அணை', 'ऐप लॉक बंद करें'],
   enableBiometric: ['Enable biometric unlock', 'பயோமெட்ரிக் திறப்பை இயக்கு', 'बायोमेट्रिक अनलॉक चालू करें'],

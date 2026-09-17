@@ -67,11 +67,7 @@ import { CaptchaService } from '../auth/captcha.service';
           @if (resetMessage()) {
             <p class="form-message" [class.error]="resetFailed()" role="status">{{ resetMessage() }}</p>
           }
-          <app-auth-captcha [resetNonce]="captchaReset()" (tokenChange)="captchaToken.set($event)" />
-          <ion-button
-            fill="outline"
-            [disabled]="resetBusy() || !captcha.canSubmit(captchaToken())"
-            (click)="sendReset()">
+          <ion-button fill="outline" [disabled]="resetBusy()" (click)="beginPasswordReset()">
             @if (resetBusy()) {
               <ion-spinner name="crescent" />
             } @else {
@@ -81,6 +77,29 @@ import { CaptchaService } from '../auth/captcha.service';
         </section>
       </div>
       <app-device-settings />
+      @if (resetChallengeOpen()) {
+        <div class="captcha-dialog-backdrop">
+          <section class="captcha-dialog panel" role="dialog" aria-modal="true" aria-labelledby="reset-dialog-title">
+            <h2 id="reset-dialog-title">{{ i.t('sendResetLink') }}</h2>
+            <p>{{ i.t('passwordSecurityIntro') }}</p>
+            <app-auth-captcha [resetNonce]="captchaReset()" (tokenChange)="captchaToken.set($event)" />
+            <div class="captcha-dialog-actions">
+              <ion-button fill="clear" [disabled]="resetBusy()" (click)="cancelPasswordReset()">
+                {{ i.t('cancel') }}
+              </ion-button>
+              <ion-button
+                [disabled]="resetBusy() || !captcha.canSubmit(captchaToken())"
+                (click)="completePasswordReset()">
+                @if (resetBusy()) {
+                  <ion-spinner name="crescent" />
+                } @else {
+                  {{ i.t('sendResetLink') }}
+                }
+              </ion-button>
+            </div>
+          </section>
+        </div>
+      }
     </section>
   `,
 })
@@ -98,6 +117,7 @@ export class SettingsPage {
   readonly resetMessage = signal('');
   readonly captchaToken = signal('');
   readonly captchaReset = signal(0);
+  readonly resetChallengeOpen = signal(false);
   readonly profileForm = new FormGroup({
     displayName: new FormControl('', {
       nonNullable: true,
@@ -133,7 +153,22 @@ export class SettingsPage {
     }
   }
 
-  async sendReset() {
+  beginPasswordReset(): void {
+    if (!this.auth.user()?.email || this.resetBusy()) return;
+    this.resetMessage.set('');
+    this.resetFailed.set(false);
+    this.captchaToken.set('');
+    this.captchaReset.update(value => value + 1);
+    this.resetChallengeOpen.set(true);
+  }
+
+  cancelPasswordReset(): void {
+    if (this.resetBusy()) return;
+    this.resetChallengeOpen.set(false);
+    this.captchaToken.set('');
+  }
+
+  async completePasswordReset() {
     const email = this.auth.user()?.email;
     if (!email || this.resetBusy() || !this.captcha.canSubmit(this.captchaToken())) return;
     this.resetBusy.set(true);
@@ -144,6 +179,7 @@ export class SettingsPage {
       if (result.error) throw result.error;
       this.resetMessage.set(this.i.t('resetEmailSent'));
       this.snackbar.show(this.i.t('resetEmailSent'));
+      this.resetChallengeOpen.set(false);
     } catch {
       this.resetFailed.set(true);
       this.resetMessage.set(this.i.t('unableToSendReset'));
