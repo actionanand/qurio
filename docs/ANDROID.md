@@ -31,7 +31,7 @@ Install dependencies from WSL2 before the first local Android build:
 npm install
 ```
 
-Qurio requires `@capacitor/android`, `@capacitor/splash-screen`, and the Capacitor 8 `@capacitor/local-notifications` plugin. The committed lockfile contains these dependencies so GitHub Actions can use `npm ci`.
+Qurio requires `@capacitor/android` and `@capacitor/splash-screen`. The committed lockfile contains these dependencies so GitHub Actions can use `npm ci`.
 
 ## Local WSL2 workflow
 
@@ -63,9 +63,9 @@ The `android:sync` command builds the web application, runs Capacitor sync, and 
 
 On the first native Android launch, Qurio shows its own explanation once and requests the system notification permission only when the user chooses **Allow notifications**. Selecting **Not now** does not cause repeated prompts; Settings remains available for retrying later.
 
-Users enable a weekly reminder and select a local time and weekdays in Settings. Qurio uses the application convention `1=Monday` through `7=Sunday`; `ReminderService` translates those values to the notification plugin's weekday enum. Preferences sync through `public.user_settings`, while permission and scheduled notifications stay on that Android device. The plugin schedules one recurring notification per selected day with deterministic IDs 7401–7407, cancelling that range before every reschedule.
+Users enable a weekly reminder and select a local time and weekdays in Settings. Qurio uses the application convention `1=Monday` through `7=Sunday`; `ReminderService` translates those values to Android's `Calendar` weekday values. Preferences sync through `public.user_settings`, while permission and scheduled notifications stay on that Android device.
 
-The Android bridge checks and requests notification permission after Qurio's explanatory popup, avoiding a release-only Capacitor permission-reflection crash. The official Local Notifications plugin continues to own scheduling, persistence, delivery, and reboot handling. The Android patch supplies the monochrome `ic_stat_qurio` asset and does not generate a competing alarm receiver. Run `npm run android:sync` after changing notification configuration.
+The Android bridge checks and requests notification permission after Qurio's explanatory popup. It then schedules the selected weekly reminders through `AlarmManager` and `QurioReminderReceiver`, avoiding the Capacitor Local Notifications permission-reflection crash seen in release builds. The receiver recreates stored alarms after boot, app replacement, and time or timezone changes. Run `npm run android:sync` after changing Android reminder configuration.
 
 ## Theme and saved credentials
 

@@ -17,7 +17,6 @@ import { NotificationPromptService } from './core/notification-prompt.service';
 import { SnackbarComponent } from './shared/snackbar.component';
 import { InstallAppBannerComponent } from './shared/install-app-banner.component';
 import { AppLockComponent } from './shared/app-lock.component';
-import { LocalNotifications } from '@capacitor/local-notifications';
 import { ReminderService } from './core/reminder.service';
 
 export function navigationItems(staff: boolean) {
@@ -58,7 +57,6 @@ export class AppComponent {
   private readonly reminders = inject(ReminderService);
   private appStateListener?: PluginListenerHandle;
   private appUrlListener?: PluginListenerHandle;
-  private notificationListener?: PluginListenerHandle;
   private readonly deviceReady = signal(false);
   readonly challengeRoute = signal(this.router.url.split('?')[0] === '/auth/challenge');
   readonly navigation = () => navigationItems(this.auth.isStaff());
@@ -108,17 +106,12 @@ export class AppComponent {
       await this.reminders.initialize(this.preferences.reminderSettings());
       this.deviceReady.set(true);
       this.appUrlListener = await App.addListener('appUrlOpen', event => void this.openNativeRoute(event.url));
-      this.notificationListener = await LocalNotifications.addListener('localNotificationActionPerformed', event => {
-        const route = event.notification.extra?.['route'];
-        void this.router.navigateByUrl(typeof route === 'string' && route.startsWith('/') ? route : '/home');
-      });
       this.appStateListener = await App.addListener('appStateChange', ({ isActive }) => {
         if (!isActive) this.security.lock();
       });
       this.destroyRef.onDestroy(() => {
         void this.appStateListener?.remove();
         void this.appUrlListener?.remove();
-        void this.notificationListener?.remove();
       });
       await this.notificationPrompt.promptOnce();
     }

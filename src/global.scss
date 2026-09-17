@@ -1481,9 +1481,28 @@ blockquote {
   }
   .settings-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
   .settings-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
     padding: 18px;
+    border-radius: 18px;
+  }
+  .settings-card-icon {
+    flex: 0 0 48px;
+  }
+  .settings-card ion-input {
+    --color: var(--ion-text-color);
+    --label-color: var(--muted);
+    --highlight-color-focused: var(--accent);
+  }
+  .settings-card .auth-captcha,
+  .settings-card app-auth-captcha {
+    width: 100%;
+    min-width: 0;
   }
   .admin-count {
     margin-left: 0;

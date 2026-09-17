@@ -182,8 +182,25 @@ import { PreferencesService } from '../core/preferences.service';
     @media (max-width: 760px) {
       .device-settings-grid {
         grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .setting-row {
+        min-height: 48px;
+        padding: 4px 0;
+      }
+      .time-field {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .time-field input {
+        width: 100%;
+      }
+      .weekday-picker button {
+        min-height: 44px;
       }
       .signout-card {
+        gap: 14px;
         align-items: stretch;
         flex-direction: column;
       }
