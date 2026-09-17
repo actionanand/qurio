@@ -73,6 +73,15 @@ export class SecurityService {
     return true;
   }
 
+  async clearUser(userId: string): Promise<void> {
+    if (!this.database) this.database = await this.openDatabase();
+    await this.request(this.store('readwrite').delete(`lock:${userId}`));
+    if (this.userId === userId) {
+      window.QurioNative?.disableBiometric?.();
+      this.clearState();
+    }
+  }
+
   lock(): void {
     if (this.configured()) this.unlocked.set(false);
   }

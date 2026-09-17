@@ -411,6 +411,93 @@ const messages = {
   enableAppLock: ['Enable app lock', 'செயலி பூட்டை இயக்கு', 'ऐप लॉक चालू करें'],
   disableAppLock: ['Disable app lock', 'செயலி பூட்டை அணை', 'ऐप लॉक बंद करें'],
   enableBiometric: ['Enable biometric unlock', 'பயோமெட்ரிக் திறப்பை இயக்கு', 'बायोमेट्रिक अनलॉक चालू करें'],
+  accountCleanup: ['Account cleanup', 'கணக்கு சுத்தம்', 'खाता सफ़ाई'],
+  expiredUnverifiedOne: [
+    '1 unverified account has remained unverified for more than 90 days.',
+    '1 சரிபார்க்கப்படாத கணக்கு 90 நாட்களுக்கு மேல் சரிபார்க்கப்படாமல் உள்ளது.',
+    '1 असत्यापित खाता 90 दिनों से अधिक समय से असत्यापित है।',
+  ],
+  expiredUnverifiedMany: [
+    '{count} unverified accounts have remained unverified for more than 90 days.',
+    '{count} சரிபார்க்கப்படாத கணக்குகள் 90 நாட்களுக்கு மேல் சரிபார்க்கப்படாமல் உள்ளன.',
+    '{count} असत्यापित खाते 90 दिनों से अधिक समय से असत्यापित हैं।',
+  ],
+  deleteExpiredAccount: ['Delete expired account', 'காலாவதியான கணக்கை நீக்கு', 'पुराना खाता हटाएँ'],
+  deleteExpiredAccounts: [
+    'Delete {count} expired accounts',
+    '{count} காலாவதியான கணக்குகளை நீக்கு',
+    '{count} पुराने खाते हटाएँ',
+  ],
+  cleanupConfirmOne: [
+    'Permanently delete 1 unverified account that has remained unverified for more than 90 days?',
+    '90 நாட்களுக்கு மேல் சரிபார்க்கப்படாமல் உள்ள 1 கணக்கை நிரந்தரமாக நீக்கவா?',
+    '90 दिनों से अधिक समय से असत्यापित 1 खाते को स्थायी रूप से हटाएँ?',
+  ],
+  cleanupConfirmMany: [
+    'Permanently delete {count} unverified accounts that have remained unverified for more than 90 days?',
+    '90 நாட்களுக்கு மேல் சரிபார்க்கப்படாமல் உள்ள {count} கணக்குகளை நிரந்தரமாக நீக்கவா?',
+    '90 दिनों से अधिक समय से असत्यापित {count} खातों को स्थायी रूप से हटाएँ?',
+  ],
+  permanentDeletionWarning: [
+    'This action cannot be undone.',
+    'இந்த செயலை மாற்ற முடியாது.',
+    'यह कार्रवाई पूर्ववत नहीं की जा सकती।',
+  ],
+  deletePermanently: ['Delete permanently', 'நிரந்தரமாக நீக்கு', 'स्थायी रूप से हटाएँ'],
+  cleanupDeletedOne: [
+    '1 expired account deleted.',
+    '1 காலாவதியான கணக்கு நீக்கப்பட்டது.',
+    '1 पुराना खाता हटा दिया गया।',
+  ],
+  cleanupDeletedMany: [
+    '{count} expired accounts deleted.',
+    '{count} காலாவதியான கணக்குகள் நீக்கப்பட்டன.',
+    '{count} पुराने खाते हटा दिए गए।',
+  ],
+  cleanupPartial: [
+    '{count} account changes were skipped because they were no longer eligible.',
+    'அவை இனி தகுதியற்றதால் {count} கணக்கு மாற்றங்கள் தவிர்க்கப்பட்டன.',
+    '{count} खाता परिवर्तन छोड़ दिए गए क्योंकि वे अब योग्य नहीं थे।',
+  ],
+  cleanupFailed: [
+    'Account cleanup could not be completed.',
+    'கணக்கு சுத்தத்தை முடிக்க முடியவில்லை.',
+    'खाता सफ़ाई पूरी नहीं हो सकी।',
+  ],
+  dangerZone: ['Danger zone', 'ஆபத்து பகுதி', 'जोखिम क्षेत्र'],
+  deleteMyAccount: ['Delete my account', 'என் கணக்கை நீக்கு', 'मेरा खाता हटाएँ'],
+  deleteAccountPermanently: ['Delete account permanently', 'கணக்கை நிரந்தரமாக நீக்கு', 'खाता स्थायी रूप से हटाएँ'],
+  deleteAccountIntro: [
+    'Permanently deletes your Qurio account and associated learning data.',
+    'உங்கள் Qurio கணக்கு மற்றும் தொடர்புடைய கற்றல் தரவை நிரந்தரமாக நீக்கும்.',
+    'आपका Qurio खाता और संबंधित सीखने का डेटा स्थायी रूप से हटा देता है।',
+  ],
+  enterEmailToConfirm: [
+    'Enter your current email address to confirm.',
+    'உறுதிப்படுத்த உங்கள் தற்போதைய மின்னஞ்சல் முகவரியை உள்ளிடவும்.',
+    'पुष्टि करने के लिए अपना वर्तमान ईमेल पता दर्ज करें।',
+  ],
+  confirmationEmail: ['Confirmation email', 'உறுதிப்படுத்தல் மின்னஞ்சல்', 'पुष्टिकरण ईमेल'],
+  confirmationEmailMismatch: [
+    'Enter the email address for this account to continue.',
+    'தொடர இந்தக் கணக்கின் மின்னஞ்சல் முகவரியை உள்ளிடவும்.',
+    'जारी रखने के लिए इस खाते का ईमेल पता दर्ज करें।',
+  ],
+  ownerDeletionBlocked: [
+    'The Owner account cannot be deleted while it owns Qurio. Transfer ownership before deleting this account.',
+    'Qurio-வை வைத்திருக்கும் வரை Owner கணக்கை நீக்க முடியாது. இந்தக் கணக்கை நீக்குவதற்கு முன் உரிமையை மாற்றவும்.',
+    'Qurio का स्वामित्व होने तक Owner खाता हटाया नहीं जा सकता। इस खाते को हटाने से पहले स्वामित्व स्थानांतरित करें।',
+  ],
+  selfDeleteSuccess: [
+    'Your account was permanently deleted.',
+    'உங்கள் கணக்கு நிரந்தரமாக நீக்கப்பட்டது.',
+    'आपका खाता स्थायी रूप से हटा दिया गया।',
+  ],
+  selfDeleteFailed: [
+    'Your account could not be deleted.',
+    'உங்கள் கணக்கை நீக்க முடியவில்லை.',
+    'आपका खाता हटाया नहीं जा सका।',
+  ],
   biometricEnabled: ['Biometric unlock enabled', 'பயோமெட்ரிக் திறப்பு இயக்கப்பட்டது', 'बायोमेट्रिक अनलॉक चालू है'],
   enterCurrentPin: [
     'Enter your current PIN to continue.',

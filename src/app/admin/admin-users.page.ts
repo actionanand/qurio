@@ -82,6 +82,23 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
         </section>
       }
 
+      @if (eligibleCleanupCount() > 0) {
+        <section class="cleanup-card panel" aria-labelledby="account-cleanup-heading">
+          <span class="policy-icon"><app-icon name="trash" /></span>
+          <div class="policy-copy">
+            <h2 id="account-cleanup-heading">{{ i.t('accountCleanup') }}</h2>
+            <p>{{ cleanupDescription(eligibleCleanupCount()) }}</p>
+          </div>
+          <ion-button color="danger" [disabled]="cleanupBusy()" (click)="confirmExpiredCleanup()">
+            @if (cleanupBusy()) {
+              <ion-spinner name="crescent" />
+            } @else {
+              {{ cleanupButtonLabel(eligibleCleanupCount()) }}
+            }
+          </ion-button>
+        </section>
+      }
+
       <div class="admin-toolbar">
         <ion-select
           [label]="i.t('accounts')"
@@ -315,6 +332,8 @@ export class AdminUsersPage {
   readonly captchaToken = signal('');
   readonly captchaReset = signal(0);
   readonly resetTarget = signal<UserProfile | null>(null);
+  readonly eligibleCleanupCount = signal(0);
+  readonly cleanupBusy = signal(false);
 
   readonly filters: { value: UserFilter; label: MessageKey }[] = [
     { value: 'pending', label: 'pending' },
@@ -359,6 +378,64 @@ export class AdminUsersPage {
       this.error.set(this.i.t('unableToLoadAccounts'));
     } finally {
       this.loading.set(false);
+      void this.loadExpiredUnverifiedPreview();
+    }
+  }
+
+  async confirmExpiredCleanup(): Promise<void> {
+    const count = this.eligibleCleanupCount();
+    if (!count || this.cleanupBusy()) return;
+    const alert = await this.alerts.create({
+      header: this.i.t('accountCleanup'),
+      message: `${this.cleanupConfirmation(count)}\n\n${this.i.t('permanentDeletionWarning')}`,
+      buttons: [
+        { text: this.i.t('cancel'), role: 'cancel' },
+        { text: this.i.t('deletePermanently'), role: 'confirm', cssClass: 'danger' },
+      ],
+    });
+    await alert.present();
+    const result = await alert.onDidDismiss();
+    if (result.role !== 'confirm') return;
+    this.cleanupBusy.set(true);
+    try {
+      const result = await this.admin.deleteExpiredUnverified();
+      if (result.deletedCount) this.snackbar.show(this.cleanupDeletedMessage(result.deletedCount));
+      if (result.skippedCount) this.snackbar.show(this.message('cleanupPartial', result.skippedCount), 'info');
+      if (result.failedCount) this.snackbar.show(this.i.t('cleanupFailed'), 'error');
+      await this.load();
+    } catch {
+      this.snackbar.show(this.i.t('cleanupFailed'), 'error');
+    } finally {
+      this.cleanupBusy.set(false);
+    }
+  }
+
+  cleanupDescription(count: number): string {
+    return count === 1 ? this.i.t('expiredUnverifiedOne') : this.message('expiredUnverifiedMany', count);
+  }
+
+  cleanupButtonLabel(count: number): string {
+    return count === 1 ? this.i.t('deleteExpiredAccount') : this.message('deleteExpiredAccounts', count);
+  }
+
+  private cleanupConfirmation(count: number): string {
+    return count === 1 ? this.i.t('cleanupConfirmOne') : this.message('cleanupConfirmMany', count);
+  }
+
+  private cleanupDeletedMessage(count: number): string {
+    return count === 1 ? this.i.t('cleanupDeletedOne') : this.message('cleanupDeletedMany', count);
+  }
+
+  private message(key: MessageKey, count: number): string {
+    return this.i.t(key).replace('{count}', String(count));
+  }
+
+  private async loadExpiredUnverifiedPreview(): Promise<void> {
+    try {
+      const preview = await this.admin.getExpiredUnverifiedPreview();
+      this.eligibleCleanupCount.set(preview.eligibleCount);
+    } catch {
+      this.eligibleCleanupCount.set(0);
     }
   }
 

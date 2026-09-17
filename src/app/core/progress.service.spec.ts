@@ -194,4 +194,19 @@ describe('ProgressService', () => {
     TestBed.flushEffects();
     expect(progress.completed()).toEqual([]);
   });
+
+  it('clears the deleted user cached learning state', async () => {
+    const local = syncableAttempt('delete-me');
+    localStorage.setItem('qurio.progress.v1', JSON.stringify({ completed: ['lesson-delete-me'], attempts: [local] }));
+    approvedUserId.set('user-1');
+    const progress = TestBed.inject(ProgressService);
+    TestBed.flushEffects();
+    await vi.waitFor(() => expect(progress.loaded()).toBe(true));
+
+    progress.clearDeletedUser('user-1');
+
+    expect(progress.completed()).toEqual([]);
+    expect(progress.attempts()).toEqual([]);
+    expect(JSON.parse(localStorage.getItem('qurio.progress.v1') ?? '{}')).toEqual({ completed: [], attempts: [] });
+  });
 });

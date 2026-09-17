@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IonButton, IonInput, IonSpinner } from '@ionic/angular';
 import { I18nService } from '../core/i18n.service';
 import { AdminService } from '../services/admin.service';
@@ -7,6 +8,7 @@ import { AuthService } from '../services/auth.service';
 import { IconComponent } from '../shared/icon.component';
 import { DeviceSettingsComponent } from '../shared/device-settings.component';
 import { SnackbarService } from '../core/snackbar.service';
+import { ProgressService } from '../core/progress.service';
 import { AuthCaptchaComponent } from '../auth/auth-captcha.component';
 import { CaptchaService } from '../auth/captcha.service';
 
@@ -77,6 +79,20 @@ import { CaptchaService } from '../auth/captcha.service';
         </section>
       </div>
       <app-device-settings />
+      <section class="danger-zone" aria-labelledby="danger-zone-heading">
+        <div>
+          <p class="eyebrow">{{ i.t('dangerZone') }}</p>
+          <h2 id="danger-zone-heading">{{ i.t('deleteAccountPermanently') }}</h2>
+          <p class="muted">{{ i.t('deleteAccountIntro') }}</p>
+          <p class="muted">{{ i.t('permanentDeletionWarning') }}</p>
+          @if (auth.isOwner()) {
+            <p class="form-message error" role="status">{{ i.t('ownerDeletionBlocked') }}</p>
+          }
+        </div>
+        <ion-button color="danger" fill="outline" [disabled]="auth.isOwner()" (click)="openDeleteAccountDialog()">
+          <app-icon name="trash" />{{ i.t('deleteMyAccount') }}
+        </ion-button>
+      </section>
       @if (resetChallengeOpen()) {
         <div class="captcha-dialog-backdrop">
           <section class="captcha-dialog panel" role="dialog" aria-modal="true" aria-labelledby="reset-dialog-title">
@@ -100,12 +116,53 @@ import { CaptchaService } from '../auth/captcha.service';
           </section>
         </div>
       }
+      @if (deleteAccountDialogOpen()) {
+        <div class="captcha-dialog-backdrop">
+          <section
+            class="captcha-dialog panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-account-dialog-title">
+            <h2 id="delete-account-dialog-title">{{ i.t('deleteAccountPermanently') }}</h2>
+            <p>{{ i.t('deleteAccountIntro') }}</p>
+            <p>{{ i.t('enterEmailToConfirm') }}</p>
+            <ion-input
+              type="email"
+              autocomplete="email"
+              [label]="i.t('confirmationEmail')"
+              labelPlacement="stacked"
+              fill="outline"
+              [value]="deleteConfirmationEmail()"
+              (ionInput)="setDeleteConfirmationEmail($event.detail.value)" />
+            @if (deleteConfirmationEmail() && !deleteConfirmationMatches()) {
+              <p class="form-message error" role="alert">{{ i.t('confirmationEmailMismatch') }}</p>
+            }
+            <div class="captcha-dialog-actions">
+              <ion-button fill="clear" [disabled]="deleteBusy()" (click)="cancelDeleteAccount()">{{
+                i.t('cancel')
+              }}</ion-button>
+              <ion-button
+                color="danger"
+                [disabled]="deleteBusy() || !deleteConfirmationMatches()"
+                (click)="deleteMyAccount()">
+                @if (deleteBusy()) {
+                  <ion-spinner name="crescent" />
+                } @else {
+                  {{ i.t('deletePermanently') }}
+                }
+              </ion-button>
+            </div>
+          </section>
+        </div>
+      }
     </section>
   `,
 })
 export class SettingsPage {
   private readonly admin = inject(AdminService);
   private readonly snackbar = inject(SnackbarService);
+  private readonly router = inject(Router);
+  private readonly progress = inject(ProgressService);
   readonly auth = inject(AuthService);
   readonly i = inject(I18nService);
   readonly captcha = inject(CaptchaService);
@@ -118,6 +175,12 @@ export class SettingsPage {
   readonly captchaToken = signal('');
   readonly captchaReset = signal(0);
   readonly resetChallengeOpen = signal(false);
+  readonly deleteAccountDialogOpen = signal(false);
+  readonly deleteConfirmationEmail = signal('');
+  readonly deleteBusy = signal(false);
+  readonly deleteConfirmationMatches = computed(
+    () => this.deleteConfirmationEmail().trim().toLowerCase() === (this.auth.user()?.email ?? '').trim().toLowerCase(),
+  );
   readonly profileForm = new FormGroup({
     displayName: new FormControl('', {
       nonNullable: true,
@@ -188,6 +251,40 @@ export class SettingsPage {
       this.resetBusy.set(false);
       this.captchaToken.set('');
       this.captchaReset.update(value => value + 1);
+    }
+  }
+
+  openDeleteAccountDialog(): void {
+    if (this.auth.isOwner()) return;
+    this.deleteConfirmationEmail.set('');
+    this.deleteAccountDialogOpen.set(true);
+  }
+
+  cancelDeleteAccount(): void {
+    if (this.deleteBusy()) return;
+    this.deleteAccountDialogOpen.set(false);
+    this.deleteConfirmationEmail.set('');
+  }
+
+  setDeleteConfirmationEmail(value: string | null | undefined): void {
+    this.deleteConfirmationEmail.set(value ?? '');
+  }
+
+  async deleteMyAccount(): Promise<void> {
+    if (!this.deleteConfirmationMatches() || this.deleteBusy()) return;
+    const userId = this.auth.user()?.id;
+    this.deleteBusy.set(true);
+    try {
+      await this.auth.deleteMyAccount(this.deleteConfirmationEmail());
+      if (userId) this.progress.clearDeletedUser(userId);
+      await this.router.navigateByUrl('/auth/login');
+      this.snackbar.show(this.i.t('selfDeleteSuccess'));
+    } catch {
+      this.snackbar.show(this.i.t('selfDeleteFailed'), 'error');
+    } finally {
+      this.deleteBusy.set(false);
+      this.deleteAccountDialogOpen.set(false);
+      this.deleteConfirmationEmail.set('');
     }
   }
 }

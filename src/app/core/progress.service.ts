@@ -106,6 +106,27 @@ export class ProgressService {
     await this.synchronizeAttempt(attempt, userId, true);
   }
 
+  clearDeletedUser(userId: string): void {
+    this.syncStates.update(states => {
+      const next = { ...states };
+      delete next[userId];
+      return next;
+    });
+    this.completionOwners.update(owners =>
+      Object.fromEntries(Object.entries(owners).filter(([, owner]) => owner !== userId)),
+    );
+    this.saveSyncStates();
+    this.saveCompletionOwners();
+    if (this.activeUserId !== userId) return;
+    this.localCompleted.set([]);
+    this.localAttempts.set([]);
+    this.remoteCompleted.set([]);
+    this.completed.set([]);
+    this.attempts.set([]);
+    this.legacyAttempts.set([]);
+    this.saveLocalProgress();
+  }
+
   private async loadApprovedUser(userId: string, generation: number): Promise<void> {
     this.loading.set(true);
     this.loaded.set(false);

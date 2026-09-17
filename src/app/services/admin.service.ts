@@ -2,6 +2,17 @@ import { Service, inject } from '@angular/core';
 import type { AppSettings, AuditEvent, UserProfile } from './auth.models';
 import { SupabaseService } from './supabase.service';
 
+export interface ExpiredUnverifiedPreview {
+  eligibleCount: number;
+  cutoff: string;
+}
+
+export interface ExpiredUnverifiedDeleteResult {
+  deletedCount: number;
+  skippedCount: number;
+  failedCount: number;
+}
+
 @Service()
 export class AdminService {
   private readonly supabase = inject(SupabaseService).client;
@@ -73,6 +84,24 @@ export class AdminService {
     });
     if (error) throw error;
     if (data && typeof data === 'object' && 'error' in data) throw new Error(String(data.error));
+  }
+
+  async getExpiredUnverifiedPreview(): Promise<ExpiredUnverifiedPreview> {
+    return this.invokeCleanup<ExpiredUnverifiedPreview>('preview');
+  }
+
+  async deleteExpiredUnverified(): Promise<ExpiredUnverifiedDeleteResult> {
+    return this.invokeCleanup<ExpiredUnverifiedDeleteResult>('delete');
+  }
+
+  private async invokeCleanup<T>(action: 'preview' | 'delete'): Promise<T> {
+    const { data, error } = await this.supabase.functions.invoke('admin-delete-expired-unverified', {
+      body: { action },
+    });
+    if (error) throw error;
+    if (!data || typeof data !== 'object' || 'error' in data)
+      throw new Error(String((data as { error?: string })?.error));
+    return data as T;
   }
 
   private async rpc(name: string, params: Record<string, unknown>) {

@@ -75,4 +75,19 @@ describe('SecurityService', () => {
     expect(await service.verify('2468')).toBe(true);
     expect(await service.verify('1357')).toBe(false);
   });
+
+  it('removes the deleted user PIN record without affecting another user', async () => {
+    const service = new SecurityService();
+    await service.initialize('user-a');
+    await service.setPin('2468');
+    await service.initialize('user-b');
+    await service.setPin('1357');
+
+    await service.clearUser('user-a');
+
+    await service.initialize('user-a');
+    expect(service.configured()).toBe(false);
+    await service.initialize('user-b');
+    expect(await service.verify('1357')).toBe(true);
+  });
 });

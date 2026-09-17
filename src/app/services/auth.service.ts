@@ -2,12 +2,14 @@ import { Service, computed, inject, signal } from '@angular/core';
 import type { EmailOtpType, Session, User } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 import { CaptchaService } from '../auth/captcha.service';
+import { SecurityService } from '../core/security.service';
 import type { AccountStatus, AppRole, UserProfile } from './auth.models';
 import { SupabaseService } from './supabase.service';
 
 @Service()
 export class AuthService {
   private readonly captcha = inject(CaptchaService);
+  private readonly security = inject(SecurityService);
   private readonly supabase = inject(SupabaseService).client;
   private profileRequest?: Promise<UserProfile | null>;
   private initializationRequest?: Promise<void>;
@@ -86,6 +88,27 @@ export class AuthService {
     await this.supabase.auth.signOut();
     this.session.set(null);
     this.profile.set(null);
+  }
+
+  async deleteMyAccount(confirmationEmail: string): Promise<void> {
+    const userId = this.user()?.id;
+    if (!userId) throw new Error('Authentication is required');
+    const { data, error } = await this.supabase.functions.invoke('delete-my-account', { body: { confirmationEmail } });
+    if (error) throw error;
+    if (!data || typeof data !== 'object' || 'error' in data)
+      throw new Error(String((data as { error?: string })?.error));
+    try {
+      await this.security.clearUser(userId);
+    } catch {
+      // The remote account is already deleted; local session clearing must still continue.
+    }
+    try {
+      sessionStorage.removeItem('qurio.verificationEmail');
+      await this.supabase.auth.signOut({ scope: 'local' });
+    } finally {
+      this.session.set(null);
+      this.profile.set(null);
+    }
   }
 
   resendVerification(email: string, captchaToken: string) {
