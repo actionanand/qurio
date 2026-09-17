@@ -61,6 +61,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
           </div>
         }
       </div>
+
       @if (auth.isOwner()) {
         <section class="policy-card" aria-labelledby="auto-approval-heading">
           <span class="policy-icon"><app-icon name="correct" /></span>
@@ -80,6 +81,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
           </div>
         </section>
       }
+
       <div class="admin-toolbar">
         <ion-select
           [label]="i.t('accounts')"
@@ -96,12 +98,14 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
         </div>
         <ion-button fill="outline" [disabled]="loading()" (click)="load()">{{ i.t('refresh') }}</ion-button>
       </div>
+
       @if (error()) {
         <p class="notice error" role="alert">{{ error() }}</p>
       }
       @if (statusMessage()) {
         <p class="notice" role="status">{{ statusMessage() }}</p>
       }
+
       @if (loading()) {
         <div class="loading-state">
           <ion-spinner name="crescent" /><span>{{ i.t('loadingAccounts') }}</span>
@@ -124,6 +128,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
                   </div>
                 </div>
               </div>
+
               <dl class="account-details">
                 <div>
                   <dt>{{ i.t('signedUp') }}</dt>
@@ -140,17 +145,19 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
                   </div>
                 }
               </dl>
+
               <div class="account-actions">
                 @if (profile.role === 'user') {
-                  @if (profile.status !== 'approved') {
+                  @if (profile.status === 'pending') {
                     <ion-button
                       size="small"
-                      [disabled]="!profile.email_verified_at || acting() === profile.id"
+                      [disabled]="acting() === profile.id"
                       (click)="perform(profile, 'approve')"
                       >{{ i.t('approve') }}</ion-button
                     >
                   }
-                  @if (!profile.email_verified_at && profile.status === 'pending') {
+
+                  @if (profile.status === 'unverified' && !profile.email_verified_at) {
                     <ion-button
                       size="small"
                       fill="outline"
@@ -159,6 +166,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
                       >{{ i.t('resendVerification') }}</ion-button
                     >
                   }
+
                   @if (profile.status !== 'denied') {
                     <ion-button
                       size="small"
@@ -169,6 +177,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
                       >{{ i.t('deny') }}</ion-button
                     >
                   }
+
                   @if (profile.status === 'approved') {
                     <ion-button
                       size="small"
@@ -179,6 +188,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
                       >{{ i.t('suspend') }}</ion-button
                     >
                   }
+
                   @if (profile.status === 'suspended' || profile.status === 'denied') {
                     <ion-button
                       size="small"
@@ -188,6 +198,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
                       >{{ i.t('reactivate') }}</ion-button
                     >
                   }
+
                   @if (auth.isOwner() && profile.status === 'approved') {
                     <ion-button
                       size="small"
@@ -197,6 +208,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
                       >{{ i.t('promoteAdmin') }}</ion-button
                     >
                   }
+
                   <ion-button
                     size="small"
                     fill="clear"
@@ -205,6 +217,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
                     (click)="perform(profile, 'delete')"
                     ><app-icon name="trash" /> {{ i.t('delete') }}</ion-button
                   >
+
                   <ion-button
                     size="small"
                     fill="outline"
@@ -247,6 +260,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
           }
         </div>
       }
+
       @if (resetTarget(); as target) {
         <div class="captcha-dialog-backdrop">
           <section
@@ -276,6 +290,7 @@ type AdminAction = 'approve' | 'deny' | 'suspend' | 'reactivate' | 'promote' | '
           </section>
         </div>
       }
+
       <app-device-settings />
     </section>
   `,
@@ -284,9 +299,11 @@ export class AdminUsersPage {
   private readonly admin = inject(AdminService);
   private readonly alerts = inject(AlertController);
   private readonly snackbar = inject(SnackbarService);
+
   readonly auth = inject(AuthService);
   readonly captcha = inject(CaptchaService);
   readonly i = inject(I18nService);
+
   readonly profiles = signal<UserProfile[]>([]);
   readonly filter = signal<UserFilter>('pending');
   readonly loading = signal(true);
@@ -298,6 +315,7 @@ export class AdminUsersPage {
   readonly captchaToken = signal('');
   readonly captchaReset = signal(0);
   readonly resetTarget = signal<UserProfile | null>(null);
+
   readonly filters: { value: UserFilter; label: MessageKey }[] = [
     { value: 'pending', label: 'pending' },
     { value: 'unverified', label: 'unverified' },
@@ -306,21 +324,24 @@ export class AdminUsersPage {
     { value: 'suspended', label: 'suspended' },
     { value: 'all', label: 'all' },
   ];
+
   readonly adminCount = computed(() => this.profiles().filter(profile => profile.role === 'admin').length);
+
   readonly visibleProfiles = computed(() =>
-    this.profiles().filter(
-      profile =>
-        this.filter() === 'all' ||
-        (this.filter() === 'unverified' ? !profile.email_verified_at : profile.status === this.filter()),
-    ),
+    this.profiles().filter(profile => this.filter() === 'all' || profile.status === this.filter()),
   );
+
   constructor() {
     void this.load();
   }
+
   setFilter(value: unknown) {
-    if (typeof value === 'string' && this.filters.some(option => option.value === value))
+    if (typeof value === 'string' && this.filters.some(option => option.value === value)) {
       this.filter.set(value as UserFilter);
+      void this.load();
+    }
   }
+
   async load() {
     this.loading.set(true);
     this.error.set('');
@@ -340,6 +361,7 @@ export class AdminUsersPage {
       this.loading.set(false);
     }
   }
+
   async sendPasswordReset(profile: UserProfile) {
     if (this.acting()) return;
     const alert = await this.alerts.create({
@@ -353,6 +375,7 @@ export class AdminUsersPage {
     await alert.present();
     const result = await alert.onDidDismiss();
     if (result.role !== 'confirm') return;
+
     this.captchaToken.set('');
     this.captchaReset.update(value => value + 1);
     this.resetTarget.set(profile);
@@ -367,12 +390,15 @@ export class AdminUsersPage {
   async completePasswordReset(): Promise<void> {
     const profile = this.resetTarget();
     if (!profile || this.acting() || !this.captcha.canSubmit(this.captchaToken())) return;
+
     this.acting.set(profile.id);
     this.error.set('');
     this.statusMessage.set('');
+
     try {
       const reset = await this.auth.resetPassword(profile.email, this.captchaToken());
       if (reset.error) throw reset.error;
+
       this.statusMessage.set(this.i.t('resetEmailSent'));
       this.snackbar.show(this.i.t('resetEmailSent'));
       this.resetTarget.set(null);
@@ -384,10 +410,13 @@ export class AdminUsersPage {
       this.captchaReset.update(value => value + 1);
     }
   }
+
   async changeAutoApproval(enabled: boolean) {
     if (enabled === this.autoApproval() || this.settingsBusy()) return;
+
     this.settingsBusy.set(true);
     this.error.set('');
+
     try {
       await this.admin.setAutoApproval(enabled);
       this.autoApproval.set(enabled);
@@ -399,6 +428,7 @@ export class AdminUsersPage {
       this.settingsBusy.set(false);
     }
   }
+
   initials(profile: UserProfile) {
     return (profile.display_name || profile.email)
       .split(/\s+/)
@@ -406,17 +436,21 @@ export class AdminUsersPage {
       .map(part => part[0]?.toUpperCase())
       .join('');
   }
+
   date(value: string | null) {
     return value
       ? new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
       : '—';
   }
+
   statusKey(status: UserProfile['status']): MessageKey {
     return status;
   }
+
   roleKey(role: UserProfile['role']): MessageKey {
     return role;
   }
+
   actionKey(action: AdminAction): MessageKey {
     return {
       approve: 'approve',
@@ -429,9 +463,11 @@ export class AdminUsersPage {
       resend: 'resendVerification',
     }[action] as MessageKey;
   }
+
   async perform(profile: UserProfile, action: AdminAction) {
     const needsReason = ['deny', 'suspend', 'demote', 'delete'].includes(action);
     const destructive = ['deny', 'suspend', 'demote', 'delete'].includes(action);
+
     const alert = await this.alerts.create({
       header: `${this.i.t(this.actionKey(action))} ${profile.display_name || profile.email}?`,
       message: this.i.t(destructive ? 'accessActionNotice' : 'accountActionNotice'),
@@ -441,17 +477,21 @@ export class AdminUsersPage {
         { text: this.i.t('continue'), role: 'confirm' },
       ],
     });
+
     await alert.present();
     const result = await alert.onDidDismiss();
     if (result.role !== 'confirm') return;
+
     const reason = typeof result.data?.values?.reason === 'string' ? result.data.values.reason.trim() : '';
     if (needsReason && !reason) {
       this.error.set(this.i.t('reasonRequired'));
       return;
     }
+
     this.acting.set(profile.id);
     this.error.set('');
     this.statusMessage.set('');
+
     try {
       if (action === 'approve') await this.admin.approve(profile.id);
       else if (action === 'deny') await this.admin.deny(profile.id, reason);
@@ -461,6 +501,7 @@ export class AdminUsersPage {
       else if (action === 'demote') await this.admin.demote(profile.id, reason);
       else if (action === 'delete') await this.admin.deleteUser(profile.id, reason);
       else await this.admin.resendVerification(profile.id);
+
       this.snackbar.show(this.i.t('accountActionCompleted'));
       await this.load();
     } catch (error) {

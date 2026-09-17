@@ -1,5 +1,5 @@
 export type AppRole = 'owner' | 'admin' | 'user';
-export type AccountStatus = 'pending' | 'approved' | 'denied' | 'suspended';
+export type AccountStatus = 'unverified' | 'pending' | 'approved' | 'denied' | 'suspended';
 
 export interface UserProfile {
   id: string;
