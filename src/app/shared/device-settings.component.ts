@@ -60,47 +60,69 @@ import { PreferencesService } from '../core/preferences.service';
           <h2 id="app-lock-heading">{{ i.t('pinAndBiometric') }}</h2>
           <p class="muted">{{ i.t(security.native ? 'androidLockIntro' : 'webLockIntro') }}</p>
         </div>
-        <form [formGroup]="pinForm" (ngSubmit)="savePin()">
-          @if (security.configured()) {
+        <div class="setting-row">
+          <span>{{ i.t('enablePin') }}</span>
+          <ion-toggle
+            [checked]="security.configured() || pinEditorOpen()"
+            [disabled]="security.configured() || busy()"
+            [attr.aria-label]="i.t('enablePin')"
+            (ionChange)="pinSetupChanged($event.detail.checked)" />
+        </div>
+        @if (pinEditorOpen()) {
+          <form [formGroup]="pinForm" (ngSubmit)="savePin()">
+            @if (security.configured()) {
+              <ion-input
+                formControlName="current"
+                type="password"
+                inputmode="numeric"
+                maxlength="8"
+                [label]="i.t('currentPin')"
+                labelPlacement="stacked"
+                fill="outline" />
+            }
             <ion-input
-              formControlName="current"
+              formControlName="pin"
               type="password"
               inputmode="numeric"
               maxlength="8"
-              [label]="i.t('currentPin')"
+              [label]="i.t('newPin')"
+              [helperText]="i.t('pinHelp')"
               labelPlacement="stacked"
               fill="outline" />
-          }
-          <ion-input
-            formControlName="pin"
-            type="password"
-            inputmode="numeric"
-            maxlength="8"
-            [label]="i.t('newPin')"
-            [helperText]="i.t('pinHelp')"
-            labelPlacement="stacked"
-            fill="outline" />
-          <ion-input
-            formControlName="confirm"
-            type="password"
-            inputmode="numeric"
-            maxlength="8"
-            [label]="i.t('confirmPin')"
-            labelPlacement="stacked"
-            fill="outline" />
-          <ion-button type="submit" [disabled]="pinForm.invalid || busy()">
-            @if (busy()) {
-              <ion-spinner name="crescent" />
-            } @else {
-              {{ i.t(security.configured() ? 'changePin' : 'enableAppLock') }}
-            }
-          </ion-button>
-        </form>
-        @if (security.native) {
-          <ion-button fill="outline" [disabled]="!security.configured() || busy()" (click)="toggleBiometric()">
-            <app-icon name="fingerprint" />
-            {{ i.t(security.biometricEnabled() ? 'disableBiometric' : 'enableBiometric') }}
-          </ion-button>
+            <ion-input
+              formControlName="confirm"
+              type="password"
+              inputmode="numeric"
+              maxlength="8"
+              [label]="i.t('confirmPin')"
+              labelPlacement="stacked"
+              fill="outline" />
+            <ion-button type="submit" [disabled]="pinForm.invalid || busy()">
+              @if (busy()) {
+                <ion-spinner name="crescent" />
+              } @else {
+                {{ i.t(security.configured() ? 'changePin' : 'enablePin') }}
+              }
+            </ion-button>
+          </form>
+        }
+        @if (security.configured()) {
+          <div class="lock-actions">
+            <ion-button fill="outline" [disabled]="busy()" (click)="openPinEditor()">{{ i.t('changePin') }}</ion-button>
+            <ion-button fill="outline" [disabled]="busy()" (click)="lockNow()">
+              <app-icon name="lock" />{{ i.t('lockNow') }}
+            </ion-button>
+          </div>
+        }
+        @if (security.native && security.configured()) {
+          <div class="setting-row">
+            <span>{{ i.t('enableBiometric') }}</span>
+            <ion-toggle
+              [checked]="security.biometricEnabled()"
+              [disabled]="!security.biometricAvailable() || busy()"
+              [attr.aria-label]="i.t('enableBiometric')"
+              (ionChange)="biometricChanged($event.detail.checked)" />
+          </div>
         }
         @if (security.configured()) {
           <ion-button fill="clear" color="danger" [disabled]="busy()" (click)="disableLock()">
@@ -175,6 +197,11 @@ import { PreferencesService } from '../core/preferences.service';
       border-radius: 20px;
       background: var(--surface);
     }
+    .lock-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
     h2,
     p {
       margin: 0;
@@ -204,6 +231,9 @@ import { PreferencesService } from '../core/preferences.service';
         align-items: stretch;
         flex-direction: column;
       }
+      .lock-actions ion-button {
+        flex: 1 1 140px;
+      }
     }
   `,
 })
@@ -219,6 +249,7 @@ export class DeviceSettingsComponent {
   private readonly notificationPrompt = inject(NotificationPromptService);
   readonly busy = signal(false);
   readonly signingOut = signal(false);
+  readonly pinEditorOpen = signal(false);
   readonly weekdays: { value: number; short: MessageKey; name: MessageKey }[] = [
     { value: 1, short: 'mondayShort', name: 'monday' },
     { value: 2, short: 'tuesdayShort', name: 'tuesday' },
@@ -296,23 +327,41 @@ export class DeviceSettingsComponent {
     this.busy.set(true);
     await this.security.setPin(value.pin);
     this.pinForm.reset();
+    this.pinEditorOpen.set(false);
     this.snackbar.show(this.i.t('appLockEnabled'));
     this.busy.set(false);
   }
 
-  async toggleBiometric(): Promise<void> {
-    if (this.security.biometricEnabled()) {
+  pinSetupChanged(enabled: boolean): void {
+    this.pinEditorOpen.set(enabled);
+    if (!enabled) this.pinForm.reset();
+  }
+
+  openPinEditor(): void {
+    this.pinEditorOpen.set(true);
+  }
+
+  lockNow(): void {
+    this.security.lock();
+  }
+
+  async biometricChanged(enabled: boolean): Promise<void> {
+    if (!enabled && this.security.biometricEnabled()) {
       this.busy.set(true);
       await this.security.disableBiometric();
       this.snackbar.show(this.i.t('biometricDisabled'), 'info');
       this.busy.set(false);
       return;
     }
+    if (!enabled) return;
     const pin = await this.askForPin(this.i.t('enableBiometric'));
     if (!pin) return;
     this.busy.set(true);
-    const enabled = await this.security.enableBiometric(pin);
-    this.snackbar.show(this.i.t(enabled ? 'biometricEnabled' : 'biometricFailed'), enabled ? 'success' : 'error');
+    const biometricEnabled = await this.security.enableBiometric(pin);
+    this.snackbar.show(
+      this.i.t(biometricEnabled ? 'biometricEnabled' : 'biometricFailed'),
+      biometricEnabled ? 'success' : 'error',
+    );
     this.busy.set(false);
   }
 

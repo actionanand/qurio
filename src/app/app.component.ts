@@ -84,6 +84,7 @@ export class AppComponent {
     this.router.events.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.challengeRoute.set(event.urlAfterRedirects.split('?')[0] === '/auth/challenge');
+        this.promptNotificationsForCurrentRoute();
         setTimeout(() => {
           document.getElementById('main')?.focus();
           document.getElementById('main')?.scrollTo(0, 0);
@@ -113,8 +114,13 @@ export class AppComponent {
         void this.appStateListener?.remove();
         void this.appUrlListener?.remove();
       });
-      await this.notificationPrompt.promptOnce();
+      this.promptNotificationsForCurrentRoute();
     }
+  }
+
+  private promptNotificationsForCurrentRoute(): void {
+    if (!Capacitor.isNativePlatform() || !this.deviceReady() || this.router.url.startsWith('/auth/')) return;
+    void this.notificationPrompt.promptOnce();
   }
 
   private async openNativeRoute(url: string): Promise<void> {

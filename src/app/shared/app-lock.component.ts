@@ -19,7 +19,7 @@ import { IconComponent } from './icon.component';
           <span class="eyebrow">QURIO</span>
           <h1 id="lock-title">{{ i.t('qurioLocked') }}</h1>
           <p>{{ i.t('enterPinToUnlock') }}</p>
-          <form (ngSubmit)="unlock()">
+          <form novalidate (submit)="unlock($event)">
             <ion-input
               [formControl]="pin"
               type="password"
@@ -110,7 +110,12 @@ export class AppLockComponent {
     validators: [Validators.required, Validators.pattern(/^\d{4,8}$/)],
   });
 
-  async unlock(): Promise<void> {
+  constructor() {
+    this.removeLeakedPinQueryParameter();
+  }
+
+  async unlock(event: SubmitEvent): Promise<void> {
+    event.preventDefault();
     if (this.pin.invalid || this.busy()) return;
     this.busy.set(true);
     this.error.set('');
@@ -135,5 +140,18 @@ export class AppLockComponent {
     await this.auth.signOut();
     await this.router.navigateByUrl('/auth/login');
     this.busy.set(false);
+  }
+
+  private removeLeakedPinQueryParameter(): void {
+    const parameters = new URLSearchParams(window.location.search);
+    const leakedKeys = [...parameters.keys()].filter(key => key.startsWith('ion-input-'));
+    if (!leakedKeys.length) return;
+    for (const key of leakedKeys) parameters.delete(key);
+    const query = parameters.toString();
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`,
+    );
   }
 }
