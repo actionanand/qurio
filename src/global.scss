@@ -722,6 +722,33 @@ ion-alert.qurio-confirmation .alert-wrapper:focus-visible {
   border-radius: 19px;
   background: linear-gradient(135deg, var(--surface), var(--soft));
 }
+.cleanup-card,
+.danger-zone {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 22px;
+  padding: 22px 24px;
+  border: 1px solid var(--danger-line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+.cleanup-card .policy-copy,
+.danger-zone > div {
+  flex: 1;
+}
+.cleanup-card h2,
+.cleanup-card p,
+.danger-zone h2,
+.danger-zone p {
+  margin: 0;
+}
+.danger-zone {
+  align-items: flex-start;
+}
+.danger-zone .eyebrow {
+  color: var(--danger);
+}
 .policy-icon {
   display: grid;
   place-items: center;
@@ -1478,6 +1505,17 @@ blockquote {
   .policy-toggle ion-toggle {
     width: 100%;
     justify-content: space-between;
+  }
+  .cleanup-card,
+  .danger-zone {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px;
+  }
+  .cleanup-card ion-button,
+  .danger-zone ion-button {
+    align-self: stretch;
   }
   .settings-grid {
     grid-template-columns: 1fr;

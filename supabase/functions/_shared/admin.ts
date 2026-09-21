@@ -13,9 +13,12 @@ export function json(body: unknown, status = 200) {
   });
 }
 
-export async function requireStaff(
-  request: Request,
-): Promise<{ admin: SupabaseClient; actor: Record<string, unknown> }> {
+export interface AuthenticatedRequest {
+  admin: SupabaseClient;
+  user: { id: string; email?: string | null };
+}
+
+export async function requireAuthenticated(request: Request): Promise<AuthenticatedRequest> {
   const url = Deno.env.get('SUPABASE_URL');
   const publishableKey = Deno.env.get('SUPABASE_ANON_KEY');
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -30,7 +33,14 @@ export async function requireStaff(
   const { data: userData, error: userError } = await authClient.auth.getUser(token);
   if (userError || !userData.user) throw new Error('Unauthorized');
   const admin = createClient(url, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
-  const { data: actor, error } = await admin.from('profiles').select('*').eq('id', userData.user.id).single();
+  return { admin, user: userData.user };
+}
+
+export async function requireStaff(
+  request: Request,
+): Promise<{ admin: SupabaseClient; actor: Record<string, unknown> }> {
+  const { admin, user } = await requireAuthenticated(request);
+  const { data: actor, error } = await admin.from('profiles').select('*').eq('id', user.id).single();
   if (error || actor.status !== 'approved' || !['owner', 'admin'].includes(actor.role)) throw new Error('Forbidden');
   return { admin, actor };
 }
