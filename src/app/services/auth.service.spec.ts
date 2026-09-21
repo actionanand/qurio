@@ -22,7 +22,10 @@ describe('AuthService', () => {
     error: null,
   }));
   const signOut = vi.fn(async () => ({ error: null }));
-  const invoke = vi.fn(async () => ({ data: { ok: true }, error: null }));
+  const invoke = vi.fn(async (): Promise<{ data: { ok: boolean } | null; error: Error | null }> => ({
+    data: { ok: true },
+    error: null,
+  }));
   const clearUser = vi.fn(async () => undefined);
   const client = {
     auth: {
@@ -152,6 +155,20 @@ describe('AuthService', () => {
     expect(signOut).toHaveBeenCalledWith({ scope: 'local' });
     expect(auth.session()).toBeNull();
     expect(auth.profile()).toBeNull();
+  });
+
+  it('keeps the local session when remote account deletion fails', async () => {
+    invoke.mockResolvedValueOnce({ data: null, error: new Error('remote failure') });
+    const auth = TestBed.inject(AuthService);
+    await auth.waitUntilInitialized();
+    auth.session.set({ user: { id: 'user-1', email: 'learner@example.test' } } as Session);
+    auth.profile.set(profile('approved', '2026-09-07T00:00:00Z'));
+
+    await expect(auth.deleteMyAccount('learner@example.test')).rejects.toThrow('remote failure');
+
+    expect(clearUser).not.toHaveBeenCalled();
+    expect(signOut).not.toHaveBeenCalled();
+    expect(auth.user()?.id).toBe('user-1');
   });
 });
 

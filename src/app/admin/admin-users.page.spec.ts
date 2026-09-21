@@ -54,6 +54,16 @@ describe('AdminUsersPage account cleanup', () => {
     expect(page.cleanupDescription(1)).toBe('expiredUnverifiedOne');
   });
 
+  it('does not delete when the cleanup confirmation is cancelled', async () => {
+    getExpiredUnverifiedPreview.mockResolvedValue({ eligibleCount: 1, cutoff: '2026-06-19T00:00:00.000Z' });
+    const page = TestBed.runInInjectionContext(() => new AdminUsersPage());
+    await vi.waitFor(() => expect(page.eligibleCleanupCount()).toBe(1));
+
+    await page.confirmExpiredCleanup();
+
+    expect(deleteExpiredUnverified).not.toHaveBeenCalled();
+  });
+
   it('uses the plural count from the server preview and deletes only after confirmation', async () => {
     getExpiredUnverifiedPreview.mockResolvedValue({ eligibleCount: 2, cutoff: '2026-06-19T00:00:00.000Z' });
     deleteExpiredUnverified.mockResolvedValue({ deletedCount: 1, skippedCount: 1, failedCount: 0 });

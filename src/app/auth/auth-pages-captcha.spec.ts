@@ -130,6 +130,8 @@ describe('authentication page CAPTCHA lifecycle', () => {
         { provide: AuthService, useValue: auth },
         { provide: CaptchaService, useValue: blockedCaptcha },
         { provide: Router, useValue: router },
+        { provide: I18nService, useValue: { t: (key: string) => key } },
+        { provide: CredentialManagerService, useValue: credentials },
       ],
     });
     const page = TestBed.runInInjectionContext(() => new LoginPage());

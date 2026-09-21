@@ -195,18 +195,89 @@ describe('ProgressService', () => {
     expect(progress.completed()).toEqual([]);
   });
 
-  it('clears the deleted user cached learning state', async () => {
-    const local = syncableAttempt('delete-me');
-    localStorage.setItem('qurio.progress.v1', JSON.stringify({ completed: ['lesson-delete-me'], attempts: [local] }));
-    approvedUserId.set('user-1');
+  it('removes deleted user state and preserves User B data adopted by User B', async () => {
+    const userAAttempt = syncableAttempt('user-a-attempt');
+    const userBAttempt = syncableAttempt('user-b-attempt');
+    const guestAttempt = legacyAttempt('guest-attempt');
+    localStorage.setItem(
+      'qurio.progress.v1',
+      JSON.stringify({
+        completed: ['user-a-completion', 'user-b-completion', 'guest-completion'],
+        attempts: [userAAttempt, userBAttempt, guestAttempt],
+      }),
+    );
+    localStorage.setItem(
+      'qurio.progress.sync.v1',
+      JSON.stringify({
+        'user-a': { 'user-a-attempt': 'synced' },
+        'user-b': { 'user-b-attempt': 'synced' },
+      }),
+    );
+    localStorage.setItem(
+      'qurio.progress.completions.v1',
+      JSON.stringify({ 'user-a-completion': 'user-a', 'user-b-completion': 'user-b' }),
+    );
+    repository.loadAttempts.mockResolvedValue([userBAttempt]);
+    approvedUserId.set('user-b');
     const progress = TestBed.inject(ProgressService);
     TestBed.flushEffects();
     await vi.waitFor(() => expect(progress.loaded()).toBe(true));
 
-    progress.clearDeletedUser('user-1');
+    progress.clearDeletedUser('user-a');
+    progress.clearDeletedUser('user-a');
+
+    const stored = JSON.parse(localStorage.getItem('qurio.progress.v1') ?? '{}');
+    expect(stored.attempts.map((attempt: Attempt) => attempt.id)).toEqual(['user-b-attempt', 'guest-attempt']);
+    expect(stored.completed).toEqual(['user-b-completion', 'guest-completion']);
+    expect(JSON.parse(localStorage.getItem('qurio.progress.sync.v1') ?? '{}')).toEqual({
+      'user-b': { 'user-b-attempt': 'synced', 'guest-attempt': 'legacy-device-only' },
+    });
+    expect(JSON.parse(localStorage.getItem('qurio.progress.completions.v1') ?? '{}')).toEqual({
+      'user-b-completion': 'user-b',
+      'guest-completion': 'user-b',
+    });
+    expect(progress.attempts().map(attempt => attempt.id)).toEqual(['user-b-attempt']);
+  });
+
+  it('removes guest data that was adopted by the active deleted account', async () => {
+    const userAAttempt = syncableAttempt('user-a-attempt');
+    const guestAttempt = legacyAttempt('guest-attempt');
+    localStorage.setItem(
+      'qurio.progress.v1',
+      JSON.stringify({ completed: ['user-a-completion', 'guest-completion'], attempts: [userAAttempt, guestAttempt] }),
+    );
+    localStorage.setItem('qurio.progress.sync.v1', JSON.stringify({ 'user-a': { 'user-a-attempt': 'synced' } }));
+    localStorage.setItem('qurio.progress.completions.v1', JSON.stringify({ 'user-a-completion': 'user-a' }));
+    repository.loadAttempts.mockResolvedValue([userAAttempt]);
+    approvedUserId.set('user-a');
+    const progress = TestBed.inject(ProgressService);
+    TestBed.flushEffects();
+    await vi.waitFor(() => expect(progress.loaded()).toBe(true));
+
+    progress.clearDeletedUser('user-a');
 
     expect(progress.completed()).toEqual([]);
     expect(progress.attempts()).toEqual([]);
     expect(JSON.parse(localStorage.getItem('qurio.progress.v1') ?? '{}')).toEqual({ completed: [], attempts: [] });
+  });
+
+  it('preserves truly unowned guest data when deleting an inactive account', () => {
+    const userAAttempt = syncableAttempt('user-a-attempt');
+    const guestAttempt = legacyAttempt('guest-attempt');
+    localStorage.setItem(
+      'qurio.progress.v1',
+      JSON.stringify({ completed: ['user-a-completion', 'guest-completion'], attempts: [userAAttempt, guestAttempt] }),
+    );
+    localStorage.setItem('qurio.progress.sync.v1', JSON.stringify({ 'user-a': { 'user-a-attempt': 'synced' } }));
+    localStorage.setItem('qurio.progress.completions.v1', JSON.stringify({ 'user-a-completion': 'user-a' }));
+    const progress = TestBed.inject(ProgressService);
+    TestBed.flushEffects();
+
+    progress.clearDeletedUser('user-a');
+
+    expect(JSON.parse(localStorage.getItem('qurio.progress.v1') ?? '{}')).toEqual({
+      completed: ['guest-completion'],
+      attempts: [guestAttempt],
+    });
   });
 });

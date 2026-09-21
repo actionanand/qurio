@@ -107,6 +107,14 @@ export class ProgressService {
   }
 
   clearDeletedUser(userId: string): void {
+    const ownedAttemptIds = new Set(Object.keys(this.syncStates()[userId] ?? {}));
+    const ownedCompletionIds = new Set(
+      Object.entries(this.completionOwners())
+        .filter(([, owner]) => owner === userId)
+        .map(([contentId]) => contentId),
+    );
+    this.localAttempts.update(attempts => attempts.filter(attempt => !ownedAttemptIds.has(attempt.id)));
+    this.localCompleted.update(completed => completed.filter(contentId => !ownedCompletionIds.has(contentId)));
     this.syncStates.update(states => {
       const next = { ...states };
       delete next[userId];
@@ -115,16 +123,14 @@ export class ProgressService {
     this.completionOwners.update(owners =>
       Object.fromEntries(Object.entries(owners).filter(([, owner]) => owner !== userId)),
     );
+    this.saveLocalProgress();
     this.saveSyncStates();
     this.saveCompletionOwners();
     if (this.activeUserId !== userId) return;
-    this.localCompleted.set([]);
-    this.localAttempts.set([]);
     this.remoteCompleted.set([]);
     this.completed.set([]);
     this.attempts.set([]);
     this.legacyAttempts.set([]);
-    this.saveLocalProgress();
   }
 
   private async loadApprovedUser(userId: string, generation: number): Promise<void> {
