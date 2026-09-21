@@ -8,6 +8,12 @@ const messages = {
   signOut: ['Sign out', 'வெளியேறு', 'साइन आउट'],
   language: ['Language', 'மொழி', 'भाषा'],
   appearance: ['Appearance', 'தோற்றம்', 'रूप'],
+  preferences: ['Preferences', 'விருப்பத்தேர்வுகள்', 'प्राथमिकताएँ'],
+  preferencesIntro: [
+    'Choose the language and appearance you prefer on this device.',
+    'இந்தச் சாதனத்தில் நீங்கள் விரும்பும் மொழியையும் தோற்றத்தையும் தேர்ந்தெடுக்கவும்.',
+    'इस डिवाइस पर अपनी पसंदीदा भाषा और रूप चुनें।',
+  ],
   light: ['Light', 'வெளிச்சம்', 'हल्का'],
   dark: ['Dark', 'இருள்', 'गहरा'],
   system: ['System', 'சாதனம்', 'सिस्टम'],

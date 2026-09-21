@@ -1,13 +1,11 @@
 import { afterNextRender, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IonApp, IonSelect, IonSelectOption } from '@ionic/angular';
+import { IonApp } from '@ionic/angular';
 import { NgOptimizedImage } from '@angular/common';
 import { IconComponent } from './shared/icon.component';
 import { I18nService } from './core/i18n.service';
 import { PreferencesService } from './core/preferences.service';
-import type { Appearance } from './core/preferences.service';
-import type { Language } from './core/models';
 import { ProgressService } from './core/progress.service';
 import { AuthService } from './services/auth.service';
 import { App } from '@capacitor/app';
@@ -32,8 +30,6 @@ export function navigationItems(staff: boolean) {
   selector: 'app-root',
   imports: [
     IonApp,
-    IonSelect,
-    IonSelectOption,
     NgOptimizedImage,
     IconComponent,
     RouterOutlet,
@@ -92,14 +88,6 @@ export class AppComponent {
       }
     });
     afterNextRender(() => void this.initializeDeviceFeatures());
-  }
-  language(value: unknown) {
-    if (typeof value !== 'string') return;
-    if (['en', 'ta', 'hi'].includes(value)) this.preferences.language.set(value as Language);
-  }
-  appearance(value: unknown) {
-    if (typeof value !== 'string') return;
-    if (['light', 'dark', 'system'].includes(value)) this.preferences.appearance.set(value as Appearance);
   }
   private async initializeDeviceFeatures(): Promise<void> {
     await this.auth.waitUntilInitialized();
