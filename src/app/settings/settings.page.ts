@@ -1,7 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonButton, IonInput, IonSpinner } from '@ionic/angular';
+import { IonButton, IonInput, IonSelect, IonSelectOption, IonSpinner } from '@ionic/angular';
+import type { Language } from '../core/models';
+import { PreferencesService, type Appearance } from '../core/preferences.service';
 import { I18nService } from '../core/i18n.service';
 import { AdminService } from '../services/admin.service';
 import { AuthService } from '../services/auth.service';
@@ -17,6 +19,8 @@ import { CaptchaService } from '../auth/captcha.service';
     ReactiveFormsModule,
     IonButton,
     IonInput,
+    IonSelect,
+    IonSelectOption,
     IonSpinner,
     IconComponent,
     DeviceSettingsComponent,
@@ -33,6 +37,38 @@ import { CaptchaService } from '../auth/captcha.service';
       </div>
 
       <div class="settings-grid">
+        <section class="settings-card preferences-card" aria-labelledby="preferences-heading">
+          <span class="settings-card-icon"><app-icon name="settings" /></span>
+          <div>
+            <h2 id="preferences-heading">{{ i.t('preferences') }}</h2>
+            <p class="muted">{{ i.t('preferencesIntro') }}</p>
+          </div>
+          <ion-select
+            interface="popover"
+            [label]="i.t('language')"
+            labelPlacement="stacked"
+            [value]="preferences.language()"
+            (ionChange)="setLanguage($event.detail.value)"
+            [interfaceOptions]="{ cssClass: 'qurio-select-popover' }">
+            <app-icon slot="start" name="language" />
+            <ion-select-option value="en">English</ion-select-option>
+            <ion-select-option value="ta">தமிழ்</ion-select-option>
+            <ion-select-option value="hi">हिन्दी</ion-select-option>
+          </ion-select>
+          <ion-select
+            interface="popover"
+            [label]="i.t('appearance')"
+            labelPlacement="stacked"
+            [value]="preferences.appearance()"
+            (ionChange)="setAppearance($event.detail.value)"
+            [interfaceOptions]="{ cssClass: 'qurio-select-popover' }">
+            <app-icon slot="start" name="appearance" />
+            <ion-select-option value="system">{{ i.t('system') }}</ion-select-option>
+            <ion-select-option value="light">{{ i.t('light') }}</ion-select-option>
+            <ion-select-option value="dark">{{ i.t('dark') }}</ion-select-option>
+          </ion-select>
+        </section>
+
         <section class="settings-card" aria-labelledby="profile-heading">
           <span class="settings-card-icon"><app-icon name="people" /></span>
           <div>
@@ -163,6 +199,7 @@ export class SettingsPage {
   private readonly snackbar = inject(SnackbarService);
   private readonly router = inject(Router);
   private readonly progress = inject(ProgressService);
+  readonly preferences = inject(PreferencesService);
   readonly auth = inject(AuthService);
   readonly i = inject(I18nService);
   readonly captcha = inject(CaptchaService);
@@ -190,6 +227,16 @@ export class SettingsPage {
 
   constructor() {
     void this.loadProfile();
+  }
+
+  setLanguage(value: unknown): void {
+    if (typeof value === 'string' && ['en', 'ta', 'hi'].includes(value))
+      this.preferences.language.set(value as Language);
+  }
+
+  setAppearance(value: unknown): void {
+    if (typeof value === 'string' && ['light', 'dark', 'system'].includes(value))
+      this.preferences.appearance.set(value as Appearance);
   }
 
   private async loadProfile() {

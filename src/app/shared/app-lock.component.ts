@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonButton, IonInput, IonSpinner } from '@ionic/angular';
@@ -112,6 +112,12 @@ export class AppLockComponent {
 
   constructor() {
     this.removeLeakedPinQueryParameter();
+    effect(() => {
+      if (this.security.configured() && !this.security.unlocked()) {
+        this.pin.reset();
+        this.error.set('');
+      }
+    });
   }
 
   async unlock(event: SubmitEvent): Promise<void> {
@@ -119,9 +125,10 @@ export class AppLockComponent {
     if (this.pin.invalid || this.busy()) return;
     this.busy.set(true);
     this.error.set('');
-    if (!(await this.security.verify(this.pin.value))) {
+    const unlocked = await this.security.verify(this.pin.value);
+    this.pin.reset();
+    if (!unlocked) {
       this.error.set(this.i.t('incorrectPin'));
-      this.pin.reset();
     }
     this.busy.set(false);
   }
@@ -130,13 +137,16 @@ export class AppLockComponent {
     if (this.busy()) return;
     this.busy.set(true);
     this.error.set('');
-    if (!(await this.security.authenticateBiometric())) this.error.set(this.i.t('biometricFailed'));
+    const unlocked = await this.security.authenticateBiometric();
+    this.pin.reset();
+    if (!unlocked) this.error.set(this.i.t('biometricFailed'));
     this.busy.set(false);
   }
 
   async signOut(): Promise<void> {
     if (this.busy()) return;
     this.busy.set(true);
+    this.pin.reset();
     await this.auth.signOut();
     await this.router.navigateByUrl('/auth/login');
     this.busy.set(false);
